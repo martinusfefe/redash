@@ -1,50 +1,42 @@
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = GeneralSettings;
-var _lodash = require("lodash");
-var _react = _interopRequireWildcard(require("react"));
-var _editor = require("../../../components/visualizations/editor");
-var _propTypes = require("../../prop-types");
-function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
-function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+import { isNil, map, filter, difference } from "lodash";
+import React, { useMemo } from "react";
+import { Section, Select } from "../../../components/visualizations/editor";
+import { EditorPropTypes } from "../../prop-types";
 function getColumns(column, unusedColumns) {
-  return (0, _lodash.filter)([column, ...unusedColumns], v => !(0, _lodash.isNil)(v));
+  return filter([column, ...unusedColumns], v => !isNil(v));
 }
-function GeneralSettings(_ref) {
+export default function GeneralSettings(_ref) {
   var options = _ref.options,
     data = _ref.data,
     onOptionsChange = _ref.onOptionsChange;
-  var unusedColumns = (0, _react.useMemo)(() => (0, _lodash.difference)((0, _lodash.map)(data.columns, c => c.name), [options.latColName, options.lonColName, options.classify]), [data, options.latColName, options.lonColName, options.classify]);
-  return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_editor.Section, null, /*#__PURE__*/_react.default.createElement(_editor.Select, {
+  var unusedColumns = useMemo(() => difference(map(data.columns, c => c.name), [options.latColName, options.lonColName, options.classify]), [data, options.latColName, options.lonColName, options.classify]);
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Section, null, /*#__PURE__*/React.createElement(Select, {
     label: "Latitude Column Name",
     "data-test": "Map.Editor.LatitudeColumnName",
     value: options.latColName,
     onChange: latColName => onOptionsChange({
       latColName
     })
-  }, (0, _lodash.map)(getColumns(options.latColName, unusedColumns), col =>
+  }, map(getColumns(options.latColName, unusedColumns), col =>
   /*#__PURE__*/
   // @ts-expect-error ts-migrate(2339) FIXME: Property 'Option' does not exist on type '({ class... Remove this comment to see the full error message
-  _react.default.createElement(_editor.Select.Option, {
+  React.createElement(Select.Option, {
     key: col,
     "data-test": "Map.Editor.LatitudeColumnName." + col
-  }, col)))), /*#__PURE__*/_react.default.createElement(_editor.Section, null, /*#__PURE__*/_react.default.createElement(_editor.Select, {
+  }, col)))), /*#__PURE__*/React.createElement(Section, null, /*#__PURE__*/React.createElement(Select, {
     label: "Longitude Column Name",
     "data-test": "Map.Editor.LongitudeColumnName",
     value: options.lonColName,
     onChange: lonColName => onOptionsChange({
       lonColName
     })
-  }, (0, _lodash.map)(getColumns(options.lonColName, unusedColumns), col =>
+  }, map(getColumns(options.lonColName, unusedColumns), col =>
   /*#__PURE__*/
   // @ts-expect-error ts-migrate(2339) FIXME: Property 'Option' does not exist on type '({ class... Remove this comment to see the full error message
-  _react.default.createElement(_editor.Select.Option, {
+  React.createElement(Select.Option, {
     key: col,
     "data-test": "Map.Editor.LongitudeColumnName." + col
-  }, col)))), /*#__PURE__*/_react.default.createElement(_editor.Section, null, /*#__PURE__*/_react.default.createElement(_editor.Select, {
+  }, col)))), /*#__PURE__*/React.createElement(Section, null, /*#__PURE__*/React.createElement(Select, {
     label: "Group By",
     "data-test": "Map.Editor.GroupBy",
     allowClear: true,
@@ -53,13 +45,13 @@ function GeneralSettings(_ref) {
     onChange: column => onOptionsChange({
       classify: column || null
     })
-  }, (0, _lodash.map)(getColumns(options.classify, unusedColumns), col =>
+  }, map(getColumns(options.classify, unusedColumns), col =>
   /*#__PURE__*/
   // @ts-expect-error ts-migrate(2339) FIXME: Property 'Option' does not exist on type '({ class... Remove this comment to see the full error message
-  _react.default.createElement(_editor.Select.Option, {
+  React.createElement(Select.Option, {
     key: col,
     "data-test": "Map.Editor.GroupBy." + col
   }, col)))));
 }
-GeneralSettings.propTypes = _propTypes.EditorPropTypes;
+GeneralSettings.propTypes = EditorPropTypes;
 //# sourceMappingURL=GeneralSettings.js.map

@@ -1,17 +1,11 @@
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = updateAxes;
-var _lodash = require("lodash");
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
 function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+import { isObject, isNumber, each } from "lodash";
 function calculateAxisRange(range, min, max) {
-  return [(0, _lodash.isNumber)(min) ? min : range[0], (0, _lodash.isNumber)(max) ? max : range[1]];
+  return [isNumber(min) ? min : range[0], isNumber(max) ? max : range[1]];
 }
 function calculateAbsoluteDiff(value, totalRange, percentageDiff) {
   return percentageDiff * totalRange / (1 - Math.abs(value) / totalRange - percentageDiff);
@@ -46,16 +40,16 @@ function alignYAxesAtZero(axisA, axisB) {
     axisA.range[0] -= calculateAbsoluteDiff(axisA.range[0], totalRangeA, diff);
   }
 }
-function updateAxes(plotlyElement, seriesList, layout, options) {
+export default function updateAxes(plotlyElement, seriesList, layout, options) {
   var updates = {};
-  if ((0, _lodash.isObject)(layout.yaxis)) {
+  if (isObject(layout.yaxis)) {
     // @ts-expect-error ts-migrate(2339) FIXME: Property 'yaxis' does not exist on type '{}'.
     updates.yaxis = _objectSpread(_objectSpread({}, layout.yaxis), {}, {
       autorange: true,
       range: null
     });
   }
-  if ((0, _lodash.isObject)(layout.yaxis2)) {
+  if (isObject(layout.yaxis2)) {
     // @ts-expect-error ts-migrate(2339) FIXME: Property 'yaxis2' does not exist on type '{}'.
     updates.yaxis2 = _objectSpread(_objectSpread({}, layout.yaxis2), {}, {
       autorange: true,
@@ -64,7 +58,7 @@ function updateAxes(plotlyElement, seriesList, layout, options) {
   }
   return [updates, () => {
     // Update Y Ranges
-    if ((0, _lodash.isObject)(layout.yaxis)) {
+    if (isObject(layout.yaxis)) {
       var axisOptions = options.yAxis[0];
       var defaultRange = plotlyElement.layout.yaxis.range;
       // @ts-expect-error ts-migrate(2339) FIXME: Property 'yaxis' does not exist on type '{}'.
@@ -72,7 +66,7 @@ function updateAxes(plotlyElement, seriesList, layout, options) {
       // @ts-expect-error ts-migrate(2339) FIXME: Property 'yaxis' does not exist on type '{}'.
       updates.yaxis.range = calculateAxisRange(defaultRange, axisOptions.rangeMin, axisOptions.rangeMax);
     }
-    if ((0, _lodash.isObject)(layout.yaxis2)) {
+    if (isObject(layout.yaxis2)) {
       var _axisOptions = options.yAxis[1];
       var _defaultRange = plotlyElement.layout.yaxis2.range;
       // @ts-expect-error ts-migrate(2339) FIXME: Property 'yaxis2' does not exist on type '{}'.
@@ -83,7 +77,7 @@ function updateAxes(plotlyElement, seriesList, layout, options) {
 
     // Swap Axes
     if (options.swappedAxes) {
-      (0, _lodash.each)(seriesList, series => {
+      each(seriesList, series => {
         series.orientation = "h";
         var x = series.x,
           y = series.y;
@@ -94,20 +88,20 @@ function updateAxes(plotlyElement, seriesList, layout, options) {
       // @ts-expect-error ts-migrate(2339) FIXME: Property 'yaxis' does not exist on type '{}'.
       var yaxis = updates.yaxis,
         yaxis2 = updates.yaxis2;
-      if ((0, _lodash.isObject)(xaxis) && (0, _lodash.isObject)(yaxis)) {
+      if (isObject(xaxis) && isObject(yaxis)) {
         // @ts-expect-error ts-migrate(2339) FIXME: Property 'xaxis' does not exist on type '{}'.
         updates.xaxis = yaxis;
         // @ts-expect-error ts-migrate(2339) FIXME: Property 'yaxis' does not exist on type '{}'.
         updates.yaxis = xaxis;
       }
-      if ((0, _lodash.isObject)(yaxis2)) {
+      if (isObject(yaxis2)) {
         // @ts-expect-error ts-migrate(2339) FIXME: Property 'yaxis2' does not exist on type '{}'.
         updates.yaxis2 = null;
       }
     }
 
     // Align Y axes
-    if (options.alignYAxesAtZero && (0, _lodash.isObject)(layout.yaxis) && (0, _lodash.isObject)(layout.yaxis2)) {
+    if (options.alignYAxesAtZero && isObject(layout.yaxis) && isObject(layout.yaxis2)) {
       // @ts-expect-error ts-migrate(2339) FIXME: Property 'yaxis' does not exist on type '{}'.
       alignYAxesAtZero(updates.yaxis, updates.yaxis2);
     }

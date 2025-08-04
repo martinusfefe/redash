@@ -1,12 +1,5 @@
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = getOptions;
-var _lodash = require("lodash");
-var _ColorPalette = _interopRequireDefault(require("../ColorPalette"));
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+import { merge } from "lodash";
+import ColorPalette from "../ColorPalette";
 var DEFAULT_OPTIONS = {
   timeInterval: "daily",
   mode: "diagonal",
@@ -24,11 +17,11 @@ var DEFAULT_OPTIONS = {
   noValuePlaceholder: "-",
   colors: {
     min: "#ffffff",
-    max: _ColorPalette.default["Dark Blue"],
+    max: ColorPalette["Dark Blue"],
     steps: 7
   }
 };
-function getOptions(options) {
-  return (0, _lodash.merge)({}, DEFAULT_OPTIONS, options);
+export default function getOptions(options) {
+  return merge({}, DEFAULT_OPTIONS, options);
 }
 //# sourceMappingURL=getOptions.js.map

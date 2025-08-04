@@ -1,25 +1,16 @@
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = Cornelius;
-var _lodash = require("lodash");
-var _moment = _interopRequireDefault(require("moment"));
-var _chromaJs = _interopRequireDefault(require("chroma-js"));
-var _react = _interopRequireWildcard(require("react"));
-var _tooltip = _interopRequireDefault(require("antd/lib/tooltip"));
-var _valueFormat = require("../../lib/value-format");
-var _chooseTextColorForBackground = _interopRequireDefault(require("../../lib/chooseTextColorForBackground"));
-require("./cornelius.less");
-function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
-function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 /*!
  * React port of Cornelius library (based on v0.1 released under the MIT license)
  * Original library: http://restorando.github.io/cornelius
  */
 
+import { isNil, isFinite, map, extend, min, max } from "lodash";
+import moment from "moment";
+import chroma from "chroma-js";
+import React, { useMemo } from "react";
+import Tooltip from "antd/lib/tooltip";
+import { createNumberFormatter, formatSimpleTemplate } from "../../lib/value-format";
+import chooseTextColorForBackground from "../../lib/chooseTextColorForBackground";
+import "./cornelius.less";
 var momentInterval = {
   daily: "days",
   weekly: "weeks",
@@ -54,26 +45,26 @@ var defaultOptions = {
   }
 };
 function prepareOptions(options) {
-  options = (0, _lodash.extend)({}, defaultOptions, options, {
-    initialDate: (0, _moment.default)(options.initialDate),
-    colors: (0, _lodash.extend)({}, defaultOptions.colors, options.colors)
+  options = extend({}, defaultOptions, options, {
+    initialDate: moment(options.initialDate),
+    colors: extend({}, defaultOptions.colors, options.colors)
   });
-  return (0, _lodash.extend)(options, {
+  return extend(options, {
     // @ts-expect-error ts-migrate(7053) FIXME: Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
     timeLabelFormat: timeLabelFormats[options.timeInterval],
-    formatNumber: (0, _valueFormat.createNumberFormatter)(options.numberFormat),
-    formatPercent: (0, _valueFormat.createNumberFormatter)(options.percentFormat),
-    getColorForValue: _chromaJs.default.scale([options.colors.min, options.colors.max]).mode("hsl").domain([0, 100]).classes(options.colors.steps)
+    formatNumber: createNumberFormatter(options.numberFormat),
+    formatPercent: createNumberFormatter(options.percentFormat),
+    getColorForValue: chroma.scale([options.colors.min, options.colors.max]).mode("hsl").domain([0, 100]).classes(options.colors.steps)
   });
 }
 function isLightColor(backgroundColor) {
-  backgroundColor = (0, _chromaJs.default)(backgroundColor);
+  backgroundColor = chroma(backgroundColor);
   var white = "#ffffff";
   var black = "#000000";
-  return _chromaJs.default.contrast(backgroundColor, white) < _chromaJs.default.contrast(backgroundColor, black);
+  return chroma.contrast(backgroundColor, white) < chroma.contrast(backgroundColor, black);
 }
 function formatStageTitle(options, index) {
-  return (0, _valueFormat.formatSimpleTemplate)(options.stageColumnTitle, {
+  return formatSimpleTemplate(options.stageColumnTitle, {
     "@": options.initialIntervalNumber - 1 + index
   });
 }
@@ -88,14 +79,14 @@ function CorneliusHeader(_ref) {
   // eslint-disable-line react/prop-types
   var cells = [];
   for (var i = 1; i < maxRowLength; i += 1) {
-    cells.push( /*#__PURE__*/_react.default.createElement("th", {
+    cells.push( /*#__PURE__*/React.createElement("th", {
       key: "col".concat(i),
       className: "cornelius-stage"
     }, formatStageTitle(options, i)));
   }
-  return /*#__PURE__*/_react.default.createElement("tr", null, /*#__PURE__*/_react.default.createElement("th", {
+  return /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", {
     className: "cornelius-time"
-  }, options.timeColumnTitle), /*#__PURE__*/_react.default.createElement("th", {
+  }, options.timeColumnTitle), /*#__PURE__*/React.createElement("th", {
     className: "cornelius-people"
   }, options.peopleColumnTitle), cells);
 }
@@ -109,11 +100,11 @@ function CorneliusRow(_ref2) {
   var cells = [];
   for (var i = 1; i < maxRowLength; i += 1) {
     var value = data[i];
-    var percentageValue = (0, _lodash.isFinite)(value / baseValue) ? value / baseValue * 100 : null;
+    var percentageValue = isFinite(value / baseValue) ? value / baseValue * 100 : null;
     var cellProps = {
       key: "col".concat(i)
     };
-    if ((0, _lodash.isNil)(percentageValue)) {
+    if (isNil(percentageValue)) {
       // @ts-expect-error ts-migrate(2339) FIXME: Property 'className' does not exist on type '{ key... Remove this comment to see the full error message
       cellProps.className = "cornelius-empty";
       // @ts-expect-error ts-migrate(2339) FIXME: Property 'children' does not exist on type '{ key:... Remove this comment to see the full error message
@@ -127,7 +118,7 @@ function CorneliusRow(_ref2) {
       // @ts-expect-error ts-migrate(2339) FIXME: Property 'style' does not exist on type '{ key: st... Remove this comment to see the full error message
       cellProps.style = {
         backgroundColor,
-        color: (0, _chooseTextColorForBackground.default)(backgroundColor)
+        color: chooseTextColorForBackground(backgroundColor)
       };
       // @ts-expect-error ts-migrate(2339) FIXME: Property 'style' does not exist on type '{ key: st... Remove this comment to see the full error message
       if (isLightColor(cellProps.style.color)) {
@@ -136,44 +127,44 @@ function CorneliusRow(_ref2) {
       }
       if (options.rawNumberOnHover && !options.displayAbsoluteValues) {
         // @ts-expect-error ts-migrate(2339) FIXME: Property 'children' does not exist on type '{ key:... Remove this comment to see the full error message
-        cellProps.children = /*#__PURE__*/_react.default.createElement(_tooltip.default, {
+        cellProps.children = /*#__PURE__*/React.createElement(Tooltip, {
           title: options.formatNumber(value),
           mouseEnterDelay: 0,
           mouseLeaveDelay: 0
-        }, /*#__PURE__*/_react.default.createElement("div", null, cellProps.children));
+        }, /*#__PURE__*/React.createElement("div", null, cellProps.children));
       }
     }
-    cells.push( /*#__PURE__*/_react.default.createElement("td", cellProps));
+    cells.push( /*#__PURE__*/React.createElement("td", cellProps));
   }
-  return /*#__PURE__*/_react.default.createElement("tr", null, /*#__PURE__*/_react.default.createElement("td", {
+  return /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
     className: "cornelius-label"
-  }, formatTimeLabel(options, index)), /*#__PURE__*/_react.default.createElement("td", {
+  }, formatTimeLabel(options, index)), /*#__PURE__*/React.createElement("td", {
     className: "cornelius-people"
   }, options.formatNumber(baseValue)), cells);
 }
-function Cornelius(_ref3) {
+export default function Cornelius(_ref3) {
   var data = _ref3.data,
     options = _ref3.options;
-  options = (0, _react.useMemo)(() => prepareOptions(options), [options]);
-  var maxRowLength = (0, _react.useMemo)(() => (0, _lodash.min)([
+  options = useMemo(() => prepareOptions(options), [options]);
+  var maxRowLength = useMemo(() => min([
   // @ts-expect-error ts-migrate(2339) FIXME: Property 'length' does not exist on type 'number'.
-  (0, _lodash.max)((0, _lodash.map)(data, d => d.length)) || 0,
+  max(map(data, d => d.length)) || 0,
   // @ts-expect-error ts-migrate(2532) FIXME: Object is possibly 'undefined'.
   options.maxColumns + 1 // each row includes totals, but `maxColumns` is only for stage columns
   ]), [data, options.maxColumns]);
   if (data.length === 0) {
     return null;
   }
-  return /*#__PURE__*/_react.default.createElement("div", {
+  return /*#__PURE__*/React.createElement("div", {
     className: "cornelius-container"
-  }, options.title && /*#__PURE__*/_react.default.createElement("div", {
+  }, options.title && /*#__PURE__*/React.createElement("div", {
     className: "cornelius-title"
-  }, options.title), /*#__PURE__*/_react.default.createElement("table", {
+  }, options.title), /*#__PURE__*/React.createElement("table", {
     className: "cornelius-table"
-  }, /*#__PURE__*/_react.default.createElement("thead", null, /*#__PURE__*/_react.default.createElement(CorneliusHeader, {
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement(CorneliusHeader, {
     options: options,
     maxRowLength: maxRowLength
-  })), /*#__PURE__*/_react.default.createElement("tbody", null, (0, _lodash.map)(data, (row, index) => /*#__PURE__*/_react.default.createElement(CorneliusRow, {
+  })), /*#__PURE__*/React.createElement("tbody", null, map(data, (row, index) => /*#__PURE__*/React.createElement(CorneliusRow, {
     key: "row".concat(index),
     options: options,
     data: row,

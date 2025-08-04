@@ -1,31 +1,23 @@
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-var _createTabbedEditor = _interopRequireDefault(require("../../../components/visualizations/editor/createTabbedEditor"));
-var _GeneralSettings = _interopRequireDefault(require("./GeneralSettings"));
-var _GroupsSettings = _interopRequireDefault(require("./GroupsSettings"));
-var _FormatSettings = _interopRequireDefault(require("./FormatSettings"));
-var _StyleSettings = _interopRequireDefault(require("./StyleSettings"));
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-var _default = (0, _createTabbedEditor.default)([{
+import createTabbedEditor from "../../../components/visualizations/editor/createTabbedEditor";
+import GeneralSettings from "./GeneralSettings";
+import GroupsSettings from "./GroupsSettings";
+import FormatSettings from "./FormatSettings";
+import StyleSettings from "./StyleSettings";
+export default createTabbedEditor([{
   key: "General",
   title: "General",
-  component: _GeneralSettings.default
+  component: GeneralSettings
 }, {
   key: "Groups",
   title: "Groups",
-  component: _GroupsSettings.default
+  component: GroupsSettings
 }, {
   key: "Format",
   title: "Format",
-  component: _FormatSettings.default
+  component: FormatSettings
 }, {
   key: "Style",
   title: "Style",
-  component: _StyleSettings.default
+  component: StyleSettings
 }]);
-exports.default = _default;
 //# sourceMappingURL=index.js.map

@@ -1,18 +1,11 @@
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = initJsonColumn;
-var _lodash = require("lodash");
-var _react = _interopRequireDefault(require("react"));
-var _JsonViewInteractive = _interopRequireDefault(require("../../../components/json-view-interactive/JsonViewInteractive"));
-var _visualizationsSettings = require("../../visualizationsSettings");
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-function initJsonColumn(column) {
+import { isString, isUndefined } from "lodash";
+import React from "react";
+import JsonViewInteractive from "../../../components/json-view-interactive/JsonViewInteractive";
+import { visualizationsSettings } from "../../visualizationsSettings";
+export default function initJsonColumn(column) {
   function prepareData(row) {
     var text = row[column.name];
-    if ((0, _lodash.isString)(text) && text.length <= _visualizationsSettings.visualizationsSettings.tableCellMaxJSONSize) {
+    if (isString(text) && text.length <= visualizationsSettings.tableCellMaxJSONSize) {
       try {
         return {
           text,
@@ -33,14 +26,14 @@ function initJsonColumn(column) {
     var _prepareData = prepareData(row),
       text = _prepareData.text,
       value = _prepareData.value;
-    if ((0, _lodash.isUndefined)(value)) {
-      return /*#__PURE__*/_react.default.createElement("div", {
+    if (isUndefined(value)) {
+      return /*#__PURE__*/React.createElement("div", {
         className: "json-cell-invalid"
       }, "" + text);
     }
-    return /*#__PURE__*/_react.default.createElement("div", {
+    return /*#__PURE__*/React.createElement("div", {
       className: "json-cell-valid"
-    }, /*#__PURE__*/_react.default.createElement(_JsonViewInteractive.default, {
+    }, /*#__PURE__*/React.createElement(JsonViewInteractive, {
       value: value
     }));
   }

@@ -1,26 +1,19 @@
-"use strict";
+import initTextColumn from "./text";
+import initNumberColumn from "./number";
+import initDateTimeColumn from "./datetime";
+import initBooleanColumn from "./boolean";
+import initLinkColumn from "./link";
+import initImageColumn from "./image";
+import initJsonColumn from "./json";
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-var _text = _interopRequireDefault(require("./text"));
-var _number = _interopRequireDefault(require("./number"));
-var _datetime = _interopRequireDefault(require("./datetime"));
-var _boolean = _interopRequireDefault(require("./boolean"));
-var _link = _interopRequireDefault(require("./link"));
-var _image = _interopRequireDefault(require("./image"));
-var _json = _interopRequireDefault(require("./json"));
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 // this map should contain all possible values for `column.displayAs` property
-var _default = {
-  string: _text.default,
-  number: _number.default,
-  datetime: _datetime.default,
-  boolean: _boolean.default,
-  link: _link.default,
-  image: _image.default,
-  json: _json.default
+export default {
+  string: initTextColumn,
+  number: initNumberColumn,
+  datetime: initDateTimeColumn,
+  boolean: initBooleanColumn,
+  link: initLinkColumn,
+  image: initImageColumn,
+  json: initJsonColumn
 };
-exports.default = _default;
 //# sourceMappingURL=index.js.map

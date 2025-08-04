@@ -1,12 +1,6 @@
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = updateData;
-var _lodash = require("lodash");
-var _valueFormat = require("../../../lib/value-format");
-var _utils = require("./utils");
+import { isNil, each, extend, filter, identity, includes, map, sortBy } from "lodash";
+import { createNumberFormatter, formatSimpleTemplate } from "../../../lib/value-format";
+import { normalizeValue } from "./utils";
 function shouldUseUnifiedXAxis(options) {
   return options.sortX && options.xAxis.type === "category" && options.globalSeriesType !== "box";
 }
@@ -30,7 +24,7 @@ function createTextFormatter(options) {
   if (options.textFormat === "") {
     return options.globalSeriesType === "pie" ? defaultFormatSeriesTextForPie : defaultFormatSeriesText;
   }
-  return item => (0, _valueFormat.formatSimpleTemplate)(options.textFormat, item);
+  return item => formatSimpleTemplate(options.textFormat, item);
 }
 function formatValue(value, axis, options) {
   var axisType = null;
@@ -47,14 +41,14 @@ function formatValue(value, axis, options) {
     // no default
   }
 
-  return (0, _utils.normalizeValue)(value, axisType, options.dateTimeFormat);
+  return normalizeValue(value, axisType, options.dateTimeFormat);
 }
 function updateSeriesText(seriesList, options) {
-  var formatNumber = (0, _valueFormat.createNumberFormatter)(options.numberFormat);
-  var formatPercent = (0, _valueFormat.createNumberFormatter)(options.percentFormat);
+  var formatNumber = createNumberFormatter(options.numberFormat);
+  var formatPercent = createNumberFormatter(options.percentFormat);
   var formatText = createTextFormatter(options);
   var defaultY = options.missingValuesAsZero ? 0.0 : null;
-  (0, _lodash.each)(seriesList, series => {
+  each(seriesList, series => {
     var seriesOptions = options.seriesOptions[series.name] || {
       type: options.globalSeriesType
     };
@@ -73,7 +67,7 @@ function updateSeriesText(seriesList, options) {
           y: defaultY
         }
       };
-      var yValueIsAny = (0, _lodash.includes)(["bubble", "scatter"], seriesOptions.type);
+      var yValueIsAny = includes(["bubble", "scatter"], seriesOptions.type);
 
       // for `formatValue` we have to use original value of `x` and `y`: `item.x`/`item.y` contains value
       // already processed with `normalizeValue`, and if they were `moment` instances - they are formatted
@@ -96,7 +90,7 @@ function updateSeriesText(seriesList, options) {
         // @ts-expect-error ts-migrate(7053) FIXME: Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
         text["@@yPercent"] = formatPercent(Math.abs(item.yPercent));
       }
-      (0, _lodash.extend)(text, item.row.$raw);
+      extend(text, item.row.$raw);
       series.text.push(formatText(text));
     });
   });
@@ -106,16 +100,16 @@ function updatePercentValues(seriesList, options) {
     // Some series may not have corresponding x-values;
     // do calculations for each x only for series that do have that x
     var sumOfCorrespondingPoints = new Map();
-    (0, _lodash.each)(seriesList, series => {
+    each(seriesList, series => {
       series.sourceData.forEach(item => {
         var sum = sumOfCorrespondingPoints.get(item.x) || 0;
         sumOfCorrespondingPoints.set(item.x, sum + Math.abs(item.y || 0.0));
       });
     });
-    (0, _lodash.each)(seriesList, series => {
+    each(seriesList, series => {
       var yValues = [];
       series.sourceData.forEach(item => {
-        if ((0, _lodash.isNil)(item.y) && !options.missingValuesAsZero) {
+        if (isNil(item.y) && !options.missingValuesAsZero) {
           item.yPercent = null;
         } else {
           var sum = sumOfCorrespondingPoints.get(item.x);
@@ -129,23 +123,23 @@ function updatePercentValues(seriesList, options) {
 }
 function getUnifiedXAxisValues(seriesList, sorted) {
   var set = new Set();
-  (0, _lodash.each)(seriesList, series => {
+  each(seriesList, series => {
     // `Map.forEach` will walk items in insertion order
     series.sourceData.forEach(item => {
       set.add(item.x);
     });
   });
   var result = [...set];
-  return sorted ? (0, _lodash.sortBy)(result, _lodash.identity) : result;
+  return sorted ? sortBy(result, identity) : result;
 }
 function updateUnifiedXAxisValues(seriesList, options) {
   var unifiedX = getUnifiedXAxisValues(seriesList, options.sortX);
   var defaultY = options.missingValuesAsZero ? 0.0 : null;
-  (0, _lodash.each)(seriesList, series => {
+  each(seriesList, series => {
     series.x = [];
     series.y = [];
     series.error_y.array = [];
-    (0, _lodash.each)(unifiedX, x => {
+    each(unifiedX, x => {
       series.x.push(x);
       var item = series.sourceData.get(x);
       if (item) {
@@ -169,9 +163,9 @@ function updateLineAreaData(seriesList, options) {
 
     // Calculate cumulative value for each x tick
     var cumulativeValues = {};
-    (0, _lodash.each)(seriesList, series => {
-      series.y = (0, _lodash.map)(series.y, (y, i) => {
-        if ((0, _lodash.isNil)(y) && !options.missingValuesAsZero) {
+    each(seriesList, series => {
+      series.y = map(series.y, (y, i) => {
+        if (isNil(y) && !options.missingValuesAsZero) {
           return null;
         }
         var x = series.x[i];
@@ -203,9 +197,9 @@ function updateDefaultData(seriesList, options) {
   // Finally - update text labels
   updateSeriesText(seriesList, options);
 }
-function updateData(seriesList, options) {
+export default function updateData(seriesList, options) {
   // Use only visible series
-  var visibleSeriesList = (0, _lodash.filter)(seriesList, s => s.visible === true);
+  var visibleSeriesList = filter(seriesList, s => s.visible === true);
   if (visibleSeriesList.length > 0) {
     switch (options.globalSeriesType) {
       case "pie":

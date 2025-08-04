@@ -1,21 +1,14 @@
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = Editor;
-var _lodash = require("lodash");
-var _react = _interopRequireDefault(require("react"));
-var _editor = require("../../components/visualizations/editor");
-var _propTypes = require("../prop-types");
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-function Editor(_ref) {
+import { merge } from "lodash";
+import React from "react";
+import { Section, Switch } from "../../components/visualizations/editor";
+import { EditorPropTypes } from "../prop-types";
+export default function Editor(_ref) {
   var options = _ref.options,
     onOptionsChange = _ref.onOptionsChange;
   var updateOptions = updates => {
-    onOptionsChange((0, _lodash.merge)({}, options, updates));
+    onOptionsChange(merge({}, options, updates));
   };
-  return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_editor.Section, null, /*#__PURE__*/_react.default.createElement(_editor.Switch
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Section, null, /*#__PURE__*/React.createElement(Switch
   // @ts-expect-error ts-migrate(2322) FIXME: Type 'string' is not assignable to type 'never'.
   , {
     "data-test": "PivotEditor.HideControls"
@@ -32,7 +25,7 @@ function Editor(_ref) {
         enabled: !enabled
       }
     })
-  }, "Show Pivot Controls")), /*#__PURE__*/_react.default.createElement(_editor.Section, null, /*#__PURE__*/_react.default.createElement(_editor.Switch
+  }, "Show Pivot Controls")), /*#__PURE__*/React.createElement(Section, null, /*#__PURE__*/React.createElement(Switch
   // @ts-expect-error ts-migrate(2322) FIXME: Type 'string' is not assignable to type 'never'.
   , {
     id: "pivot-show-row-totals"
@@ -48,7 +41,7 @@ function Editor(_ref) {
         }
       }
     })
-  }, "Show Row Totals")), /*#__PURE__*/_react.default.createElement(_editor.Section, null, /*#__PURE__*/_react.default.createElement(_editor.Switch
+  }, "Show Row Totals")), /*#__PURE__*/React.createElement(Section, null, /*#__PURE__*/React.createElement(Switch
   // @ts-expect-error ts-migrate(2322) FIXME: Type 'string' is not assignable to type 'never'.
   , {
     id: "pivot-show-column-totals"
@@ -66,5 +59,5 @@ function Editor(_ref) {
     })
   }, "Show Column Totals")));
 }
-Editor.propTypes = _propTypes.EditorPropTypes;
+Editor.propTypes = EditorPropTypes;
 //# sourceMappingURL=Editor.js.map

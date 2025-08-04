@@ -1,11 +1,9 @@
-"use strict";
-
-var _utils = require("./utils");
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
 function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+import { getCounterData } from "./utils";
 var dummy;
 describe("Visualizations -> Counter -> Utils", () => {
   beforeEach(() => {
@@ -34,13 +32,13 @@ describe("Visualizations -> Counter -> Utils", () => {
   describe("getCounterData()", () => {
     describe('"Count rows" option is disabled', () => {
       test("No target and counter values return empty result", () => {
-        var result = (0, _utils.getCounterData)(dummy.rows, dummy.options, dummy.visualisationName);
+        var result = getCounterData(dummy.rows, dummy.options, dummy.visualisationName);
         expect(result).toEqual(_objectSpread(_objectSpread({}, dummy.result), {}, {
           showTrend: false
         }));
       });
       test('"Counter label" overrides vizualization name', () => {
-        var result = (0, _utils.getCounterData)(dummy.rows, {
+        var result = getCounterData(dummy.rows, {
           counterLabel: "Counter Label"
         }, dummy.visualisationName);
         expect(result).toEqual(_objectSpread(_objectSpread({}, dummy.result), {}, {
@@ -49,13 +47,13 @@ describe("Visualizations -> Counter -> Utils", () => {
         }));
       });
       test('"Counter Value Column Name" must be set to a correct non empty value', () => {
-        var result = (0, _utils.getCounterData)(dummy.rows, {
+        var result = getCounterData(dummy.rows, {
           rowNumber: 3
         }, dummy.visualisationName);
         expect(result).toEqual(_objectSpread(_objectSpread({}, dummy.result), {}, {
           showTrend: false
         }));
-        var result2 = (0, _utils.getCounterData)(dummy.rows, {
+        var result2 = getCounterData(dummy.rows, {
           counterColName: "missingColumn"
         }, dummy.visualisationName);
         expect(result2).toEqual(_objectSpread(_objectSpread({}, dummy.result), {}, {
@@ -63,7 +61,7 @@ describe("Visualizations -> Counter -> Utils", () => {
         }));
       });
       test('"Counter Value Column Name" uses correct column', () => {
-        var result = (0, _utils.getCounterData)(dummy.rows, {
+        var result = getCounterData(dummy.rows, {
           counterColName: "population"
         }, dummy.visualisationName);
         expect(result).toEqual(_objectSpread(_objectSpread({}, dummy.result), {}, {
@@ -73,7 +71,7 @@ describe("Visualizations -> Counter -> Utils", () => {
         }));
       });
       test("Counter and target values return correct result including trend", () => {
-        var result = (0, _utils.getCounterData)(dummy.rows, {
+        var result = getCounterData(dummy.rows, {
           rowNumber: 1,
           counterColName: "population",
           targetRowNumber: 2,
@@ -87,7 +85,7 @@ describe("Visualizations -> Counter -> Utils", () => {
           showTrend: true,
           trendPositive: false
         }));
-        var result2 = (0, _utils.getCounterData)(dummy.rows, {
+        var result2 = getCounterData(dummy.rows, {
           rowNumber: 2,
           counterColName: "population",
           targetRowNumber: 1,
@@ -112,13 +110,13 @@ describe("Visualizations -> Counter -> Utils", () => {
         });
       });
       test("Rows are counted correctly", () => {
-        var result = (0, _utils.getCounterData)(dummy.rows, {
+        var result = getCounterData(dummy.rows, {
           countRow: true
         }, dummy.visualisationName);
         expect(result).toEqual(dummy.result);
       });
       test("Counter value is ignored", () => {
-        var result = (0, _utils.getCounterData)(dummy.rows, {
+        var result = getCounterData(dummy.rows, {
           countRow: true,
           rowNumber: 3,
           counterColName: "population"
@@ -126,7 +124,7 @@ describe("Visualizations -> Counter -> Utils", () => {
         expect(result).toEqual(dummy.result);
       });
       test("Target value and trend are computed correctly", () => {
-        var result = (0, _utils.getCounterData)(dummy.rows, {
+        var result = getCounterData(dummy.rows, {
           countRow: true,
           targetRowNumber: 2,
           targetColName: "population"
@@ -139,7 +137,7 @@ describe("Visualizations -> Counter -> Utils", () => {
         }));
       });
       test("Empty rows return counter value 0", () => {
-        var result = (0, _utils.getCounterData)([], {
+        var result = getCounterData([], {
           countRow: true
         }, dummy.visualisationName);
         expect(result).toEqual(_objectSpread(_objectSpread({}, dummy.result), {}, {

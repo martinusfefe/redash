@@ -1,13 +1,6 @@
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = initSankey;
-var _lodash = require("lodash");
-var _d = _interopRequireDefault(require("d3"));
-var _d3sankey = _interopRequireDefault(require("./d3sankey"));
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+import { isNil, map, extend, sortBy, includes, filter, reduce, find, keys, values, identity, mapValues, every, isNaN, isNumber, isString } from "lodash";
+import d3 from "d3";
+import d3sankey from "./d3sankey";
 function getConnectedNodes(node) {
   console.log(node);
   // source link = this node is the source, I need the targets
@@ -26,9 +19,9 @@ function graph(data) {
   var nodes = [];
   var validKey = key => key !== "value";
   // @ts-expect-error
-  var dataKeys = (0, _lodash.sortBy)((0, _lodash.filter)((0, _lodash.keys)(data[0]), validKey), _lodash.identity);
+  var dataKeys = sortBy(filter(keys(data[0]), validKey), identity);
   function normalizeName(name) {
-    if (!(0, _lodash.isNil)(name)) {
+    if (!isNil(name)) {
       return "" + name;
     }
     return "Exit";
@@ -82,27 +75,27 @@ function graph(data) {
   });
 
   // @ts-expect-error ts-migrate(2339) FIXME: Property 'scale' does not exist on type 'typeof im... Remove this comment to see the full error message
-  var color = _d.default.scale.category20();
+  var color = d3.scale.category20();
   return {
-    nodes: (0, _lodash.map)(nodes, d => (0, _lodash.extend)(d, {
+    nodes: map(nodes, d => extend(d, {
       color: color(d.name.replace(/ .*/, ""))
     })),
-    links: (0, _lodash.values)(links)
+    links: values(links)
   };
 }
 function spreadNodes(height, data) {
-  var nodesByBreadth = _d.default
+  var nodesByBreadth = d3
   // @ts-expect-error ts-migrate(2339) FIXME: Property 'nest' does not exist on type 'typeof imp... Remove this comment to see the full error message
   .nest().key(d => d.x).entries(data.nodes)
   // @ts-expect-error
   .map(d => d.values);
   nodesByBreadth.forEach(nodes => {
-    nodes = (0, _lodash.filter)((0, _lodash.sortBy)(nodes, node => -node.value), node => node.name !== "Exit");
+    nodes = filter(sortBy(nodes, node => -node.value), node => node.name !== "Exit");
 
     // @ts-expect-error ts-migrate(2571) FIXME: Object is of type 'unknown'.
-    var sum = _d.default.sum(nodes, o => o.dy);
+    var sum = d3.sum(nodes, o => o.dy);
     var padding = (height - sum) / nodes.length;
-    (0, _lodash.reduce)(nodes, (y0, node) => {
+    reduce(nodes, (y0, node) => {
       node.y = y0;
       return y0 + node.dy + padding;
     }, 0);
@@ -110,12 +103,12 @@ function spreadNodes(height, data) {
 }
 function isDataValid(data) {
   // data should contain column named 'value', otherwise no reason to render anything at all
-  if (!data || !(0, _lodash.find)(data.columns, c => c.name === "value")) {
+  if (!data || !find(data.columns, c => c.name === "value")) {
     return false;
   }
   // prepareData will have coerced any invalid data rows into NaN, which is verified below
-  return (0, _lodash.every)(data.rows, row => (0, _lodash.every)(row, v => {
-    if (!v || (0, _lodash.isString)(v)) {
+  return every(data.rows, row => every(row, v => {
+    if (!v || isString(v)) {
       return true;
     }
     return isFinite(v);
@@ -124,26 +117,26 @@ function isDataValid(data) {
 
 // will coerce number strings into valid numbers
 function prepareDataRows(rows) {
-  return (0, _lodash.map)(rows, row => (0, _lodash.mapValues)(row, v => {
-    if (!v || (0, _lodash.isNumber)(v)) {
+  return map(rows, row => mapValues(row, v => {
+    if (!v || isNumber(v)) {
       return v;
     }
-    return (0, _lodash.isNaN)(parseFloat(v)) ? v : parseFloat(v);
+    return isNaN(parseFloat(v)) ? v : parseFloat(v);
   }));
 }
-function initSankey(data) {
+export default function initSankey(data) {
   data.rows = prepareDataRows(data.rows);
   if (!isDataValid(data)) {
     return element => {
-      _d.default.select(element).selectAll("*").remove();
+      d3.select(element).selectAll("*").remove();
     };
   }
   data = graph(data.rows);
   // @ts-expect-error
-  var format = d => _d.default.format(",.0f")(d); // TODO: editor option ?
+  var format = d => d3.format(",.0f")(d); // TODO: editor option ?
 
   return element => {
-    _d.default.select(element).selectAll("*").remove();
+    d3.select(element).selectAll("*").remove();
     var margin = {
       top: 10,
       right: 10,
@@ -157,10 +150,10 @@ function initSankey(data) {
     }
 
     // append the svg canvas to the page
-    var svg = _d.default.select(element).append("svg").attr("class", "sankey").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom).append("g").attr("transform", "translate(".concat(margin.left, ",").concat(margin.top, ")"));
+    var svg = d3.select(element).append("svg").attr("class", "sankey").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom).append("g").attr("transform", "translate(".concat(margin.left, ",").concat(margin.top, ")"));
 
     // Set the sankey diagram properties
-    var sankey = (0, _d3sankey.default)().nodeWidth(15).nodePadding(10).size([width, height]);
+    var sankey = d3sankey().nodeWidth(15).nodePadding(10).size([width, height]);
     var path = sankey.link();
     sankey.nodes(data.nodes).links(data.links).layout(0);
     spreadNodes(height, data);
@@ -174,14 +167,14 @@ function initSankey(data) {
     var node = svg.append("g").selectAll(".node").data(data.nodes).enter().append("g").filter(n => n.name !== "Exit").attr("class", "node").attr("transform", d => "translate(".concat(d.x, ",").concat(d.y, ")"));
     function nodeMouseOver(currentNode) {
       var nodes = getConnectedNodes(currentNode);
-      nodes = (0, _lodash.map)(nodes, i => i.id);
+      nodes = map(nodes, i => i.id);
       node.filter(d => {
         if (d === currentNode) {
           return false;
         }
-        return !(0, _lodash.includes)(nodes, d.id);
+        return !includes(nodes, d.id);
       }).style("opacity", 0.2);
-      link.filter(l => !((0, _lodash.includes)(currentNode.sourceLinks, l) || (0, _lodash.includes)(currentNode.targetLinks, l))).style("opacity", 0.2);
+      link.filter(l => !(includes(currentNode.sourceLinks, l) || includes(currentNode.targetLinks, l))).style("opacity", 0.2);
     }
     function nodeMouseOut() {
       node.style("opacity", 1);
@@ -195,7 +188,7 @@ function initSankey(data) {
     // FIXME: d is DType, but d3 will not accept a nonstandard function
     node.append("rect").attr("height", d => d.dy).attr("width", sankey.nodeWidth()).style("fill", d => d.color)
     // @ts-expect-error
-    .style("stroke", d => _d.default.rgb(d.color).darker(2)).append("title").text(d => "".concat(d.name, "\n").concat(format(d.value)));
+    .style("stroke", d => d3.rgb(d.color).darker(2)).append("title").text(d => "".concat(d.name, "\n").concat(format(d.value)));
 
     // add in the title for the nodes
     node.append("text").attr("x", -6).attr("y", d => d.dy / 2).attr("dy", ".35em").attr("text-anchor", "end").attr("transform", null).text(d => d.name).filter(d => d.x < width / 2).attr("x", 6 + sankey.nodeWidth()).attr("text-anchor", "start");

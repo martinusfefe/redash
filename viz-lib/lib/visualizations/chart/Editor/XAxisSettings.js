@@ -1,18 +1,11 @@
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = XAxisSettings;
-var _react = _interopRequireDefault(require("react"));
-var _editor = require("../../../components/visualizations/editor");
-var _propTypes = require("../../prop-types");
-var _AxisSettings = _interopRequireDefault(require("./AxisSettings"));
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-function XAxisSettings(_ref) {
+import React from "react";
+import { Section, Switch } from "../../../components/visualizations/editor";
+import { EditorPropTypes } from "../../prop-types";
+import AxisSettings from "./AxisSettings";
+export default function XAxisSettings(_ref) {
   var options = _ref.options,
     onOptionsChange = _ref.onOptionsChange;
-  return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_AxisSettings.default, {
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(AxisSettings, {
     id: "XAxis",
     features: {
       autoDetectType: true
@@ -23,7 +16,7 @@ function XAxisSettings(_ref) {
     onChange: xAxis => onOptionsChange({
       xAxis
     })
-  }), /*#__PURE__*/_react.default.createElement(_editor.Section, null, /*#__PURE__*/_react.default.createElement(_editor.Switch
+  }), /*#__PURE__*/React.createElement(Section, null, /*#__PURE__*/React.createElement(Switch
   // @ts-expect-error ts-migrate(2322) FIXME: Type 'string' is not assignable to type 'never'.
   , {
     "data-test": "Chart.XAxis.Sort"
@@ -35,7 +28,7 @@ function XAxisSettings(_ref) {
     onChange: sortX => onOptionsChange({
       sortX
     })
-  }, "Sort Values")), /*#__PURE__*/_react.default.createElement(_editor.Section, null, /*#__PURE__*/_react.default.createElement(_editor.Switch
+  }, "Sort Values")), /*#__PURE__*/React.createElement(Section, null, /*#__PURE__*/React.createElement(Switch
   // @ts-expect-error ts-migrate(2322) FIXME: Type 'string' is not assignable to type 'never'.
   , {
     "data-test": "Chart.XAxis.Reverse"
@@ -47,7 +40,7 @@ function XAxisSettings(_ref) {
     onChange: reverseX => onOptionsChange({
       reverseX
     })
-  }, "Reverse Order")), /*#__PURE__*/_react.default.createElement(_editor.Section, null, /*#__PURE__*/_react.default.createElement(_editor.Switch
+  }, "Reverse Order")), /*#__PURE__*/React.createElement(Section, null, /*#__PURE__*/React.createElement(Switch
   // @ts-expect-error ts-migrate(2322) FIXME: Type 'string' is not assignable to type 'never'.
   , {
     "data-test": "Chart.XAxis.ShowLabels"
@@ -65,5 +58,5 @@ function XAxisSettings(_ref) {
     })
   }, "Show Labels")));
 }
-XAxisSettings.propTypes = _propTypes.EditorPropTypes;
+XAxisSettings.propTypes = EditorPropTypes;
 //# sourceMappingURL=XAxisSettings.js.map

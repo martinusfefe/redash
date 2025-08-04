@@ -1,25 +1,18 @@
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.createCustomChartRenderer = createCustomChartRenderer;
-exports.prepareCustomChartData = prepareCustomChartData;
-var _lodash = require("lodash");
-var _utils = require("./utils");
-function prepareCustomChartData(series) {
+import { each } from "lodash";
+import { normalizeValue } from "./utils";
+export function prepareCustomChartData(series) {
   var x = [];
   var ys = {};
-  (0, _lodash.each)(series, _ref => {
+  each(series, _ref => {
     var name = _ref.name,
       data = _ref.data;
     // @ts-expect-error ts-migrate(7053) FIXME: Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
     ys[name] = [];
-    (0, _lodash.each)(data, point => {
+    each(data, point => {
       // @ts-expect-error ts-migrate(2554) FIXME: Expected 2-3 arguments, but got 1.
-      x.push((0, _utils.normalizeValue)(point.x));
+      x.push(normalizeValue(point.x));
       // @ts-expect-error ts-migrate(7053) FIXME: Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
-      ys[name].push((0, _utils.normalizeValue)(point.y));
+      ys[name].push(normalizeValue(point.y));
     });
   });
   return {
@@ -27,7 +20,7 @@ function prepareCustomChartData(series) {
     ys
   };
 }
-function createCustomChartRenderer(code) {
+export function createCustomChartRenderer(code) {
   var logErrorsToConsole = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
   // Create a function from custom code; catch syntax errors
   var render = () => {};

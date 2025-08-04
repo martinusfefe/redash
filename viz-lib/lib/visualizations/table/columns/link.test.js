@@ -1,14 +1,11 @@
-"use strict";
-
-var _react = _interopRequireDefault(require("react"));
-var _enzyme = _interopRequireDefault(require("enzyme"));
-var _link = _interopRequireDefault(require("./link"));
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+import React from "react";
+import enzyme from "enzyme";
+import Column from "./link";
 function findByTestID(wrapper, testId) {
   return wrapper.find("[data-test=\"".concat(testId, "\"]"));
 }
 function mount(column, done) {
-  return _enzyme.default.mount( /*#__PURE__*/_react.default.createElement(_link.default.Editor, {
+  return enzyme.mount( /*#__PURE__*/React.createElement(Column.Editor, {
     // @ts-expect-error ts-migrate(2322) FIXME: Type '{ visualizationName: string; column: any; on... Remove this comment to see the full error message
     visualizationName: "Test",
     column: column,

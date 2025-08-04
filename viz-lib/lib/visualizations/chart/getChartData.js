@@ -1,10 +1,4 @@
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = getChartData;
-var _lodash = require("lodash");
+import { isNil, isObject, each, forOwn, sortBy, values } from "lodash";
 function addPointToSeries(point, seriesCollection, seriesName) {
   if (seriesCollection[seriesName] === undefined) {
     seriesCollection[seriesName] = {
@@ -15,10 +9,10 @@ function addPointToSeries(point, seriesCollection, seriesName) {
   }
   seriesCollection[seriesName].data.push(point);
 }
-function getChartData(data, options) {
+export default function getChartData(data, options) {
   var series = {};
   var mappings = options.columnMapping;
-  (0, _lodash.each)(data, row => {
+  each(data, row => {
     var point = {
       $raw: row
     };
@@ -28,7 +22,7 @@ function getChartData(data, options) {
     var eValue = null;
     var sizeValue = null;
     var zValue = null;
-    (0, _lodash.forOwn)(row, (value, definition) => {
+    forOwn(row, (value, definition) => {
       definition = "" + definition;
       var definitionParts = definition.split("::") || definition.split("__");
       var name = definitionParts[0];
@@ -69,8 +63,8 @@ function getChartData(data, options) {
         seriesName = String(value);
       }
     });
-    if ((0, _lodash.isNil)(seriesName)) {
-      (0, _lodash.each)(yValues, (yValue, ySeriesName) => {
+    if (isNil(seriesName)) {
+      each(yValues, (yValue, ySeriesName) => {
         // @ts-expect-error ts-migrate(2322) FIXME: Type '{ x: number; y: never; $raw: any; }' is not ... Remove this comment to see the full error message
         point = {
           x: xValue,
@@ -95,9 +89,9 @@ function getChartData(data, options) {
       addPointToSeries(point, series, seriesName);
     }
   });
-  return (0, _lodash.sortBy)((0, _lodash.values)(series), _ref => {
+  return sortBy(values(series), _ref => {
     var name = _ref.name;
-    if ((0, _lodash.isObject)(options.seriesOptions[name])) {
+    if (isObject(options.seriesOptions[name])) {
       return options.seriesOptions[name].zIndex || 0;
     }
     return 0;

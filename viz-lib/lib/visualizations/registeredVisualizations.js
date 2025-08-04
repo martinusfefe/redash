@@ -1,49 +1,40 @@
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-exports.getDefaultVisualization = getDefaultVisualization;
-exports.newVisualization = newVisualization;
-var _lodash = require("lodash");
-var _propTypes = _interopRequireDefault(require("prop-types"));
-var _boxPlot = _interopRequireDefault(require("./box-plot"));
-var _chart = _interopRequireDefault(require("./chart"));
-var _choropleth = _interopRequireDefault(require("./choropleth"));
-var _cohort = _interopRequireDefault(require("./cohort"));
-var _counter = _interopRequireDefault(require("./counter"));
-var _details = _interopRequireDefault(require("./details"));
-var _funnel = _interopRequireDefault(require("./funnel"));
-var _map = _interopRequireDefault(require("./map"));
-var _pivot = _interopRequireDefault(require("./pivot"));
-var _sankey = _interopRequireDefault(require("./sankey"));
-var _sunburst = _interopRequireDefault(require("./sunburst"));
-var _table = _interopRequireDefault(require("./table"));
-var _wordCloud = _interopRequireDefault(require("./word-cloud"));
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
 function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+import { find, flatten, each } from "lodash";
+import PropTypes from "prop-types";
+import boxPlotVisualization from "./box-plot";
+import chartVisualization from "./chart";
+import choroplethVisualization from "./choropleth";
+import cohortVisualization from "./cohort";
+import counterVisualization from "./counter";
+import detailsVisualization from "./details";
+import funnelVisualization from "./funnel";
+import mapVisualization from "./map";
+import pivotVisualization from "./pivot";
+import sankeyVisualization from "./sankey";
+import sunburstVisualization from "./sunburst";
+import tableVisualization from "./table";
+import wordCloudVisualization from "./word-cloud";
 // @ts-expect-error ts-migrate(2322) FIXME: Type 'Requireable<InferProps<{ type: Validator<str... Remove this comment to see the full error message
-var VisualizationConfig = _propTypes.default.shape({
-  type: _propTypes.default.string.isRequired,
-  name: _propTypes.default.string.isRequired,
-  getOptions: _propTypes.default.func.isRequired,
-  isDefault: _propTypes.default.bool,
-  isDeprecated: _propTypes.default.bool,
-  Renderer: _propTypes.default.func.isRequired,
-  Editor: _propTypes.default.func,
+var VisualizationConfig = PropTypes.shape({
+  type: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  getOptions: PropTypes.func.isRequired,
+  isDefault: PropTypes.bool,
+  isDeprecated: PropTypes.bool,
+  Renderer: PropTypes.func.isRequired,
+  Editor: PropTypes.func,
   // other config options
-  autoHeight: _propTypes.default.bool,
-  defaultRows: _propTypes.default.number,
-  defaultColumns: _propTypes.default.number,
-  minRows: _propTypes.default.number,
-  maxRows: _propTypes.default.number,
-  minColumns: _propTypes.default.number,
-  maxColumns: _propTypes.default.number
+  autoHeight: PropTypes.bool,
+  defaultRows: PropTypes.number,
+  defaultColumns: PropTypes.number,
+  minRows: PropTypes.number,
+  maxRows: PropTypes.number,
+  minColumns: PropTypes.number,
+  maxColumns: PropTypes.number
 });
 var registeredVisualizations = {};
 function validateVisualizationConfig(config) {
@@ -53,7 +44,7 @@ function validateVisualizationConfig(config) {
   var values = {
     config
   };
-  _propTypes.default.checkPropTypes(typeSpecs, values, "prop", "registerVisualization");
+  PropTypes.checkPropTypes(typeSpecs, values, "prop", "registerVisualization");
 }
 function registerVisualization(config) {
   validateVisualizationConfig(config);
@@ -71,19 +62,18 @@ function registerVisualization(config) {
   // @ts-expect-error ts-migrate(7053) FIXME: Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
   registeredVisualizations[config.type] = config;
 }
-(0, _lodash.each)((0, _lodash.flatten)([_boxPlot.default, _chart.default, _choropleth.default, _cohort.default, _counter.default, _details.default, _funnel.default, _map.default, _pivot.default, _sankey.default, _sunburst.default, _table.default, _wordCloud.default]), registerVisualization);
-var _default = registeredVisualizations;
-exports.default = _default;
-function getDefaultVisualization() {
+each(flatten([boxPlotVisualization, chartVisualization, choroplethVisualization, cohortVisualization, counterVisualization, detailsVisualization, funnelVisualization, mapVisualization, pivotVisualization, sankeyVisualization, sunburstVisualization, tableVisualization, wordCloudVisualization]), registerVisualization);
+export default registeredVisualizations;
+export function getDefaultVisualization() {
   // return any visualization explicitly marked as default, or any non-deprecated otherwise
   return (
     // @ts-expect-error ts-migrate(2339) FIXME: Property 'isDefault' does not exist on type 'never... Remove this comment to see the full error message
-    (0, _lodash.find)(registeredVisualizations, visualization => visualization.isDefault) ||
+    find(registeredVisualizations, visualization => visualization.isDefault) ||
     // @ts-expect-error ts-migrate(2339) FIXME: Property 'isDeprecated' does not exist on type 'ne... Remove this comment to see the full error message
-    (0, _lodash.find)(registeredVisualizations, visualization => !visualization.isDeprecated)
+    find(registeredVisualizations, visualization => !visualization.isDeprecated)
   );
 }
-function newVisualization() {
+export function newVisualization() {
   var type = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
   var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
   // @ts-expect-error ts-migrate(2538) FIXME: Type 'null' cannot be used as an index type.

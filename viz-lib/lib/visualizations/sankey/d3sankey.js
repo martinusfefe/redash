@@ -1,13 +1,6 @@
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-var _d = _interopRequireDefault(require("d3"));
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 /* eslint-disable */
 
+import d3 from "d3";
 function center(node) {
   return node.y + node.dy / 2;
 }
@@ -42,7 +35,7 @@ function Sankey() {
   // Compute the value (size) of each node by summing the associated links.
   function computeNodeValues() {
     nodes.forEach(node => {
-      node.value = Math.max(_d.default.sum(node.sourceLinks, value), _d.default.sum(node.targetLinks, value));
+      node.value = Math.max(d3.sum(node.sourceLinks, value), d3.sum(node.targetLinks, value));
     });
   }
   function moveSinksRight(x) {
@@ -82,16 +75,16 @@ function Sankey() {
       x += 1;
     }
     moveSinksRight(x);
-    x = Math.max(_d.default.max(nodes, n => n.x), 2); // get new maximum x value (min 2)
+    x = Math.max(d3.max(nodes, n => n.x), 2); // get new maximum x value (min 2)
     scaleNodeBreadths((size[0] - nodeWidth) / (x - 1));
   }
   function computeNodeDepths(iterations) {
-    var nodesByBreadth = _d.default
+    var nodesByBreadth = d3
     // @ts-expect-error
-    .nest().key(d => d.x).sortKeys(_d.default.ascending).entries(nodes).map(d => d.values);
+    .nest().key(d => d.x).sortKeys(d3.ascending).entries(nodes).map(d => d.values);
     function initializeNodeDepth() {
       // @ts-expect-error ts-migrate(2571) FIXME: Object is of type 'unknown'.
-      var ky = _d.default.min(nodesByBreadth, n => (size[1] - (n.length - 1) * nodePadding) / _d.default.sum(n, value));
+      var ky = d3.min(nodesByBreadth, n => (size[1] - (n.length - 1) * nodePadding) / d3.sum(n, value));
       nodesByBreadth.forEach(n => {
         n.forEach((node, i) => {
           node.y = i;
@@ -111,7 +104,7 @@ function Sankey() {
       nodesByBreadth.forEach(n => {
         n.forEach(node => {
           if (node.targetLinks.length) {
-            var y = _d.default.sum(node.targetLinks, weightedSource) / _d.default.sum(node.targetLinks, value);
+            var y = d3.sum(node.targetLinks, weightedSource) / d3.sum(node.targetLinks, value);
             node.y += (y - center(node)) * alpha;
           }
         });
@@ -161,7 +154,7 @@ function Sankey() {
       nodesByBreadth.slice().reverse().forEach(nodes => {
         nodes.forEach(node => {
           if (node.sourceLinks.length) {
-            var y = _d.default.sum(node.sourceLinks, weightedTarget) / _d.default.sum(node.sourceLinks, value);
+            var y = d3.sum(node.sourceLinks, weightedTarget) / d3.sum(node.sourceLinks, value);
             node.y += (y - center(node)) * alpha;
           }
         });
@@ -256,7 +249,7 @@ function Sankey() {
     function link(d) {
       var x0 = d.source.x + d.source.dx;
       var x1 = d.target.x;
-      var xi = _d.default.interpolateNumber(x0, x1);
+      var xi = d3.interpolateNumber(x0, x1);
       var x2 = xi(curvature);
       var x3 = xi(1 - curvature);
       var y0 = d.source.y + d.sy + d.dy / 2;
@@ -272,6 +265,5 @@ function Sankey() {
   };
   return sankey;
 }
-var _default = Sankey;
-exports.default = _default;
+export default Sankey;
 //# sourceMappingURL=d3sankey.js.map

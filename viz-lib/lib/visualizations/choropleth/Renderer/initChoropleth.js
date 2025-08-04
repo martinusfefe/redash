@@ -1,28 +1,21 @@
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = initChoropleth;
-var _lodash = require("lodash");
-var _react = _interopRequireDefault(require("react"));
-var _reactDom = _interopRequireDefault(require("react-dom"));
-var _leaflet = _interopRequireDefault(require("leaflet"));
-require("leaflet/dist/leaflet.css");
-require("leaflet-fullscreen");
-require("leaflet-fullscreen/dist/leaflet.fullscreen.css");
-var _valueFormat = require("../../../lib/value-format");
-var _sanitize = _interopRequireDefault(require("../../../services/sanitize"));
-var _resizeObserver = _interopRequireDefault(require("../../../services/resizeObserver"));
-var _utils = require("./utils");
-var _Legend = _interopRequireDefault(require("./Legend"));
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
 function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
-var CustomControl = _leaflet.default.Control.extend({
+import { isFunction, isObject, isArray, map } from "lodash";
+import React from "react";
+import ReactDOM from "react-dom";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
+import "leaflet-fullscreen";
+import "leaflet-fullscreen/dist/leaflet.fullscreen.css";
+import { formatSimpleTemplate } from "../../../lib/value-format";
+import sanitize from "../../../services/sanitize";
+import resizeObserver from "../../../services/resizeObserver";
+import { createNumberFormatter, createScale, darkenColor, getColorByValue, getValueForFeature, prepareFeatureProperties } from "./utils";
+import Legend from "./Legend";
+var CustomControl = L.Control.extend({
   options: {
     position: "topright"
   },
@@ -35,7 +28,7 @@ var CustomControl = _leaflet.default.Control.extend({
   },
   onRemove() {
     // @ts-expect-error ts-migrate(2339) FIXME: Property 'getContainer' does not exist on type '{ ... Remove this comment to see the full error message
-    _reactDom.default.unmountComponentAtNode(this.getContainer());
+    ReactDOM.unmountComponentAtNode(this.getContainer());
   }
 });
 function prepareLayer(_ref) {
@@ -46,10 +39,10 @@ function prepareLayer(_ref) {
     limits = _ref.limits,
     colors = _ref.colors,
     formatValue = _ref.formatValue;
-  var value = (0, _utils.getValueForFeature)(feature, data, options.targetField);
+  var value = getValueForFeature(feature, data, options.targetField);
   var valueFormatted = formatValue(value);
-  var featureData = (0, _utils.prepareFeatureProperties)(feature, valueFormatted, data, options.targetField);
-  var color = (0, _utils.getColorByValue)(value, limits, colors, options.colors.noValue);
+  var featureData = prepareFeatureProperties(feature, valueFormatted, data, options.targetField);
+  var color = getColorByValue(value, limits, colors, options.colors.noValue);
   layer.setStyle({
     color: options.colors.borders,
     weight: 1,
@@ -57,17 +50,17 @@ function prepareLayer(_ref) {
     fillOpacity: 1
   });
   if (options.tooltip.enabled) {
-    layer.bindTooltip((0, _sanitize.default)((0, _valueFormat.formatSimpleTemplate)(options.tooltip.template, featureData)), {
+    layer.bindTooltip(sanitize(formatSimpleTemplate(options.tooltip.template, featureData)), {
       sticky: true
     });
   }
   if (options.popup.enabled) {
-    layer.bindPopup((0, _sanitize.default)((0, _valueFormat.formatSimpleTemplate)(options.popup.template, featureData)));
+    layer.bindPopup(sanitize(formatSimpleTemplate(options.popup.template, featureData)));
   }
   layer.on("mouseover", () => {
     layer.setStyle({
       weight: 2,
-      fillColor: (0, _utils.darkenColor)(color)
+      fillColor: darkenColor(color)
     });
   });
   layer.on("mouseout", () => {
@@ -79,7 +72,7 @@ function prepareLayer(_ref) {
 }
 function validateBounds(bounds, fallbackBounds) {
   if (bounds) {
-    bounds = _leaflet.default.latLngBounds(bounds[0], bounds[1]);
+    bounds = L.latLngBounds(bounds[0], bounds[1]);
     if (bounds.isValid()) {
       return bounds;
     }
@@ -89,8 +82,8 @@ function validateBounds(bounds, fallbackBounds) {
   }
   return null;
 }
-function initChoropleth(container, onBoundsChange) {
-  var _map = _leaflet.default.map(container, {
+export default function initChoropleth(container, onBoundsChange) {
+  var _map = L.map(container, {
     center: [0.0, 0.0],
     zoom: 1,
     zoomSnap: 0,
@@ -103,7 +96,7 @@ function initChoropleth(container, onBoundsChange) {
   var _choropleth = null;
   var _legend = new CustomControl();
   function handleMapBoundsChange() {
-    if ((0, _lodash.isFunction)(onBoundsChange)) {
+    if (isFunction(onBoundsChange)) {
       var bounds = _map.getBounds();
       onBoundsChange([
       // @ts-expect-error ts-migrate(2551) FIXME: Property '_southWest' does not exist on type 'LatL... Remove this comment to see the full error message
@@ -129,7 +122,7 @@ function initChoropleth(container, onBoundsChange) {
     _map.removeControl(_legend);
 
     // @ts-expect-error ts-migrate(2339) FIXME: Property 'features' does not exist on type 'object... Remove this comment to see the full error message
-    if (!(0, _lodash.isObject)(geoJson) || !(0, _lodash.isArray)(geoJson.features)) {
+    if (!isObject(geoJson) || !isArray(geoJson.features)) {
       _choropleth = null;
       // @ts-expect-error ts-migrate(2345) FIXME: Argument of type 'null' is not assignable to param... Remove this comment to see the full error message
       _map.setMaxBounds(null);
@@ -137,14 +130,14 @@ function initChoropleth(container, onBoundsChange) {
     }
 
     // @ts-expect-error ts-migrate(2339) FIXME: Property 'features' does not exist on type 'object... Remove this comment to see the full error message
-    var _createScale = (0, _utils.createScale)(geoJson.features, data, options),
+    var _createScale = createScale(geoJson.features, data, options),
       limits = _createScale.limits,
       colors = _createScale.colors,
       legend = _createScale.legend;
-    var formatValue = (0, _utils.createNumberFormatter)(options.valueFormat, options.noValuePlaceholder);
+    var formatValue = createNumberFormatter(options.valueFormat, options.noValuePlaceholder);
 
     // @ts-expect-error ts-migrate(2345) FIXME: Argument of type 'object' is not assignable to par... Remove this comment to see the full error message
-    _choropleth = _leaflet.default.geoJSON(geoJson, {
+    _choropleth = L.geoJSON(geoJson, {
       onEachFeature(feature, layer) {
         prepareLayer({
           feature,
@@ -175,13 +168,13 @@ function initChoropleth(container, onBoundsChange) {
     if (options.legend.visible && legend.length > 0) {
       _legend.setPosition(options.legend.position.replace("-", ""));
       _map.addControl(_legend);
-      _reactDom.default.render(
+      ReactDOM.render(
       /*#__PURE__*/
       // @ts-expect-error ts-migrate(2769) FIXME: No overload matches this call.
-      _react.default.createElement(_Legend.default
+      React.createElement(Legend
       // @ts-expect-error ts-migrate(2322) FIXME: Type '{ text: any; color: any; limit: any; }[]' is... Remove this comment to see the full error message
       , {
-        items: (0, _lodash.map)(legend, item => _objectSpread(_objectSpread({}, item), {}, {
+        items: map(legend, item => _objectSpread(_objectSpread({}, item), {}, {
           text: formatValue(item.limit)
         })),
         alignText: options.legend.alignText
@@ -200,7 +193,7 @@ function initChoropleth(container, onBoundsChange) {
       }
     }
   }
-  var unwatchResize = (0, _resizeObserver.default)(container, () => {
+  var unwatchResize = resizeObserver(container, () => {
     _map.invalidateSize(false);
   });
   return {

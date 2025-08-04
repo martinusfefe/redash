@@ -1,70 +1,61 @@
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = Editor;
-var _lodash = require("lodash");
-var _react = _interopRequireDefault(require("react"));
-var Grid = _interopRequireWildcard(require("antd/lib/grid"));
-var _editor = require("../../components/visualizations/editor");
-var _propTypes = require("../prop-types");
-function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
-function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-function Editor(_ref) {
+import { map, merge } from "lodash";
+import React from "react";
+import * as Grid from "antd/lib/grid";
+import { Section, Select, InputNumber, ControlLabel } from "../../components/visualizations/editor";
+import { EditorPropTypes } from "../prop-types";
+export default function Editor(_ref) {
   var options = _ref.options,
     data = _ref.data,
     onOptionsChange = _ref.onOptionsChange;
   var optionsChanged = newOptions => {
-    onOptionsChange((0, _lodash.merge)({}, options, newOptions));
+    onOptionsChange(merge({}, options, newOptions));
   };
-  return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_editor.Section, null, /*#__PURE__*/_react.default.createElement(_editor.Select, {
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Section, null, /*#__PURE__*/React.createElement(Select, {
     label: "Words Column",
     "data-test": "WordCloud.WordsColumn",
     value: options.column,
     onChange: column => optionsChanged({
       column
     })
-  }, (0, _lodash.map)(data.columns, _ref2 => {
+  }, map(data.columns, _ref2 => {
     var name = _ref2.name;
     return (
       /*#__PURE__*/
       // @ts-expect-error ts-migrate(2339) FIXME: Property 'Option' does not exist on type '({ class... Remove this comment to see the full error message
-      _react.default.createElement(_editor.Select.Option, {
+      React.createElement(Select.Option, {
         key: name,
         "data-test": "WordCloud.WordsColumn." + name
       }, name)
     );
-  }))), /*#__PURE__*/_react.default.createElement(_editor.Section, null, /*#__PURE__*/_react.default.createElement(_editor.Select, {
+  }))), /*#__PURE__*/React.createElement(Section, null, /*#__PURE__*/React.createElement(Select, {
     label: "Frequencies Column",
     "data-test": "WordCloud.FrequenciesColumn",
     value: options.frequenciesColumn,
     onChange: frequenciesColumn => optionsChanged({
       frequenciesColumn
     })
-  }, /*#__PURE__*/_react.default.createElement(_editor.Select.Option, {
+  }, /*#__PURE__*/React.createElement(Select.Option, {
     key: "none",
     value: ""
-  }, /*#__PURE__*/_react.default.createElement("i", null, "(count word frequencies automatically)")), (0, _lodash.map)(data.columns, _ref3 => {
+  }, /*#__PURE__*/React.createElement("i", null, "(count word frequencies automatically)")), map(data.columns, _ref3 => {
     var name = _ref3.name;
     return (
       /*#__PURE__*/
       // @ts-expect-error ts-migrate(2339) FIXME: Property 'Option' does not exist on type '({ class... Remove this comment to see the full error message
-      _react.default.createElement(_editor.Select.Option, {
+      React.createElement(Select.Option, {
         key: "column-" + name,
         value: name,
         "data-test": "WordCloud.FrequenciesColumn." + name
       }, name)
     );
-  }))), /*#__PURE__*/_react.default.createElement(_editor.Section, null, /*#__PURE__*/_react.default.createElement(_editor.ControlLabel, {
+  }))), /*#__PURE__*/React.createElement(Section, null, /*#__PURE__*/React.createElement(ControlLabel, {
     label: "Words Length Limit"
-  }, /*#__PURE__*/_react.default.createElement(Grid.Row, {
+  }, /*#__PURE__*/React.createElement(Grid.Row, {
     gutter: 15,
     type: "flex"
-  }, /*#__PURE__*/_react.default.createElement(Grid.Col, {
+  }, /*#__PURE__*/React.createElement(Grid.Col, {
     span: 12
-  }, /*#__PURE__*/_react.default.createElement(_editor.InputNumber, {
+  }, /*#__PURE__*/React.createElement(InputNumber, {
     "data-test": "WordCloud.WordLengthLimit.Min",
     placeholder: "Min",
     min: 0,
@@ -74,9 +65,9 @@ function Editor(_ref) {
         min: value > 0 ? value : null
       }
     })
-  })), /*#__PURE__*/_react.default.createElement(Grid.Col, {
+  })), /*#__PURE__*/React.createElement(Grid.Col, {
     span: 12
-  }, /*#__PURE__*/_react.default.createElement(_editor.InputNumber, {
+  }, /*#__PURE__*/React.createElement(InputNumber, {
     "data-test": "WordCloud.WordLengthLimit.Max",
     placeholder: "Max",
     min: 0,
@@ -86,14 +77,14 @@ function Editor(_ref) {
         max: value > 0 ? value : null
       }
     })
-  }))))), /*#__PURE__*/_react.default.createElement(_editor.Section, null, /*#__PURE__*/_react.default.createElement(_editor.ControlLabel, {
+  }))))), /*#__PURE__*/React.createElement(Section, null, /*#__PURE__*/React.createElement(ControlLabel, {
     label: "Frequencies Limit"
-  }, /*#__PURE__*/_react.default.createElement(Grid.Row, {
+  }, /*#__PURE__*/React.createElement(Grid.Row, {
     gutter: 15,
     type: "flex"
-  }, /*#__PURE__*/_react.default.createElement(Grid.Col, {
+  }, /*#__PURE__*/React.createElement(Grid.Col, {
     span: 12
-  }, /*#__PURE__*/_react.default.createElement(_editor.InputNumber, {
+  }, /*#__PURE__*/React.createElement(InputNumber, {
     "data-test": "WordCloud.WordCountLimit.Min",
     placeholder: "Min",
     min: 0,
@@ -103,9 +94,9 @@ function Editor(_ref) {
         min: value > 0 ? value : null
       }
     })
-  })), /*#__PURE__*/_react.default.createElement(Grid.Col, {
+  })), /*#__PURE__*/React.createElement(Grid.Col, {
     span: 12
-  }, /*#__PURE__*/_react.default.createElement(_editor.InputNumber, {
+  }, /*#__PURE__*/React.createElement(InputNumber, {
     "data-test": "WordCloud.WordCountLimit.Max",
     placeholder: "Max",
     min: 0,
@@ -117,5 +108,5 @@ function Editor(_ref) {
     })
   }))))));
 }
-Editor.propTypes = _propTypes.EditorPropTypes;
+Editor.propTypes = EditorPropTypes;
 //# sourceMappingURL=Editor.js.map

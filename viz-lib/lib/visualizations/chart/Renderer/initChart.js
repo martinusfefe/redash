@@ -1,14 +1,7 @@
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = initChart;
-var _lodash = require("lodash");
-var _resizeObserver = _interopRequireDefault(require("../../../services/resizeObserver"));
-var _plotly = require("../plotly");
-var _valueFormat = require("../../../lib/value-format");
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+import { isArray, isObject, isString, isFunction, startsWith, reduce, merge, map, each, isNil } from "lodash";
+import resizeObserver from "../../../services/resizeObserver";
+import { Plotly, prepareData, prepareLayout, updateData, updateAxes, updateChartSize } from "../plotly";
+import { formatSimpleTemplate } from "../../../lib/value-format";
 var navigateToUrl = function navigateToUrl(url) {
   var shouldOpenNewTab = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
   return shouldOpenNewTab ? window.open(url, "_blank") : window.location.href = url;
@@ -17,7 +10,7 @@ function createErrorHandler(errorHandler) {
   return error => {
     // This error happens only when chart width is 20px and looks that
     // it's safe to just ignore it: 1px less or more and chart will get fixed.
-    if ((0, _lodash.isString)(error) && (0, _lodash.startsWith)(error, "ax.dtick error")) {
+    if (isString(error) && startsWith(error, "ax.dtick error")) {
       return;
     }
     errorHandler(error);
@@ -35,7 +28,7 @@ function initPlotUpdater() {
   var actions = [];
   var updater = {
     append(action) {
-      if ((0, _lodash.isArray)(action) && (0, _lodash.isObject)(action[0])) {
+      if (isArray(action) && isObject(action[0])) {
         actions.push(action);
       }
       return updater;
@@ -43,11 +36,11 @@ function initPlotUpdater() {
     // @ts-expect-error ts-migrate(7023) FIXME: 'process' implicitly has return type 'any' because... Remove this comment to see the full error message
     process(plotlyElement) {
       if (actions.length > 0) {
-        var updates = (0, _lodash.reduce)(actions, (updates, action) => (0, _lodash.merge)(updates, action[0]), {});
-        var handlers = (0, _lodash.map)(actions, action => (0, _lodash.isFunction)(action[1]) ? action[1] : () => null);
+        var updates = reduce(actions, (updates, action) => merge(updates, action[0]), {});
+        var handlers = map(actions, action => isFunction(action[1]) ? action[1] : () => null);
         actions = [];
-        return _plotly.Plotly.relayout(plotlyElement, updates).then(() => {
-          (0, _lodash.each)(handlers, handler => updater.append(handler()));
+        return Plotly.relayout(plotlyElement, updates).then(() => {
+          each(handlers, handler => updater.append(handler()));
           return updater.process(plotlyElement);
         });
       } else {
@@ -57,7 +50,7 @@ function initPlotUpdater() {
   };
   return updater;
 }
-function initChart(container, options, data, additionalOptions, onError) {
+export default function initChart(container, options, data, additionalOptions, onError) {
   var handleError = createErrorHandler(onError);
   var plotlyOptions = {
     showLink: false,
@@ -67,8 +60,8 @@ function initChart(container, options, data, additionalOptions, onError) {
     // @ts-expect-error ts-migrate(2339) FIXME: Property 'displayModeBar' does not exist on type '... Remove this comment to see the full error message
     plotlyOptions.displayModeBar = false;
   }
-  var plotlyData = (0, _plotly.prepareData)(data, options);
-  var plotlyLayout = (0, _plotly.prepareLayout)(container, options, plotlyData);
+  var plotlyData = prepareData(data, options);
+  var plotlyLayout = prepareLayout(container, options, plotlyData);
   var isDestroyed = false;
   var updater = initPlotUpdater();
   function createSafeFunction(fn) {
@@ -84,14 +77,14 @@ function initChart(container, options, data, additionalOptions, onError) {
     };
   }
   var unwatchResize = () => {};
-  var promise = Promise.resolve().then(() => _plotly.Plotly.newPlot(container, plotlyData, plotlyLayout, plotlyOptions)).then(createSafeFunction(() => updater.append((0, _plotly.updateAxes)(container, plotlyData, plotlyLayout, options)).append((0, _plotly.updateChartSize)(container, plotlyLayout, options)).process(container))).then(createSafeFunction(() => {
+  var promise = Promise.resolve().then(() => Plotly.newPlot(container, plotlyData, plotlyLayout, plotlyOptions)).then(createSafeFunction(() => updater.append(updateAxes(container, plotlyData, plotlyLayout, options)).append(updateChartSize(container, plotlyLayout, options)).process(container))).then(createSafeFunction(() => {
     container.on("plotly_restyle", createSafeFunction(updates => {
       // This event is triggered if some plotly data/layout has changed.
       // We need to catch only changes of traces visibility to update stacking
       // @ts-expect-error ts-migrate(2339) FIXME: Property 'visible' does not exist on type 'object'... Remove this comment to see the full error message
-      if ((0, _lodash.isArray)(updates) && (0, _lodash.isObject)(updates[0]) && updates[0].visible) {
-        (0, _plotly.updateData)(plotlyData, options);
-        updater.append((0, _plotly.updateAxes)(container, plotlyData, plotlyLayout, options)).process(container);
+      if (isArray(updates) && isObject(updates[0]) && updates[0].visible) {
+        updateData(plotlyData, options);
+        updater.append(updateAxes(container, plotlyData, plotlyLayout, options)).process(container);
       }
     }));
     options.onHover && container.on("plotly_hover", options.onHover);
@@ -103,12 +96,12 @@ function initChart(container, options, data, additionalOptions, onError) {
           data.points.forEach((point, i) => {
             var _$row, _ref, _point$data, _point$pointNumber;
             var sourceDataElement = (_$row = (_ref = [...((_point$data = point.data) === null || _point$data === void 0 || (_point$data = _point$data.sourceData) === null || _point$data === void 0 ? void 0 : _point$data.entries())][(_point$pointNumber = point.pointNumber) !== null && _point$pointNumber !== void 0 ? _point$pointNumber : 0]) === null || _ref === void 0 || (_ref = _ref[1]) === null || _ref === void 0 ? void 0 : _ref.row) !== null && _$row !== void 0 ? _$row : {};
-            if ((0, _lodash.isNil)(templateValues['@@x'])) templateValues['@@x'] = sourceDataElement.x;
-            if ((0, _lodash.isNil)(templateValues['@@y'])) templateValues['@@y'] = sourceDataElement.y;
+            if (isNil(templateValues['@@x'])) templateValues['@@x'] = sourceDataElement.x;
+            if (isNil(templateValues['@@y'])) templateValues['@@y'] = sourceDataElement.y;
             templateValues["@@y".concat(i + 1)] = sourceDataElement.y;
             templateValues["@@x".concat(i + 1)] = sourceDataElement.x;
           });
-          navigateToUrl((0, _valueFormat.formatSimpleTemplate)(options.linkFormat, templateValues).replace(/{{\s*([^\s]+?)\s*}}/g, () => ''), options.linkOpenNewTab);
+          navigateToUrl(formatSimpleTemplate(options.linkFormat, templateValues).replace(/{{\s*([^\s]+?)\s*}}/g, () => ''), options.linkOpenNewTab);
         } catch (error) {
           console.error('Click error: [%s]', error.message, {
             error
@@ -116,8 +109,8 @@ function initChart(container, options, data, additionalOptions, onError) {
         }
       }
     }));
-    unwatchResize = (0, _resizeObserver.default)(container, createSafeFunction(() => {
-      updater.append((0, _plotly.updateChartSize)(container, plotlyLayout, options)).process(container);
+    unwatchResize = resizeObserver(container, createSafeFunction(() => {
+      updater.append(updateChartSize(container, plotlyLayout, options)).process(container);
     }));
   })).catch(handleError);
 
@@ -129,14 +122,14 @@ function initChart(container, options, data, additionalOptions, onError) {
         dragmode: allowZoom ? "zoom" : false
       };
       // @ts-expect-error ts-migrate(2345) FIXME: Argument of type '{ dragmode: string | boolean; }'... Remove this comment to see the full error message
-      return _plotly.Plotly.relayout(container, layoutUpdates);
+      return Plotly.relayout(container, layoutUpdates);
     }),
     destroy: createSafeFunction(() => {
       isDestroyed = true;
       container.removeAllListeners("plotly_restyle");
       unwatchResize();
       delete container.__previousSize; // added by `updateChartSize`
-      _plotly.Plotly.purge(container);
+      Plotly.purge(container);
     })
   };
   return result;

@@ -1,18 +1,3 @@
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = ColumnEditor;
-var _lodash = require("lodash");
-var _react = _interopRequireDefault(require("react"));
-var _useDebounce = require("use-debounce");
-var Grid = _interopRequireWildcard(require("antd/lib/grid"));
-var _editor = require("../../../components/visualizations/editor");
-var _columns = _interopRequireDefault(require("../columns"));
-function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
-function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
@@ -24,41 +9,47 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
 function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
-function ColumnEditor(_ref) {
+import { map } from "lodash";
+import React from "react";
+import { useDebouncedCallback } from "use-debounce";
+import * as Grid from "antd/lib/grid";
+import { Section, Select, Input, Checkbox, TextAlignmentSelect } from "../../../components/visualizations/editor";
+import ColumnTypes from "../columns";
+export default function ColumnEditor(_ref) {
   var column = _ref.column,
     onChange = _ref.onChange;
   function handleChange(changes) {
     onChange(_objectSpread(_objectSpread({}, column), changes));
   }
-  var _useDebouncedCallback = (0, _useDebounce.useDebouncedCallback)(handleChange, 200),
+  var _useDebouncedCallback = useDebouncedCallback(handleChange, 200),
     _useDebouncedCallback2 = _slicedToArray(_useDebouncedCallback, 1),
     handleChangeDebounced = _useDebouncedCallback2[0];
 
   // @ts-expect-error ts-migrate(7053) FIXME: Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
-  var AdditionalOptions = _columns.default[column.displayAs].Editor || null;
-  return /*#__PURE__*/_react.default.createElement("div", {
+  var AdditionalOptions = ColumnTypes[column.displayAs].Editor || null;
+  return /*#__PURE__*/React.createElement("div", {
     className: "table-visualization-editor-column"
-  }, /*#__PURE__*/_react.default.createElement(_editor.Section, null, /*#__PURE__*/_react.default.createElement(Grid.Row, {
+  }, /*#__PURE__*/React.createElement(Section, null, /*#__PURE__*/React.createElement(Grid.Row, {
     gutter: 15,
     type: "flex",
     align: "middle"
-  }, /*#__PURE__*/_react.default.createElement(Grid.Col, {
+  }, /*#__PURE__*/React.createElement(Grid.Col, {
     span: 16
-  }, /*#__PURE__*/_react.default.createElement(_editor.Input, {
+  }, /*#__PURE__*/React.createElement(Input, {
     "data-test": "Table.Column.".concat(column.name, ".Title"),
     defaultValue: column.title,
     onChange: event => handleChangeDebounced({
       title: event.target.value
     })
-  })), /*#__PURE__*/_react.default.createElement(Grid.Col, {
+  })), /*#__PURE__*/React.createElement(Grid.Col, {
     span: 8
-  }, /*#__PURE__*/_react.default.createElement(_editor.TextAlignmentSelect, {
+  }, /*#__PURE__*/React.createElement(TextAlignmentSelect, {
     "data-test": "Table.Column.".concat(column.name, ".TextAlignment"),
     defaultValue: column.alignContent,
     onChange: event => handleChange({
       alignContent: event.target.value
     })
-  })))), /*#__PURE__*/_react.default.createElement(_editor.Section, null, /*#__PURE__*/_react.default.createElement(_editor.Checkbox, {
+  })))), /*#__PURE__*/React.createElement(Section, null, /*#__PURE__*/React.createElement(Checkbox, {
     "data-test": "Table.Column.".concat(column.name, ".UseForSearch")
     // @ts-expect-error ts-migrate(2339) FIXME: Property 'allowSearch' does not exist on type '{ n... Remove this comment to see the full error message
     ,
@@ -66,7 +57,7 @@ function ColumnEditor(_ref) {
     onChange: event => handleChange({
       allowSearch: event.target.checked
     })
-  }, "Use for search")), /*#__PURE__*/_react.default.createElement(_editor.Section, null, /*#__PURE__*/_react.default.createElement(_editor.Input, {
+  }, "Use for search")), /*#__PURE__*/React.createElement(Section, null, /*#__PURE__*/React.createElement(Input, {
     label: "Description"
     // @ts-expect-error ts-migrate(2339) FIXME: Property 'description' does not exist on type '{ n... Remove this comment to see the full error message
     ,
@@ -74,24 +65,24 @@ function ColumnEditor(_ref) {
     onChange: event => handleChangeDebounced({
       description: event.target.value
     })
-  })), /*#__PURE__*/_react.default.createElement(_editor.Section, null, /*#__PURE__*/_react.default.createElement(_editor.Select, {
+  })), /*#__PURE__*/React.createElement(Section, null, /*#__PURE__*/React.createElement(Select, {
     label: "Display as:",
     "data-test": "Table.Column.".concat(column.name, ".DisplayAs"),
     defaultValue: column.displayAs,
     onChange: displayAs => handleChange({
       displayAs
     })
-  }, (0, _lodash.map)(_columns.default, (_ref2, key) => {
+  }, map(ColumnTypes, (_ref2, key) => {
     var friendlyName = _ref2.friendlyName;
     return (
       /*#__PURE__*/
       // @ts-expect-error ts-migrate(2339) FIXME: Property 'Option' does not exist on type '({ class... Remove this comment to see the full error message
-      _react.default.createElement(_editor.Select.Option, {
+      React.createElement(Select.Option, {
         key: key,
         "data-test": "Table.Column.".concat(column.name, ".DisplayAs.").concat(key)
       }, friendlyName)
     );
-  }))), AdditionalOptions && /*#__PURE__*/_react.default.createElement(AdditionalOptions, {
+  }))), AdditionalOptions && /*#__PURE__*/React.createElement(AdditionalOptions, {
     column: column,
     onChange: handleChange
   }));

@@ -1,25 +1,16 @@
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = Renderer;
-var _lodash = require("lodash");
-var _d2 = _interopRequireDefault(require("d3"));
-var _react = _interopRequireWildcard(require("react"));
-var _resizeObserver = _interopRequireDefault(require("../../services/resizeObserver"));
-var _propTypes = require("../prop-types");
-var _d3box = _interopRequireDefault(require("./d3box"));
-require("./renderer.less");
-function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
-function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
 function _iterableToArrayLimit(arr, i) { var _i = null == arr ? null : "undefined" != typeof Symbol && arr[Symbol.iterator] || arr["@@iterator"]; if (null != _i) { var _s, _e, _x, _r, _arr = [], _n = !0, _d = !1; try { if (_x = (_i = _i.call(arr)).next, 0 === i) { if (Object(_i) !== _i) return; _n = !1; } else for (; !(_n = (_s = _x.call(_i)).done) && (_arr.push(_s.value), _arr.length !== i); _n = !0); } catch (err) { _d = !0, _e = err; } finally { try { if (!_n && null != _i.return && (_r = _i.return(), Object(_r) !== _r)) return; } finally { if (_d) throw _e; } } return _arr; } }
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+import { map, each } from "lodash";
+import d3 from "d3";
+import React, { useState, useEffect } from "react";
+import resizeObserver from "../../services/resizeObserver";
+import { RendererPropTypes } from "../prop-types";
+import box from "./d3box";
+import "./renderer.less";
 function calcIqr(k) {
   return d => {
     var q1 = d.quartiles[0];
@@ -41,7 +32,7 @@ function calcIqr(k) {
 function render(container, data, _ref) {
   var xAxisLabel = _ref.xAxisLabel,
     yAxisLabel = _ref.yAxisLabel;
-  container = _d2.default.select(container);
+  container = d3.select(container);
   var containerBounds = container.node().getBoundingClientRect();
   var containerWidth = Math.floor(containerBounds.width);
   var containerHeight = Math.floor(containerBounds.height);
@@ -59,9 +50,9 @@ function render(container, data, _ref) {
   var mydata = [];
   var value = 0;
   var d = [];
-  var columns = (0, _lodash.map)(data.columns, col => col.name);
+  var columns = map(data.columns, col => col.name);
   // @ts-expect-error ts-migrate(2339) FIXME: Property 'scale' does not exist on type 'typeof im... Remove this comment to see the full error message
-  var xscale = _d2.default.scale.ordinal().domain(columns).rangeBands([0, containerWidth - margin.left - margin.right]);
+  var xscale = d3.scale.ordinal().domain(columns).rangeBands([0, containerWidth - margin.left - margin.right]);
   var boxWidth;
   if (columns.length > 1) {
     boxWidth = Math.min(xscale(columns[1]), 120.0);
@@ -69,9 +60,9 @@ function render(container, data, _ref) {
     boxWidth = 120.0;
   }
   margin.inner = boxWidth / 3.0;
-  (0, _lodash.each)(columns, (column, i) => {
+  each(columns, (column, i) => {
     d = mydata[i] = [];
-    (0, _lodash.each)(data.rows, row => {
+    each(data.rows, row => {
       value = row[column];
       d.push(value);
       if (value > max) max = Math.ceil(value);
@@ -80,20 +71,20 @@ function render(container, data, _ref) {
   });
 
   // @ts-expect-error ts-migrate(2339) FIXME: Property 'scale' does not exist on type 'typeof im... Remove this comment to see the full error message
-  var yscale = _d2.default.scale.linear().domain([min * 0.99, max * 1.01]).range([height, 0]);
-  var chart = (0, _d3box.default)().whiskers(calcIqr(1.5))
+  var yscale = d3.scale.linear().domain([min * 0.99, max * 1.01]).range([height, 0]);
+  var chart = box().whiskers(calcIqr(1.5))
   // @ts-expect-error ts-migrate(2339) FIXME: Property 'width' does not exist on type '{ (g: any... Remove this comment to see the full error message
   .width(boxWidth - 2 * margin.inner).height(height).domain([min * 0.99, max * 1.01]);
-  var xAxis = _d2.default.svg
+  var xAxis = d3.svg
   // @ts-expect-error ts-migrate(2339) FIXME: Property 'axis' does not exist on type '(url: stri... Remove this comment to see the full error message
   .axis().scale(xscale).orient("bottom");
-  var yAxis = _d2.default.svg
+  var yAxis = d3.svg
   // @ts-expect-error ts-migrate(2339) FIXME: Property 'axis' does not exist on type '(url: stri... Remove this comment to see the full error message
   .axis().scale(yscale).orient("left");
-  var xLines = _d2.default.svg
+  var xLines = d3.svg
   // @ts-expect-error ts-migrate(2339) FIXME: Property 'axis' does not exist on type '(url: stri... Remove this comment to see the full error message
   .axis().scale(xscale).tickSize(height).orient("bottom");
-  var yLines = _d2.default.svg
+  var yLines = d3.svg
   // @ts-expect-error ts-migrate(2339) FIXME: Property 'axis' does not exist on type '(url: stri... Remove this comment to see the full error message
   .axis().scale(yscale).tickSize(width).orient("right");
   function barOffset(i) {
@@ -111,17 +102,17 @@ function render(container, data, _ref) {
   plot.append("g").attr("class", "y axis").call(yAxis);
   plot.selectAll(".box").data(mydata).enter().append("g").attr("class", "box").attr("width", boxWidth).attr("height", height).attr("transform", (_, i) => "translate(".concat(barOffset(i), ",", 0, ")")).call(chart);
 }
-function Renderer(_ref2) {
+export default function Renderer(_ref2) {
   var data = _ref2.data,
     options = _ref2.options;
-  var _useState = (0, _react.useState)(null),
+  var _useState = useState(null),
     _useState2 = _slicedToArray(_useState, 2),
     container = _useState2[0],
     setContainer = _useState2[1];
-  (0, _react.useEffect)(() => {
+  useEffect(() => {
     if (container) {
       render(container, data, options);
-      var unwatch = (0, _resizeObserver.default)(container, () => {
+      var unwatch = resizeObserver(container, () => {
         render(container, data, options);
       });
       return unwatch;
@@ -129,10 +120,10 @@ function Renderer(_ref2) {
   }, [container, data, options]);
 
   // @ts-expect-error ts-migrate(2322) FIXME: Type 'Dispatch<SetStateAction<null>>' is not assig... Remove this comment to see the full error message
-  return /*#__PURE__*/_react.default.createElement("div", {
+  return /*#__PURE__*/React.createElement("div", {
     className: "box-plot-deprecated-visualization-container",
     ref: setContainer
   });
 }
-Renderer.propTypes = _propTypes.RendererPropTypes;
+Renderer.propTypes = RendererPropTypes;
 //# sourceMappingURL=Renderer.js.map

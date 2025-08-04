@@ -1,18 +1,3 @@
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = StyleSettings;
-var _lodash = require("lodash");
-var _react = _interopRequireWildcard(require("react"));
-var _useDebounce = require("use-debounce");
-var _editor = require("../../../components/visualizations/editor");
-var _propTypes = require("../../prop-types");
-var _ColorPalette = _interopRequireDefault(require("../../ColorPalette"));
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
-function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
@@ -24,6 +9,12 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
 function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+import { isNil, map } from "lodash";
+import React, { useMemo } from "react";
+import { useDebouncedCallback } from "use-debounce";
+import { Section, Select, Checkbox, Input, ColorPicker, ContextHelp } from "../../../components/visualizations/editor";
+import { EditorPropTypes } from "../../prop-types";
+import ColorPalette from "../../ColorPalette";
 var mapTiles = [{
   name: "OpenStreetMap",
   url: "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -63,7 +54,7 @@ var mapTiles = [{
 }];
 var CustomColorPalette = _objectSpread({
   White: "#ffffff"
-}, _ColorPalette.default);
+}, ColorPalette);
 function getCustomIconOptionFields(iconShape) {
   switch (iconShape) {
     case "doughnut":
@@ -87,42 +78,42 @@ function getCustomIconOptionFields(iconShape) {
       };
   }
 }
-function StyleSettings(_ref) {
+export default function StyleSettings(_ref) {
   var options = _ref.options,
     onOptionsChange = _ref.onOptionsChange;
-  var _useDebouncedCallback = (0, _useDebounce.useDebouncedCallback)(onOptionsChange, 200),
+  var _useDebouncedCallback = useDebouncedCallback(onOptionsChange, 200),
     _useDebouncedCallback2 = _slicedToArray(_useDebouncedCallback, 1),
     debouncedOnOptionsChange = _useDebouncedCallback2[0];
-  var _useMemo = (0, _react.useMemo)(() => getCustomIconOptionFields(options.iconShape), [options.iconShape]),
+  var _useMemo = useMemo(() => getCustomIconOptionFields(options.iconShape), [options.iconShape]),
     showIcon = _useMemo.showIcon,
     showBackgroundColor = _useMemo.showBackgroundColor,
     showBorderColor = _useMemo.showBorderColor;
-  var isCustomMarkersStyleAllowed = (0, _lodash.isNil)(options.classify);
-  return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_editor.Section, null, /*#__PURE__*/_react.default.createElement(_editor.Select, {
+  var isCustomMarkersStyleAllowed = isNil(options.classify);
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Section, null, /*#__PURE__*/React.createElement(Select, {
     label: "Map Tiles",
     "data-test": "Map.Editor.Tiles",
     value: options.mapTileUrl,
     onChange: mapTileUrl => onOptionsChange({
       mapTileUrl
     })
-  }, (0, _lodash.map)(mapTiles, _ref2 => {
+  }, map(mapTiles, _ref2 => {
     var name = _ref2.name,
       url = _ref2.url;
     return (
       /*#__PURE__*/
       // @ts-expect-error ts-migrate(2339) FIXME: Property 'Option' does not exist on type '({ class... Remove this comment to see the full error message
-      _react.default.createElement(_editor.Select.Option, {
+      React.createElement(Select.Option, {
         key: url,
         "data-test": "Map.Editor.Tiles." + name
       }, name)
     );
-  }))), /*#__PURE__*/_react.default.createElement(_editor.Section.Title, null, "Markers"), /*#__PURE__*/_react.default.createElement(_editor.Section, null, /*#__PURE__*/_react.default.createElement(_editor.Checkbox, {
+  }))), /*#__PURE__*/React.createElement(Section.Title, null, "Markers"), /*#__PURE__*/React.createElement(Section, null, /*#__PURE__*/React.createElement(Checkbox, {
     "data-test": "Map.Editor.ClusterMarkers",
     defaultChecked: options.clusterMarkers,
     onChange: event => onOptionsChange({
       clusterMarkers: event.target.checked
     })
-  }, "Cluster Markers")), /*#__PURE__*/_react.default.createElement(_editor.Section, null, /*#__PURE__*/_react.default.createElement(_editor.Checkbox, {
+  }, "Cluster Markers")), /*#__PURE__*/React.createElement(Section, null, /*#__PURE__*/React.createElement(Checkbox, {
     "data-test": "Map.Editor.CustomizeMarkers",
     disabled: !isCustomMarkersStyleAllowed,
     defaultChecked: options.customizeMarkers,
@@ -132,10 +123,10 @@ function StyleSettings(_ref) {
   }, "Override default style"), !isCustomMarkersStyleAllowed &&
   /*#__PURE__*/
   // @ts-expect-error ts-migrate(2746) FIXME: This JSX tag's 'children' prop expects a single ch... Remove this comment to see the full error message
-  _react.default.createElement(_editor.ContextHelp, {
+  React.createElement(ContextHelp, {
     placement: "topLeft",
     arrowPointAtCenter: true
-  }, "Custom marker styles are not available", /*#__PURE__*/_react.default.createElement("br", null), "when ", /*#__PURE__*/_react.default.createElement("b", null, "Group By"), " column selected.")), isCustomMarkersStyleAllowed && options.customizeMarkers && /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_editor.Section, null, /*#__PURE__*/_react.default.createElement(_editor.Select, {
+  }, "Custom marker styles are not available", /*#__PURE__*/React.createElement("br", null), "when ", /*#__PURE__*/React.createElement("b", null, "Group By"), " column selected.")), isCustomMarkersStyleAllowed && options.customizeMarkers && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Section, null, /*#__PURE__*/React.createElement(Select, {
     layout: "horizontal",
     label: "Shape",
     "data-test": "Map.Editor.MarkerShape",
@@ -143,45 +134,45 @@ function StyleSettings(_ref) {
     onChange: iconShape => onOptionsChange({
       iconShape
     })
-  }, /*#__PURE__*/_react.default.createElement(_editor.Select.Option, {
+  }, /*#__PURE__*/React.createElement(Select.Option, {
     key: "marker",
     "data-test": "Map.Editor.MarkerShape.marker"
-  }, "Marker + Icon"), /*#__PURE__*/_react.default.createElement(_editor.Select.Option, {
+  }, "Marker + Icon"), /*#__PURE__*/React.createElement(Select.Option, {
     key: "doughnut",
     "data-test": "Map.Editor.MarkerShape.doughnut"
-  }, "Circle"), /*#__PURE__*/_react.default.createElement(_editor.Select.Option, {
+  }, "Circle"), /*#__PURE__*/React.createElement(Select.Option, {
     key: "circle-dot",
     "data-test": "Map.Editor.MarkerShape.circle-dot"
-  }, "Circle Dot"), /*#__PURE__*/_react.default.createElement(_editor.Select.Option, {
+  }, "Circle Dot"), /*#__PURE__*/React.createElement(Select.Option, {
     key: "circle",
     "data-test": "Map.Editor.MarkerShape.circle"
-  }, "Circle + Icon"), /*#__PURE__*/_react.default.createElement(_editor.Select.Option, {
+  }, "Circle + Icon"), /*#__PURE__*/React.createElement(Select.Option, {
     key: "rectangle-dot",
     "data-test": "Map.Editor.MarkerShape.rectangle-dot"
-  }, "Square Dot"), /*#__PURE__*/_react.default.createElement(_editor.Select.Option, {
+  }, "Square Dot"), /*#__PURE__*/React.createElement(Select.Option, {
     key: "rectangle",
     "data-test": "Map.Editor.MarkerShape.rectangle"
   }, "Square + Icon"))), showIcon &&
   /*#__PURE__*/
   // @ts-expect-error ts-migrate(2745) FIXME: This JSX tag's 'children' prop expects type 'never... Remove this comment to see the full error message
-  _react.default.createElement(_editor.Section, null, /*#__PURE__*/_react.default.createElement(_editor.Input, {
+  React.createElement(Section, null, /*#__PURE__*/React.createElement(Input, {
     layout: "horizontal",
-    label: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, "Icon", /*#__PURE__*/_react.default.createElement(_editor.ContextHelp, {
+    label: /*#__PURE__*/React.createElement(React.Fragment, null, "Icon", /*#__PURE__*/React.createElement(ContextHelp, {
       placement: "topLeft",
       arrowPointAtCenter: true
-    }, /*#__PURE__*/_react.default.createElement("div", {
+    }, /*#__PURE__*/React.createElement("div", {
       style: {
         marginBottom: 5
       }
-    }, "Enter an icon name from", " ", /*#__PURE__*/_react.default.createElement("a", {
+    }, "Enter an icon name from", " ", /*#__PURE__*/React.createElement("a", {
       href: "https://fontawesome.com/v4.7.0/icons/",
       target: "_blank",
       rel: "noopener noreferrer"
-    }, "Font-Awesome 4.7")), /*#__PURE__*/_react.default.createElement("div", {
+    }, "Font-Awesome 4.7")), /*#__PURE__*/React.createElement("div", {
       style: {
         marginBottom: 5
       }
-    }, "Examples: ", /*#__PURE__*/_react.default.createElement("code", null, "check"), ", ", /*#__PURE__*/_react.default.createElement("code", null, "times-circle"), ", ", /*#__PURE__*/_react.default.createElement("code", null, "flag")), /*#__PURE__*/_react.default.createElement("div", null, "Leave blank to remove."))),
+    }, "Examples: ", /*#__PURE__*/React.createElement("code", null, "check"), ", ", /*#__PURE__*/React.createElement("code", null, "times-circle"), ", ", /*#__PURE__*/React.createElement("code", null, "flag")), /*#__PURE__*/React.createElement("div", null, "Leave blank to remove."))),
     "data-test": "Map.Editor.MarkerIcon",
     defaultValue: options.iconFont,
     onChange: event => debouncedOnOptionsChange({
@@ -190,7 +181,7 @@ function StyleSettings(_ref) {
   })), showIcon &&
   /*#__PURE__*/
   // @ts-expect-error ts-migrate(2745) FIXME: This JSX tag's 'children' prop expects type 'never... Remove this comment to see the full error message
-  _react.default.createElement(_editor.Section, null, /*#__PURE__*/_react.default.createElement(_editor.ColorPicker, {
+  React.createElement(Section, null, /*#__PURE__*/React.createElement(ColorPicker, {
     layout: "horizontal",
     label: "Icon Color",
     interactive: true,
@@ -205,14 +196,14 @@ function StyleSettings(_ref) {
     })
     // @ts-expect-error ts-migrate(2339) FIXME: Property 'Label' does not exist on type '({ classN... Remove this comment to see the full error message
     ,
-    addonAfter: /*#__PURE__*/_react.default.createElement(_editor.ColorPicker.Label, {
+    addonAfter: /*#__PURE__*/React.createElement(ColorPicker.Label, {
       color: options.foregroundColor,
       presetColors: CustomColorPalette
     })
   })), showBackgroundColor &&
   /*#__PURE__*/
   // @ts-expect-error ts-migrate(2745) FIXME: This JSX tag's 'children' prop expects type 'never... Remove this comment to see the full error message
-  _react.default.createElement(_editor.Section, null, /*#__PURE__*/_react.default.createElement(_editor.ColorPicker, {
+  React.createElement(Section, null, /*#__PURE__*/React.createElement(ColorPicker, {
     layout: "horizontal",
     label: "Background Color",
     interactive: true,
@@ -227,14 +218,14 @@ function StyleSettings(_ref) {
     })
     // @ts-expect-error ts-migrate(2339) FIXME: Property 'Label' does not exist on type '({ classN... Remove this comment to see the full error message
     ,
-    addonAfter: /*#__PURE__*/_react.default.createElement(_editor.ColorPicker.Label, {
+    addonAfter: /*#__PURE__*/React.createElement(ColorPicker.Label, {
       color: options.backgroundColor,
       presetColors: CustomColorPalette
     })
   })), showBorderColor &&
   /*#__PURE__*/
   // @ts-expect-error ts-migrate(2745) FIXME: This JSX tag's 'children' prop expects type 'never... Remove this comment to see the full error message
-  _react.default.createElement(_editor.Section, null, /*#__PURE__*/_react.default.createElement(_editor.ColorPicker, {
+  React.createElement(Section, null, /*#__PURE__*/React.createElement(ColorPicker, {
     layout: "horizontal",
     label: "Border Color",
     interactive: true,
@@ -249,11 +240,11 @@ function StyleSettings(_ref) {
     })
     // @ts-expect-error ts-migrate(2339) FIXME: Property 'Label' does not exist on type '({ classN... Remove this comment to see the full error message
     ,
-    addonAfter: /*#__PURE__*/_react.default.createElement(_editor.ColorPicker.Label, {
+    addonAfter: /*#__PURE__*/React.createElement(ColorPicker.Label, {
       color: options.borderColor,
       presetColors: CustomColorPalette
     })
   }))));
 }
-StyleSettings.propTypes = _propTypes.EditorPropTypes;
+StyleSettings.propTypes = EditorPropTypes;
 //# sourceMappingURL=StyleSettings.js.map

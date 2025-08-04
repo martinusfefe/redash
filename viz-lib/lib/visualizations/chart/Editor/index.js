@@ -1,35 +1,27 @@
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-var _react = _interopRequireDefault(require("react"));
-var _createTabbedEditor = _interopRequireDefault(require("../../../components/visualizations/editor/createTabbedEditor"));
-var _GeneralSettings = _interopRequireDefault(require("./GeneralSettings"));
-var _XAxisSettings = _interopRequireDefault(require("./XAxisSettings"));
-var _YAxisSettings = _interopRequireDefault(require("./YAxisSettings"));
-var _SeriesSettings = _interopRequireDefault(require("./SeriesSettings"));
-var _ColorsSettings = _interopRequireDefault(require("./ColorsSettings"));
-var _DataLabelsSettings = _interopRequireDefault(require("./DataLabelsSettings"));
-var _CustomChartSettings = _interopRequireDefault(require("./CustomChartSettings"));
-require("./editor.less");
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 /* eslint-disable react/prop-types */
-
+import React from "react";
+import createTabbedEditor from "../../../components/visualizations/editor/createTabbedEditor";
+import GeneralSettings from "./GeneralSettings";
+import XAxisSettings from "./XAxisSettings";
+import YAxisSettings from "./YAxisSettings";
+import SeriesSettings from "./SeriesSettings";
+import ColorsSettings from "./ColorsSettings";
+import DataLabelsSettings from "./DataLabelsSettings";
+import CustomChartSettings from "./CustomChartSettings";
+import "./editor.less";
 var isCustomChart = options => options.globalSeriesType === "custom";
 var isPieChart = options => options.globalSeriesType === "pie";
-var _default = (0, _createTabbedEditor.default)([{
+export default createTabbedEditor([{
   key: "General",
   title: "General",
-  component: props => /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_GeneralSettings.default, props), isCustomChart(props.options) && /*#__PURE__*/_react.default.createElement(_CustomChartSettings.default, props))
+  component: props => /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(GeneralSettings, props), isCustomChart(props.options) && /*#__PURE__*/React.createElement(CustomChartSettings, props))
 }, {
   key: "XAxis",
   title: _ref => {
     var swappedAxes = _ref.swappedAxes;
     return !swappedAxes ? "X Axis" : "Y Axis";
   },
-  component: _XAxisSettings.default,
+  component: XAxisSettings,
   isAvailable: options => !isCustomChart(options) && !isPieChart(options)
 }, {
   key: "YAxis",
@@ -37,23 +29,22 @@ var _default = (0, _createTabbedEditor.default)([{
     var swappedAxes = _ref2.swappedAxes;
     return !swappedAxes ? "Y Axis" : "X Axis";
   },
-  component: _YAxisSettings.default,
+  component: YAxisSettings,
   isAvailable: options => !isCustomChart(options) && !isPieChart(options)
 }, {
   key: "Series",
   title: "Series",
-  component: _SeriesSettings.default,
+  component: SeriesSettings,
   isAvailable: options => !isCustomChart(options)
 }, {
   key: "Colors",
   title: "Colors",
-  component: _ColorsSettings.default,
+  component: ColorsSettings,
   isAvailable: options => !isCustomChart(options)
 }, {
   key: "DataLabels",
   title: "Data Labels",
-  component: _DataLabelsSettings.default,
+  component: DataLabelsSettings,
   isAvailable: options => !isCustomChart(options)
 }]);
-exports.default = _default;
 //# sourceMappingURL=index.js.map
