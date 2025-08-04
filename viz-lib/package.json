@@ -1,5 +1,5 @@
 {
-  "name": "@martinusfefe/redash-viz",
+  "name": "@redash/viz",
   "version": "1.0.0",
   "description": "Redash visualizations",
   "scripts": {
