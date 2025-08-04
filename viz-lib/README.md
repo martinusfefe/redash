@@ -15,13 +15,13 @@ Required libraries:
 Using npm:
 
 ```bash
-npm install @redash/viz
+npm install 'https://gitpkg.vercel.app/martinusfefe/redash/viz-lib?master'
 ```
 
 Using yarn:
 
 ```bash
-yarn add @redash/viz
+yarn add 'https://gitpkg.vercel.app/martinusfefe/redash/viz-lib?master'
 ```
 
 ## Usage
