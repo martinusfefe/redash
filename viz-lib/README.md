@@ -11,6 +11,7 @@ Required libraries:
 - react (`>=16.8.0`)
 - react-dom (`>=16.8.0`)
 - antd (`>=4.0.0`)
+- less (`^4.1.3`)
 
 Using npm:
 
