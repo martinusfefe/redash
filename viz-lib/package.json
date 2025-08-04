@@ -20,7 +20,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/martinusfefe/redash.git"
+    "url": "git+https://github.com/getredash/redash.git"
   },
   "author": "Redash",
   "license": "BSD-2-Clause",
