@@ -5,14 +5,10 @@ export declare function prepareFeatureProperties(feature: any, valueFormatted: a
 export declare function getValueForFeature(feature: any, data: any, targetField: any): any;
 export declare function getColorByValue(value: any, limits: any, colors: any, defaultColor: any): any;
 export declare function createScale(features: any, data: any, options: any): {
-    limits: any;
+    limits: any[];
     colors: any[];
     legend: {
         color: any;
         limit: any;
     }[];
-} | {
-    limits: number[];
-    colors: string[];
-    legend: any;
 };

@@ -6,9 +6,9 @@ type Props = {
     onChange: (...args: any[]) => any;
 };
 declare function initNumberColumn(column: any): {
-    ({ row }: any): any;
+    ({ row }: any): string | JSX.Element;
     prepareData: (row: any) => {
-        text: any;
+        text: string | JSX.Element;
     };
 };
 declare namespace initNumberColumn {

@@ -1,1 +1,1 @@
-export default function getChartData(data: any, options: any): any;
+export default function getChartData(data: any, options: any): unknown[];

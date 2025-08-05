@@ -6,9 +6,9 @@ type Props = {
     onChange: (...args: any[]) => any;
 };
 declare function initDateTimeColumn(column: any): {
-    ({ row }: any): any;
+    ({ row }: any): string | JSX.Element;
     prepareData: (row: any) => {
-        text: any;
+        text: string | JSX.Element;
     };
 };
 declare namespace initDateTimeColumn {

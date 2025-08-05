@@ -44,7 +44,7 @@ declare let ColorPalette: {
     Pink: string;
     "Dark Blue": string;
 };
-export declare const ColorPaletteArray: any;
+export declare const ColorPaletteArray: string[];
 export default ColorPalette;
 export declare const AllColorPalettes: {
     Redash: {
@@ -114,10 +114,10 @@ export declare const AllColorPalettes: {
     };
 };
 export declare const AllColorPaletteArrays: {
-    Redash: any;
-    Viridis: any;
-    "Tableau 10": any;
-    "D3 Category 10": any;
+    Redash: string[];
+    Viridis: string[];
+    "Tableau 10": string[];
+    "D3 Category 10": string[];
 };
 export declare const ColorPaletteTypes: {
     Redash: string;

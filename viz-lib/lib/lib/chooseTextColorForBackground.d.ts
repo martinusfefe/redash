@@ -1,1 +1,1 @@
-export default function chooseTextColorForBackground(backgroundColor: any, textColors?: string[]): any;
+export default function chooseTextColorForBackground(backgroundColor: any, textColors?: string[]): string | null | undefined;
