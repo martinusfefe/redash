@@ -1,70 +1,118 @@
-"use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = GeneralSettings;
-const lodash_1 = require("lodash");
-const react_1 = __importStar(require("react"));
-const use_debounce_1 = require("use-debounce");
-const editor_1 = require("../../../components/visualizations/editor");
-const prop_types_1 = require("../../../visualizations/prop-types");
-function GeneralSettings({ options, data, onOptionsChange }) {
-    const columnNames = (0, react_1.useMemo)(() => (0, lodash_1.map)(data.columns, c => c.name), [data]);
-    const [onOptionsChangeDebounced] = (0, use_debounce_1.useDebouncedCallback)(onOptionsChange, 200);
-    return (react_1.default.createElement(react_1.default.Fragment, null,
-        react_1.default.createElement(editor_1.Section, null,
-            react_1.default.createElement(editor_1.Select, { layout: "horizontal", label: "Step Column", "data-test": "Funnel.StepColumn", placeholder: "Choose column...", defaultValue: options.stepCol.colName || undefined, onChange: (colName) => onOptionsChange({ stepCol: { colName: colName || null } }) }, (0, lodash_1.map)(columnNames, col => (
-            // @ts-expect-error ts-migrate(2339) FIXME: Property 'Option' does not exist on type '({ class... Remove this comment to see the full error message
-            react_1.default.createElement(editor_1.Select.Option, { key: col, "data-test": `Funnel.StepColumn.${col}` }, col))))),
-        react_1.default.createElement(editor_1.Section, null,
-            react_1.default.createElement(editor_1.Input, { layout: "horizontal", label: "Step Column Title", "data-test": "Funnel.StepColumnTitle", defaultValue: options.stepCol.displayAs, onChange: (event) => onOptionsChangeDebounced({ stepCol: { displayAs: event.target.value } }) })),
-        react_1.default.createElement(editor_1.Section, null,
-            react_1.default.createElement(editor_1.Select, { layout: "horizontal", label: "Value Column", "data-test": "Funnel.ValueColumn", placeholder: "Choose column...", defaultValue: options.valueCol.colName || undefined, onChange: (colName) => onOptionsChange({ valueCol: { colName: colName || null } }) }, (0, lodash_1.map)(columnNames, col => (
-            // @ts-expect-error ts-migrate(2339) FIXME: Property 'Option' does not exist on type '({ class... Remove this comment to see the full error message
-            react_1.default.createElement(editor_1.Select.Option, { key: col, "data-test": `Funnel.ValueColumn.${col}` }, col))))),
-        react_1.default.createElement(editor_1.Section, null,
-            react_1.default.createElement(editor_1.Input, { layout: "horizontal", label: "Value Column Title", "data-test": "Funnel.ValueColumnTitle", defaultValue: options.valueCol.displayAs, onChange: (event) => onOptionsChangeDebounced({ valueCol: { displayAs: event.target.value } }) })),
-        react_1.default.createElement(editor_1.Section, null,
-            react_1.default.createElement(editor_1.Checkbox, { "data-test": "Funnel.CustomSort", checked: !options.autoSort, onChange: event => onOptionsChange({ autoSort: !event.target.checked }) }, "Custom Sorting")),
-        !options.autoSort && (react_1.default.createElement(react_1.default.Fragment, null,
-            react_1.default.createElement(editor_1.Section, null,
-                react_1.default.createElement(editor_1.Select, { layout: "horizontal", label: "Sort Column", "data-test": "Funnel.SortColumn", allowClear: true, placeholder: "Choose column...", defaultValue: options.sortKeyCol.colName || undefined, onChange: (colName) => onOptionsChange({ sortKeyCol: { colName: colName || null } }) }, (0, lodash_1.map)(columnNames, col => (
-                // @ts-expect-error ts-migrate(2339) FIXME: Property 'Option' does not exist on type '({ class... Remove this comment to see the full error message
-                react_1.default.createElement(editor_1.Select.Option, { key: col, "data-test": `Funnel.SortColumn.${col}` }, col))))),
-            react_1.default.createElement(editor_1.Section, null,
-                react_1.default.createElement(editor_1.Select, { layout: "horizontal", label: "Sort Order", "data-test": "Funnel.SortDirection", disabled: !options.sortKeyCol.colName, defaultValue: options.sortKeyCol.reverse ? "desc" : "asc", onChange: (order) => onOptionsChange({ sortKeyCol: { reverse: order === "desc" } }) },
-                    react_1.default.createElement(editor_1.Select.Option, { value: "asc", "data-test": "Funnel.SortDirection.Ascending" }, "ascending"),
-                    react_1.default.createElement(editor_1.Select.Option, { value: "desc", "data-test": "Funnel.SortDirection.Descending" }, "descending")))))));
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+function _iterableToArrayLimit(arr, i) { var _i = null == arr ? null : "undefined" != typeof Symbol && arr[Symbol.iterator] || arr["@@iterator"]; if (null != _i) { var _s, _e, _x, _r, _arr = [], _n = !0, _d = !1; try { if (_x = (_i = _i.call(arr)).next, 0 === i) { if (Object(_i) !== _i) return; _n = !1; } else for (; !(_n = (_s = _x.call(_i)).done) && (_arr.push(_s.value), _arr.length !== i); _n = !0); } catch (err) { _d = !0, _e = err; } finally { try { if (!_n && null != _i.return && (_r = _i.return(), Object(_r) !== _r)) return; } finally { if (_d) throw _e; } } return _arr; } }
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+import { map } from "lodash";
+import React, { useMemo } from "react";
+import { useDebouncedCallback } from "use-debounce";
+import { Section, Select, Input, Checkbox } from "../../../components/visualizations/editor";
+import { EditorPropTypes } from "../../prop-types";
+export default function GeneralSettings(_ref) {
+  var options = _ref.options,
+    data = _ref.data,
+    onOptionsChange = _ref.onOptionsChange;
+  var columnNames = useMemo(() => map(data.columns, c => c.name), [data]);
+  var _useDebouncedCallback = useDebouncedCallback(onOptionsChange, 200),
+    _useDebouncedCallback2 = _slicedToArray(_useDebouncedCallback, 1),
+    onOptionsChangeDebounced = _useDebouncedCallback2[0];
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Section, null, /*#__PURE__*/React.createElement(Select, {
+    layout: "horizontal",
+    label: "Step Column",
+    "data-test": "Funnel.StepColumn",
+    placeholder: "Choose column...",
+    defaultValue: options.stepCol.colName || undefined,
+    onChange: colName => onOptionsChange({
+      stepCol: {
+        colName: colName || null
+      }
+    })
+  }, map(columnNames, col =>
+  /*#__PURE__*/
+  // @ts-expect-error ts-migrate(2339) FIXME: Property 'Option' does not exist on type '({ class... Remove this comment to see the full error message
+  React.createElement(Select.Option, {
+    key: col,
+    "data-test": "Funnel.StepColumn.".concat(col)
+  }, col)))), /*#__PURE__*/React.createElement(Section, null, /*#__PURE__*/React.createElement(Input, {
+    layout: "horizontal",
+    label: "Step Column Title",
+    "data-test": "Funnel.StepColumnTitle",
+    defaultValue: options.stepCol.displayAs,
+    onChange: event => onOptionsChangeDebounced({
+      stepCol: {
+        displayAs: event.target.value
+      }
+    })
+  })), /*#__PURE__*/React.createElement(Section, null, /*#__PURE__*/React.createElement(Select, {
+    layout: "horizontal",
+    label: "Value Column",
+    "data-test": "Funnel.ValueColumn",
+    placeholder: "Choose column...",
+    defaultValue: options.valueCol.colName || undefined,
+    onChange: colName => onOptionsChange({
+      valueCol: {
+        colName: colName || null
+      }
+    })
+  }, map(columnNames, col =>
+  /*#__PURE__*/
+  // @ts-expect-error ts-migrate(2339) FIXME: Property 'Option' does not exist on type '({ class... Remove this comment to see the full error message
+  React.createElement(Select.Option, {
+    key: col,
+    "data-test": "Funnel.ValueColumn.".concat(col)
+  }, col)))), /*#__PURE__*/React.createElement(Section, null, /*#__PURE__*/React.createElement(Input, {
+    layout: "horizontal",
+    label: "Value Column Title",
+    "data-test": "Funnel.ValueColumnTitle",
+    defaultValue: options.valueCol.displayAs,
+    onChange: event => onOptionsChangeDebounced({
+      valueCol: {
+        displayAs: event.target.value
+      }
+    })
+  })), /*#__PURE__*/React.createElement(Section, null, /*#__PURE__*/React.createElement(Checkbox, {
+    "data-test": "Funnel.CustomSort",
+    checked: !options.autoSort,
+    onChange: event => onOptionsChange({
+      autoSort: !event.target.checked
+    })
+  }, "Custom Sorting")), !options.autoSort && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Section, null, /*#__PURE__*/React.createElement(Select, {
+    layout: "horizontal",
+    label: "Sort Column",
+    "data-test": "Funnel.SortColumn",
+    allowClear: true,
+    placeholder: "Choose column...",
+    defaultValue: options.sortKeyCol.colName || undefined,
+    onChange: colName => onOptionsChange({
+      sortKeyCol: {
+        colName: colName || null
+      }
+    })
+  }, map(columnNames, col =>
+  /*#__PURE__*/
+  // @ts-expect-error ts-migrate(2339) FIXME: Property 'Option' does not exist on type '({ class... Remove this comment to see the full error message
+  React.createElement(Select.Option, {
+    key: col,
+    "data-test": "Funnel.SortColumn.".concat(col)
+  }, col)))), /*#__PURE__*/React.createElement(Section, null, /*#__PURE__*/React.createElement(Select, {
+    layout: "horizontal",
+    label: "Sort Order",
+    "data-test": "Funnel.SortDirection",
+    disabled: !options.sortKeyCol.colName,
+    defaultValue: options.sortKeyCol.reverse ? "desc" : "asc",
+    onChange: order => onOptionsChange({
+      sortKeyCol: {
+        reverse: order === "desc"
+      }
+    })
+  }, /*#__PURE__*/React.createElement(Select.Option, {
+    value: "asc",
+    "data-test": "Funnel.SortDirection.Ascending"
+  }, "ascending"), /*#__PURE__*/React.createElement(Select.Option, {
+    value: "desc",
+    "data-test": "Funnel.SortDirection.Descending"
+  }, "descending")))));
 }
-GeneralSettings.propTypes = prop_types_1.EditorPropTypes;
+GeneralSettings.propTypes = EditorPropTypes;
+//# sourceMappingURL=GeneralSettings.js.map

@@ -1,106 +1,84 @@
-"use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = Renderer;
-const lodash_1 = require("lodash");
-const react_1 = __importStar(require("react"));
-const classnames_1 = __importDefault(require("classnames"));
-const resizeObserver_1 = __importDefault(require("../../services/resizeObserver"));
-const prop_types_1 = require("../../visualizations/prop-types");
-const utils_1 = require("./utils");
-require("./render.less");
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+function _iterableToArrayLimit(arr, i) { var _i = null == arr ? null : "undefined" != typeof Symbol && arr[Symbol.iterator] || arr["@@iterator"]; if (null != _i) { var _s, _e, _x, _r, _arr = [], _n = !0, _d = !1; try { if (_x = (_i = _i.call(arr)).next, 0 === i) { if (Object(_i) !== _i) return; _n = !1; } else for (; !(_n = (_s = _x.call(_i)).done) && (_arr.push(_s.value), _arr.length !== i); _n = !0); } catch (err) { _d = !0, _e = err; } finally { try { if (!_n && null != _i.return && (_r = _i.return(), Object(_r) !== _r)) return; } finally { if (_d) throw _e; } } return _arr; } }
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+import { isFinite } from "lodash";
+import React, { useState, useEffect } from "react";
+import cx from "classnames";
+import resizeObserver from "../../services/resizeObserver";
+import { RendererPropTypes } from "../prop-types";
+import { getCounterData } from "./utils";
+import "./render.less";
 function getCounterStyles(scale) {
-    return {
-        msTransform: `scale(${scale})`,
-        MozTransform: `scale(${scale})`,
-        WebkitTransform: `scale(${scale})`,
-        transform: `scale(${scale})`,
-    };
+  return {
+    msTransform: "scale(".concat(scale, ")"),
+    MozTransform: "scale(".concat(scale, ")"),
+    WebkitTransform: "scale(".concat(scale, ")"),
+    transform: "scale(".concat(scale, ")")
+  };
 }
 function getCounterScale(container) {
-    const inner = container.firstChild;
-    const scale = Math.min(container.offsetWidth / inner.offsetWidth, container.offsetHeight / inner.offsetHeight);
-    return Number((0, lodash_1.isFinite)(scale) ? scale : 1).toFixed(2); // keep only two decimal places
+  var inner = container.firstChild;
+  var scale = Math.min(container.offsetWidth / inner.offsetWidth, container.offsetHeight / inner.offsetHeight);
+  return Number(isFinite(scale) ? scale : 1).toFixed(2); // keep only two decimal places
 }
-function Renderer({ data, options, visualizationName }) {
-    const [scale, setScale] = (0, react_1.useState)("1.00");
-    const [container, setContainer] = (0, react_1.useState)(null);
-    (0, react_1.useEffect)(() => {
-        if (container) {
-            const unwatch = (0, resizeObserver_1.default)(container, () => {
-                setScale(getCounterScale(container));
-            });
-            return unwatch;
-        }
-    }, [container]);
-    (0, react_1.useEffect)(() => {
-        if (container) {
-            // update scaling when options or data change (new formatting, values, etc.
-            // may change inner container dimensions which will not be tracked by `resizeObserver`);
-            setScale(getCounterScale(container));
-        }
-    }, [data, options, container]);
-    const { 
-    // @ts-expect-error ts-migrate(2339) FIXME: Property 'showTrend' does not exist on type '{}'.
-    showTrend, 
-    // @ts-expect-error ts-migrate(2339) FIXME: Property 'trendPositive' does not exist on type '{... Remove this comment to see the full error message
-    trendPositive, 
-    // @ts-expect-error ts-migrate(2339) FIXME: Property 'counterValue' does not exist on type '{}... Remove this comment to see the full error message
-    counterValue, 
-    // @ts-expect-error ts-migrate(2339) FIXME: Property 'counterValueTooltip' does not exist on t... Remove this comment to see the full error message
-    counterValueTooltip, 
-    // @ts-expect-error ts-migrate(2339) FIXME: Property 'targetValue' does not exist on type '{}'... Remove this comment to see the full error message
-    targetValue, 
-    // @ts-expect-error ts-migrate(2339) FIXME: Property 'targetValueTooltip' does not exist on ty... Remove this comment to see the full error message
-    targetValueTooltip, 
-    // @ts-expect-error ts-migrate(2339) FIXME: Property 'counterLabel' does not exist on type '{}... Remove this comment to see the full error message
-    counterLabel, } = (0, utils_1.getCounterData)(data.rows, options, visualizationName);
-    return (react_1.default.createElement("div", { className: (0, classnames_1.default)("counter-visualization-container", {
-            "trend-positive": showTrend && trendPositive,
-            "trend-negative": showTrend && !trendPositive,
-        }) },
-        react_1.default.createElement("div", { className: "counter-visualization-content", ref: setContainer },
-            react_1.default.createElement("div", { style: getCounterStyles(scale) },
-                react_1.default.createElement("div", { className: "counter-visualization-value", title: counterValueTooltip }, counterValue),
-                targetValue && (react_1.default.createElement("div", { className: "counter-visualization-target", title: targetValueTooltip },
-                    "(",
-                    targetValue,
-                    ")")),
-                react_1.default.createElement("div", { className: "counter-visualization-label" }, counterLabel)))));
+
+export default function Renderer(_ref) {
+  var data = _ref.data,
+    options = _ref.options,
+    visualizationName = _ref.visualizationName;
+  var _useState = useState("1.00"),
+    _useState2 = _slicedToArray(_useState, 2),
+    scale = _useState2[0],
+    setScale = _useState2[1];
+  var _useState3 = useState(null),
+    _useState4 = _slicedToArray(_useState3, 2),
+    container = _useState4[0],
+    setContainer = _useState4[1];
+  useEffect(() => {
+    if (container) {
+      var unwatch = resizeObserver(container, () => {
+        setScale(getCounterScale(container));
+      });
+      return unwatch;
+    }
+  }, [container]);
+  useEffect(() => {
+    if (container) {
+      // update scaling when options or data change (new formatting, values, etc.
+      // may change inner container dimensions which will not be tracked by `resizeObserver`);
+      setScale(getCounterScale(container));
+    }
+  }, [data, options, container]);
+  var _getCounterData = getCounterData(data.rows, options, visualizationName),
+    showTrend = _getCounterData.showTrend,
+    trendPositive = _getCounterData.trendPositive,
+    counterValue = _getCounterData.counterValue,
+    counterValueTooltip = _getCounterData.counterValueTooltip,
+    targetValue = _getCounterData.targetValue,
+    targetValueTooltip = _getCounterData.targetValueTooltip,
+    counterLabel = _getCounterData.counterLabel;
+  return /*#__PURE__*/React.createElement("div", {
+    className: cx("counter-visualization-container", {
+      "trend-positive": showTrend && trendPositive,
+      "trend-negative": showTrend && !trendPositive
+    })
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "counter-visualization-content",
+    ref: setContainer
+  }, /*#__PURE__*/React.createElement("div", {
+    style: getCounterStyles(scale)
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "counter-visualization-value",
+    title: counterValueTooltip
+  }, counterValue), targetValue && /*#__PURE__*/React.createElement("div", {
+    className: "counter-visualization-target",
+    title: targetValueTooltip
+  }, "(", targetValue, ")"), /*#__PURE__*/React.createElement("div", {
+    className: "counter-visualization-label"
+  }, counterLabel))));
 }
-Renderer.propTypes = prop_types_1.RendererPropTypes;
+Renderer.propTypes = RendererPropTypes;
+//# sourceMappingURL=Renderer.js.map

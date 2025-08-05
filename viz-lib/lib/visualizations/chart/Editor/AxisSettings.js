@@ -1,87 +1,110 @@
-"use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = AxisSettings;
-const lodash_1 = require("lodash");
-const react_1 = __importDefault(require("react"));
-const use_debounce_1 = require("use-debounce");
-const Grid = __importStar(require("antd/lib/grid"));
-const editor_1 = require("../../../components/visualizations/editor");
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+function _iterableToArrayLimit(arr, i) { var _i = null == arr ? null : "undefined" != typeof Symbol && arr[Symbol.iterator] || arr["@@iterator"]; if (null != _i) { var _s, _e, _x, _r, _arr = [], _n = !0, _d = !1; try { if (_x = (_i = _i.call(arr)).next, 0 === i) { if (Object(_i) !== _i) return; _n = !1; } else for (; !(_n = (_s = _x.call(_i)).done) && (_arr.push(_s.value), _arr.length !== i); _n = !0); } catch (err) { _d = !0, _e = err; } finally { try { if (!_n && null != _i.return && (_r = _i.return(), Object(_r) !== _r)) return; } finally { if (_d) throw _e; } } return _arr; } }
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+import { isString, isObject, isFinite, isNumber, merge } from "lodash";
+import React from "react";
+import { useDebouncedCallback } from "use-debounce";
+import * as Grid from "antd/lib/grid";
+import { Section, Select, Input, InputNumber, ContextHelp } from "../../../components/visualizations/editor";
 function toNumber(value) {
-    value = (0, lodash_1.isNumber)(value) ? value : parseFloat(value);
-    return (0, lodash_1.isFinite)(value) ? value : null;
+  value = isNumber(value) ? value : parseFloat(value);
+  return isFinite(value) ? value : null;
 }
-function AxisSettings({ id, options, features, onChange }) {
-    function optionsChanged(newOptions) {
-        onChange((0, lodash_1.merge)({}, options, newOptions));
-    }
-    const [handleNameChange] = (0, use_debounce_1.useDebouncedCallback)(text => {
-        const title = (0, lodash_1.isString)(text) && text !== "" ? { text } : null;
-        optionsChanged({ title });
-    }, 200);
-    const [handleMinMaxChange] = (0, use_debounce_1.useDebouncedCallback)(opts => optionsChanged(opts), 200);
-    const [handleTickFormatChange] = (0, use_debounce_1.useDebouncedCallback)(opts => optionsChanged(opts), 200);
-    return (react_1.default.createElement(react_1.default.Fragment, null,
-        react_1.default.createElement(editor_1.Section, null,
-            react_1.default.createElement(editor_1.Select, { label: "Scale", "data-test": `Chart.${id}.Type`, defaultValue: options.type, onChange: (type) => optionsChanged({ type }) },
-                features.autoDetectType && (
-                // @ts-expect-error ts-migrate(2339) FIXME: Property 'Option' does not exist on type '({ class... Remove this comment to see the full error message
-                react_1.default.createElement(editor_1.Select.Option, { value: "-", "data-test": `Chart.${id}.Type.Auto` }, "Auto Detect")),
-                react_1.default.createElement(editor_1.Select.Option, { value: "datetime", "data-test": `Chart.${id}.Type.DateTime` }, "Datetime"),
-                react_1.default.createElement(editor_1.Select.Option, { value: "linear", "data-test": `Chart.${id}.Type.Linear` }, "Linear"),
-                react_1.default.createElement(editor_1.Select.Option, { value: "logarithmic", "data-test": `Chart.${id}.Type.Logarithmic` }, "Logarithmic"),
-                react_1.default.createElement(editor_1.Select.Option, { value: "category", "data-test": `Chart.${id}.Type.Category` }, "Category"))),
-        react_1.default.createElement(editor_1.Section, null,
-            react_1.default.createElement(editor_1.Input, { label: "Name", "data-test": `Chart.${id}.Name`, defaultValue: (0, lodash_1.isObject)(options.title) ? options.title.text : null, onChange: (event) => handleNameChange(event.target.value) })),
-        react_1.default.createElement(editor_1.Section, null,
-            react_1.default.createElement(editor_1.Input, { label: react_1.default.createElement(react_1.default.Fragment, null,
-                    "Tick Format",
-                    react_1.default.createElement(editor_1.ContextHelp.TickFormatSpecs, null)), "data-test": `Chart.${id}.TickFormat`, defaultValue: options.tickFormat, onChange: (event) => handleTickFormatChange({ tickFormat: event.target.value }) })),
-        features.range && (
-        // @ts-expect-error ts-migrate(2745) FIXME: This JSX tag's 'children' prop expects type 'never... Remove this comment to see the full error message
-        react_1.default.createElement(editor_1.Section, null,
-            react_1.default.createElement(Grid.Row, { gutter: 15, type: "flex", align: "middle" },
-                react_1.default.createElement(Grid.Col, { span: 12 },
-                    react_1.default.createElement(editor_1.InputNumber, { label: "Min Value", placeholder: "Auto", "data-test": `Chart.${id}.RangeMin`, defaultValue: toNumber(options.rangeMin), onChange: (value) => handleMinMaxChange({ rangeMin: toNumber(value) }) })),
-                react_1.default.createElement(Grid.Col, { span: 12 },
-                    react_1.default.createElement(editor_1.InputNumber, { label: "Max Value", placeholder: "Auto", "data-test": `Chart.${id}.RangeMax`, defaultValue: toNumber(options.rangeMax), onChange: (value) => handleMinMaxChange({ rangeMax: toNumber(value) }) })))))));
+export default function AxisSettings(_ref) {
+  var id = _ref.id,
+    options = _ref.options,
+    features = _ref.features,
+    onChange = _ref.onChange;
+  function optionsChanged(newOptions) {
+    onChange(merge({}, options, newOptions));
+  }
+  var _useDebouncedCallback = useDebouncedCallback(text => {
+      var title = isString(text) && text !== "" ? {
+        text
+      } : null;
+      optionsChanged({
+        title
+      });
+    }, 200),
+    _useDebouncedCallback2 = _slicedToArray(_useDebouncedCallback, 1),
+    handleNameChange = _useDebouncedCallback2[0];
+  var _useDebouncedCallback3 = useDebouncedCallback(opts => optionsChanged(opts), 200),
+    _useDebouncedCallback4 = _slicedToArray(_useDebouncedCallback3, 1),
+    handleMinMaxChange = _useDebouncedCallback4[0];
+  var _useDebouncedCallback5 = useDebouncedCallback(opts => optionsChanged(opts), 200),
+    _useDebouncedCallback6 = _slicedToArray(_useDebouncedCallback5, 1),
+    handleTickFormatChange = _useDebouncedCallback6[0];
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Section, null, /*#__PURE__*/React.createElement(Select, {
+    label: "Scale",
+    "data-test": "Chart.".concat(id, ".Type"),
+    defaultValue: options.type,
+    onChange: type => optionsChanged({
+      type
+    })
+  }, features.autoDetectType &&
+  /*#__PURE__*/
+  // @ts-expect-error ts-migrate(2339) FIXME: Property 'Option' does not exist on type '({ class... Remove this comment to see the full error message
+  React.createElement(Select.Option, {
+    value: "-",
+    "data-test": "Chart.".concat(id, ".Type.Auto")
+  }, "Auto Detect"), /*#__PURE__*/React.createElement(Select.Option, {
+    value: "datetime",
+    "data-test": "Chart.".concat(id, ".Type.DateTime")
+  }, "Datetime"), /*#__PURE__*/React.createElement(Select.Option, {
+    value: "linear",
+    "data-test": "Chart.".concat(id, ".Type.Linear")
+  }, "Linear"), /*#__PURE__*/React.createElement(Select.Option, {
+    value: "logarithmic",
+    "data-test": "Chart.".concat(id, ".Type.Logarithmic")
+  }, "Logarithmic"), /*#__PURE__*/React.createElement(Select.Option, {
+    value: "category",
+    "data-test": "Chart.".concat(id, ".Type.Category")
+  }, "Category"))), /*#__PURE__*/React.createElement(Section, null, /*#__PURE__*/React.createElement(Input, {
+    label: "Name",
+    "data-test": "Chart.".concat(id, ".Name"),
+    defaultValue: isObject(options.title) ? options.title.text : null,
+    onChange: event => handleNameChange(event.target.value)
+  })), /*#__PURE__*/React.createElement(Section, null, /*#__PURE__*/React.createElement(Input, {
+    label: /*#__PURE__*/React.createElement(React.Fragment, null, "Tick Format", /*#__PURE__*/React.createElement(ContextHelp.TickFormatSpecs, null)),
+    "data-test": "Chart.".concat(id, ".TickFormat"),
+    defaultValue: options.tickFormat,
+    onChange: event => handleTickFormatChange({
+      tickFormat: event.target.value
+    })
+  })), features.range &&
+  /*#__PURE__*/
+  // @ts-expect-error ts-migrate(2745) FIXME: This JSX tag's 'children' prop expects type 'never... Remove this comment to see the full error message
+  React.createElement(Section, null, /*#__PURE__*/React.createElement(Grid.Row, {
+    gutter: 15,
+    type: "flex",
+    align: "middle"
+  }, /*#__PURE__*/React.createElement(Grid.Col, {
+    span: 12
+  }, /*#__PURE__*/React.createElement(InputNumber, {
+    label: "Min Value",
+    placeholder: "Auto",
+    "data-test": "Chart.".concat(id, ".RangeMin"),
+    defaultValue: toNumber(options.rangeMin),
+    onChange: value => handleMinMaxChange({
+      rangeMin: toNumber(value)
+    })
+  })), /*#__PURE__*/React.createElement(Grid.Col, {
+    span: 12
+  }, /*#__PURE__*/React.createElement(InputNumber, {
+    label: "Max Value",
+    placeholder: "Auto",
+    "data-test": "Chart.".concat(id, ".RangeMax"),
+    defaultValue: toNumber(options.rangeMax),
+    onChange: value => handleMinMaxChange({
+      rangeMax: toNumber(value)
+    })
+  })))));
 }
 AxisSettings.defaultProps = {
-    features: {},
-    onChange: () => { },
+  features: {},
+  onChange: () => {}
 };
+//# sourceMappingURL=AxisSettings.js.map
