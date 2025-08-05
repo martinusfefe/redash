@@ -1,1 +1,0 @@
-export default function updateChartSize(plotlyElement: any, layout: any, options: any): (Pick<any, "width" | "height" | "legend"> | (() => (Pick<any, "height"> | null)[] | undefined))[] | (Pick<any, "width" | "height"> | null)[] | undefined;

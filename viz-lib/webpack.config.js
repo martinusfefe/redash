@@ -13,7 +13,10 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, "dist"),
     filename: "index.js",
-    libraryTarget: "umd",
+    library: {
+      export: "default",
+      type: "commonjs"
+    },
     assetModuleFilename: 'images/[name][ext]'
   },
   resolve: {

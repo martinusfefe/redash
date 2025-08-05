@@ -8,7 +8,7 @@
     "type-gen": "tsc --emitDeclarationOnly --noCheck",
     "build:babel:base": "babel src --out-dir lib --source-maps --ignore 'src/**/*.test.js' --copy-files --no-copy-ignored --extensions .ts,.tsx,.js,.jsx",
     "build:babel": "yarn type-gen && yarn build:babel:base && tsc-alias",
-    "build:webpack": "webpack",
+    "build:webpack": "webpack && tsc --noCheck --emitDeclarationOnly --outFile dist/index.d.ts",
     "build": "cross-env NODE_ENV=production npm-run-all clean build:babel",
     "watch:babel": "yarn build:babel:base --watch",
     "watch:webpack": "webpack --watch",
