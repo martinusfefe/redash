@@ -29,8 +29,8 @@
   },
   "exports": {
     ".": {
-      "default": "./lib/index.js",
-      "types": "./lib/index.d.ts"
+      "default": "./dist/index.js",
+      "types": "./dist/index.d.ts"
     },
     "./package.json": "./package.json",
     "./dist/*": "./dist/*"
@@ -102,8 +102,10 @@
     "less": "^4.4.0",
     "lodash": "^4.17.10",
     "moment": "^2.30.1",
+    "node-polyfill-webpack-plugin": "^4.1.0",
     "numeral": "^2.0.6",
     "plotly.js": "2.35.3",
+    "react-dom": "^19.1.1",
     "react-pivottable": "^0.9.0",
     "react-sortable-hoc": "^1.10.1",
     "tinycolor2": "^1.4.1",

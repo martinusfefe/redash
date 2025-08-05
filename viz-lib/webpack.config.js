@@ -1,14 +1,18 @@
 const LessPluginAutoPrefix = require("less-plugin-autoprefix");
 const path = require("path");
+const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 
 const isProduction = process.env.NODE_ENV === "production";
 
 module.exports = {
   mode: isProduction ? "production" : "development",
   entry: "./src/index.ts",
+  plugins: [
+		new NodePolyfillPlugin(),
+	],
   output: {
     path: path.resolve(__dirname, "dist"),
-    filename: "redash-visualizations.js",
+    filename: "index.js",
     libraryTarget: "umd",
     assetModuleFilename: 'images/[name][ext]'
   },
