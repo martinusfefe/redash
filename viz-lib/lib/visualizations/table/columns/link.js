@@ -1,72 +1,99 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = initLinkColumn;
-const lodash_1 = require("lodash");
-const react_1 = __importDefault(require("react"));
-const use_debounce_1 = require("use-debounce");
-const editor_1 = require("@/components/visualizations/editor");
-const value_format_1 = require("@/lib/value-format");
-function Editor({ column, onChange }) {
-    const [onChangeDebounced] = (0, use_debounce_1.useDebouncedCallback)(onChange, 200);
-    return (react_1.default.createElement(react_1.default.Fragment, null,
-        react_1.default.createElement(editor_1.Section, null,
-            react_1.default.createElement(editor_1.Input, { label: "URL template", "data-test": "Table.ColumnEditor.Link.UrlTemplate", defaultValue: column.linkUrlTemplate, onChange: (event) => onChangeDebounced({ linkUrlTemplate: event.target.value }) })),
-        react_1.default.createElement(editor_1.Section, null,
-            react_1.default.createElement(editor_1.Input, { label: "Text template", "data-test": "Table.ColumnEditor.Link.TextTemplate", defaultValue: column.linkTextTemplate, onChange: (event) => onChangeDebounced({ linkTextTemplate: event.target.value }) })),
-        react_1.default.createElement(editor_1.Section, null,
-            react_1.default.createElement(editor_1.Input, { label: "Title template", "data-test": "Table.ColumnEditor.Link.TitleTemplate", defaultValue: column.linkTitleTemplate, onChange: (event) => onChangeDebounced({ linkTitleTemplate: event.target.value }) })),
-        react_1.default.createElement(editor_1.Section, null,
-            react_1.default.createElement(editor_1.Checkbox, { "data-test": "Table.ColumnEditor.Link.OpenInNewTab", checked: column.linkOpenInNewTab, onChange: event => onChange({ linkOpenInNewTab: event.target.checked }) }, "Open in new tab")),
-        react_1.default.createElement(editor_1.Section, null,
-            react_1.default.createElement(editor_1.ContextHelp, { placement: "topLeft", arrowPointAtCenter: true, 
-                // @ts-expect-error ts-migrate(2322) FIXME: Type 'Element' is not assignable to type 'null | u... Remove this comment to see the full error message
-                icon: react_1.default.createElement("span", { style: { cursor: "default" } },
-                    "Format specs ",
-                    editor_1.ContextHelp.defaultIcon) },
-                react_1.default.createElement("div", null,
-                    "All columns can be referenced using ",
-                    react_1.default.createElement("code", null, "{{ column_name }}"),
-                    " syntax."),
-                react_1.default.createElement("div", null,
-                    "Use ",
-                    react_1.default.createElement("code", null, "{{ @ }}"),
-                    " to reference current (this) column."),
-                react_1.default.createElement("div", null, "This syntax is applicable to URL, Text and Title options.")))));
+var _excluded = ["text"];
+function _objectWithoutProperties(source, excluded) { if (source == null) return {}; var target = _objectWithoutPropertiesLoose(source, excluded); var key, i; if (Object.getOwnPropertySymbols) { var sourceSymbolKeys = Object.getOwnPropertySymbols(source); for (i = 0; i < sourceSymbolKeys.length; i++) { key = sourceSymbolKeys[i]; if (excluded.indexOf(key) >= 0) continue; if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue; target[key] = source[key]; } } return target; }
+function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) return {}; var target = {}; var sourceKeys = Object.keys(source); var key, i; for (i = 0; i < sourceKeys.length; i++) { key = sourceKeys[i]; if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } return target; }
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+function _iterableToArrayLimit(arr, i) { var _i = null == arr ? null : "undefined" != typeof Symbol && arr[Symbol.iterator] || arr["@@iterator"]; if (null != _i) { var _s, _e, _x, _r, _arr = [], _n = !0, _d = !1; try { if (_x = (_i = _i.call(arr)).next, 0 === i) { if (Object(_i) !== _i) return; _n = !1; } else for (; !(_n = (_s = _x.call(_i)).done) && (_arr.push(_s.value), _arr.length !== i); _n = !0); } catch (err) { _d = !0, _e = err; } finally { try { if (!_n && null != _i.return && (_r = _i.return(), Object(_r) !== _r)) return; } finally { if (_d) throw _e; } } return _arr; } }
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+import { extend, trim } from "lodash";
+import React from "react";
+import { useDebouncedCallback } from "use-debounce";
+import { Section, Input, Checkbox, ContextHelp } from "../../../components/visualizations/editor";
+import { formatSimpleTemplate } from "../../../lib/value-format";
+function Editor(_ref) {
+  var column = _ref.column,
+    _onChange = _ref.onChange;
+  var _useDebouncedCallback = useDebouncedCallback(_onChange, 200),
+    _useDebouncedCallback2 = _slicedToArray(_useDebouncedCallback, 1),
+    onChangeDebounced = _useDebouncedCallback2[0];
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Section, null, /*#__PURE__*/React.createElement(Input, {
+    label: "URL template",
+    "data-test": "Table.ColumnEditor.Link.UrlTemplate",
+    defaultValue: column.linkUrlTemplate,
+    onChange: event => onChangeDebounced({
+      linkUrlTemplate: event.target.value
+    })
+  })), /*#__PURE__*/React.createElement(Section, null, /*#__PURE__*/React.createElement(Input, {
+    label: "Text template",
+    "data-test": "Table.ColumnEditor.Link.TextTemplate",
+    defaultValue: column.linkTextTemplate,
+    onChange: event => onChangeDebounced({
+      linkTextTemplate: event.target.value
+    })
+  })), /*#__PURE__*/React.createElement(Section, null, /*#__PURE__*/React.createElement(Input, {
+    label: "Title template",
+    "data-test": "Table.ColumnEditor.Link.TitleTemplate",
+    defaultValue: column.linkTitleTemplate,
+    onChange: event => onChangeDebounced({
+      linkTitleTemplate: event.target.value
+    })
+  })), /*#__PURE__*/React.createElement(Section, null, /*#__PURE__*/React.createElement(Checkbox, {
+    "data-test": "Table.ColumnEditor.Link.OpenInNewTab",
+    checked: column.linkOpenInNewTab,
+    onChange: event => _onChange({
+      linkOpenInNewTab: event.target.checked
+    })
+  }, "Open in new tab")), /*#__PURE__*/React.createElement(Section, null, /*#__PURE__*/React.createElement(ContextHelp, {
+    placement: "topLeft",
+    arrowPointAtCenter: true
+    // @ts-expect-error ts-migrate(2322) FIXME: Type 'Element' is not assignable to type 'null | u... Remove this comment to see the full error message
+    ,
+    icon: /*#__PURE__*/React.createElement("span", {
+      style: {
+        cursor: "default"
+      }
+    }, "Format specs ", ContextHelp.defaultIcon)
+  }, /*#__PURE__*/React.createElement("div", null, "All columns can be referenced using ", /*#__PURE__*/React.createElement("code", null, "{{ column_name }}"), " syntax."), /*#__PURE__*/React.createElement("div", null, "Use ", /*#__PURE__*/React.createElement("code", null, "{{ @ }}"), " to reference current (this) column."), /*#__PURE__*/React.createElement("div", null, "This syntax is applicable to URL, Text and Title options."))));
 }
-function initLinkColumn(column) {
-    function prepareData(row) {
-        row = (0, lodash_1.extend)({ "@": row[column.name] }, row);
-        const href = (0, lodash_1.trim)((0, value_format_1.formatSimpleTemplate)(column.linkUrlTemplate, row));
-        if (href === "") {
-            return {};
-        }
-        const title = (0, lodash_1.trim)((0, value_format_1.formatSimpleTemplate)(column.linkTitleTemplate, row));
-        const text = (0, lodash_1.trim)((0, value_format_1.formatSimpleTemplate)(column.linkTextTemplate, row));
-        const result = {
-            href,
-            text: text !== "" ? text : href,
-        };
-        if (title !== "") {
-            // @ts-expect-error ts-migrate(2339) FIXME: Property 'title' does not exist on type '{ href: s... Remove this comment to see the full error message
-            result.title = title;
-        }
-        if (column.linkOpenInNewTab) {
-            // @ts-expect-error ts-migrate(2339) FIXME: Property 'target' does not exist on type '{ href: ... Remove this comment to see the full error message
-            result.target = "_blank";
-        }
-        return result;
+export default function initLinkColumn(column) {
+  function prepareData(row) {
+    row = extend({
+      "@": row[column.name]
+    }, row);
+    var href = trim(formatSimpleTemplate(column.linkUrlTemplate, row));
+    if (href === "") {
+      return {};
     }
-    function LinkColumn({ row }) {
-        // @ts-expect-error ts-migrate(2339) FIXME: Property 'text' does not exist on type '{}'.
-        // eslint-disable-line react/prop-types
-        const { text, ...props } = prepareData(row);
-        return react_1.default.createElement("a", { ...props }, text);
+    var title = trim(formatSimpleTemplate(column.linkTitleTemplate, row));
+    var text = trim(formatSimpleTemplate(column.linkTextTemplate, row));
+    var result = {
+      href,
+      text: text !== "" ? text : href
+    };
+    if (title !== "") {
+      // @ts-expect-error ts-migrate(2339) FIXME: Property 'title' does not exist on type '{ href: s... Remove this comment to see the full error message
+      result.title = title;
     }
-    LinkColumn.prepareData = prepareData;
-    return LinkColumn;
+    if (column.linkOpenInNewTab) {
+      // @ts-expect-error ts-migrate(2339) FIXME: Property 'target' does not exist on type '{ href: ... Remove this comment to see the full error message
+      result.target = "_blank";
+    }
+    return result;
+  }
+  function LinkColumn(_ref2) {
+    var row = _ref2.row;
+    // @ts-expect-error ts-migrate(2339) FIXME: Property 'text' does not exist on type '{}'.
+    // eslint-disable-line react/prop-types
+    var _prepareData = prepareData(row),
+      text = _prepareData.text,
+      props = _objectWithoutProperties(_prepareData, _excluded);
+    return /*#__PURE__*/React.createElement("a", props, text);
+  }
+  LinkColumn.prepareData = prepareData;
+  return LinkColumn;
 }
 initLinkColumn.friendlyName = "Link";
 initLinkColumn.Editor = Editor;
+//# sourceMappingURL=link.js.map

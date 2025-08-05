@@ -1,20 +1,16 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
+import getOptions from "./getOptions";
+import Renderer from "./Renderer";
+import Editor from "./Editor";
+export default {
+  type: "CHART",
+  name: "Chart",
+  isDefault: true,
+  getOptions,
+  Renderer,
+  Editor,
+  defaultColumns: 6,
+  defaultRows: 8,
+  minColumns: 1,
+  minRows: 5
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-const getOptions_1 = __importDefault(require("./getOptions"));
-const Renderer_1 = __importDefault(require("./Renderer"));
-const Editor_1 = __importDefault(require("./Editor"));
-exports.default = {
-    type: "CHART",
-    name: "Chart",
-    isDefault: true,
-    getOptions: getOptions_1.default,
-    Renderer: Renderer_1.default,
-    Editor: Editor_1.default,
-    defaultColumns: 6,
-    defaultRows: 8,
-    minColumns: 1,
-    minRows: 5,
-};
+//# sourceMappingURL=index.js.map

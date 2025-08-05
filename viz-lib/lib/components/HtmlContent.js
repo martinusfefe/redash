@@ -1,22 +1,29 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const react_1 = __importDefault(require("react"));
-const prop_types_1 = __importDefault(require("prop-types"));
-const sanitize_1 = __importDefault(require("@/services/sanitize"));
-const HtmlContent = react_1.default.memo(function HtmlContent({ children, ...props }) {
-    return (react_1.default.createElement("div", { ...props, 
-        // @ts-expect-error ts-migrate(2345) FIXME: Argument of type 'ReactNode' is not assignable to ... Remove this comment to see the full error message
-        dangerouslySetInnerHTML: { __html: (0, sanitize_1.default)(children) } }));
+var _excluded = ["children"];
+function _extends() { _extends = Object.assign ? Object.assign.bind() : function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
+function _objectWithoutProperties(source, excluded) { if (source == null) return {}; var target = _objectWithoutPropertiesLoose(source, excluded); var key, i; if (Object.getOwnPropertySymbols) { var sourceSymbolKeys = Object.getOwnPropertySymbols(source); for (i = 0; i < sourceSymbolKeys.length; i++) { key = sourceSymbolKeys[i]; if (excluded.indexOf(key) >= 0) continue; if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue; target[key] = source[key]; } } return target; }
+function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) return {}; var target = {}; var sourceKeys = Object.keys(source); var key, i; for (i = 0; i < sourceKeys.length; i++) { key = sourceKeys[i]; if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } return target; }
+import React from "react";
+import PropTypes from "prop-types";
+import sanitize from "../services/sanitize";
+var HtmlContent = React.memo(function HtmlContent(_ref) {
+  var children = _ref.children,
+    props = _objectWithoutProperties(_ref, _excluded);
+  return /*#__PURE__*/React.createElement("div", _extends({}, props, {
+    // @ts-expect-error ts-migrate(2345) FIXME: Argument of type 'ReactNode' is not assignable to ... Remove this comment to see the full error message
+    dangerouslySetInnerHTML: {
+      __html: sanitize(children)
+    } // eslint-disable-line react/no-danger
+  }));
 });
+
 // @ts-expect-error ts-migrate(2339) FIXME: Property 'propTypes' does not exist on type 'Named... Remove this comment to see the full error message
 HtmlContent.propTypes = {
-    children: prop_types_1.default.string,
+  children: PropTypes.string
 };
+
 // @ts-expect-error ts-migrate(2339) FIXME: Property 'defaultProps' does not exist on type 'Na... Remove this comment to see the full error message
 HtmlContent.defaultProps = {
-    children: "",
+  children: ""
 };
-exports.default = HtmlContent;
+export default HtmlContent;
+//# sourceMappingURL=HtmlContent.js.map

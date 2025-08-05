@@ -1,14 +1,18 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const react_1 = __importDefault(require("react"));
-const classnames_1 = __importDefault(require("classnames"));
-const input_1 = __importDefault(require("antd/lib/input"));
-const withControlLabel_1 = __importDefault(require("./withControlLabel"));
-require("./TextArea.less");
-function TextArea({ className, ...otherProps }) {
-    return react_1.default.createElement(input_1.default.TextArea, { className: (0, classnames_1.default)("visualization-editor-text-area", className), ...otherProps });
+var _excluded = ["className"];
+function _extends() { _extends = Object.assign ? Object.assign.bind() : function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
+function _objectWithoutProperties(source, excluded) { if (source == null) return {}; var target = _objectWithoutPropertiesLoose(source, excluded); var key, i; if (Object.getOwnPropertySymbols) { var sourceSymbolKeys = Object.getOwnPropertySymbols(source); for (i = 0; i < sourceSymbolKeys.length; i++) { key = sourceSymbolKeys[i]; if (excluded.indexOf(key) >= 0) continue; if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue; target[key] = source[key]; } } return target; }
+function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) return {}; var target = {}; var sourceKeys = Object.keys(source); var key, i; for (i = 0; i < sourceKeys.length; i++) { key = sourceKeys[i]; if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } return target; }
+import React from "react";
+import cx from "classnames";
+import AntInput from "antd/lib/input";
+import withControlLabel from "./withControlLabel";
+import "./TextArea.less";
+function TextArea(_ref) {
+  var className = _ref.className,
+    otherProps = _objectWithoutProperties(_ref, _excluded);
+  return /*#__PURE__*/React.createElement(AntInput.TextArea, _extends({
+    className: cx("visualization-editor-text-area", className)
+  }, otherProps));
 }
-exports.default = (0, withControlLabel_1.default)(TextArea);
+export default withControlLabel(TextArea);
+//# sourceMappingURL=TextArea.js.map
