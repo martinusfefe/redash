@@ -1,23 +1,16 @@
-import createTabbedEditor from "../../../components/visualizations/editor/createTabbedEditor";
-import GeneralSettings from "./GeneralSettings";
-import GroupsSettings from "./GroupsSettings";
-import FormatSettings from "./FormatSettings";
-import StyleSettings from "./StyleSettings";
-export default createTabbedEditor([{
-  key: "General",
-  title: "General",
-  component: GeneralSettings
-}, {
-  key: "Groups",
-  title: "Groups",
-  component: GroupsSettings
-}, {
-  key: "Format",
-  title: "Format",
-  component: FormatSettings
-}, {
-  key: "Style",
-  title: "Style",
-  component: StyleSettings
-}]);
-//# sourceMappingURL=index.js.map
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const createTabbedEditor_1 = __importDefault(require("@/components/visualizations/editor/createTabbedEditor"));
+const GeneralSettings_1 = __importDefault(require("./GeneralSettings"));
+const GroupsSettings_1 = __importDefault(require("./GroupsSettings"));
+const FormatSettings_1 = __importDefault(require("./FormatSettings"));
+const StyleSettings_1 = __importDefault(require("./StyleSettings"));
+exports.default = (0, createTabbedEditor_1.default)([
+    { key: "General", title: "General", component: GeneralSettings_1.default },
+    { key: "Groups", title: "Groups", component: GroupsSettings_1.default },
+    { key: "Format", title: "Format", component: FormatSettings_1.default },
+    { key: "Style", title: "Style", component: StyleSettings_1.default },
+]);

@@ -1,24 +1,19 @@
-var _excluded = ["options"];
-function _extends() { _extends = Object.assign ? Object.assign.bind() : function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
-function _objectWithoutProperties(source, excluded) { if (source == null) return {}; var target = _objectWithoutPropertiesLoose(source, excluded); var key, i; if (Object.getOwnPropertySymbols) { var sourceSymbolKeys = Object.getOwnPropertySymbols(source); for (i = 0; i < sourceSymbolKeys.length; i++) { key = sourceSymbolKeys[i]; if (excluded.indexOf(key) >= 0) continue; if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue; target[key] = source[key]; } } return target; }
-function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) return {}; var target = {}; var sourceKeys = Object.keys(source); var key, i; for (i = 0; i < sourceKeys.length; i++) { key = sourceKeys[i]; if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } return target; }
-import React from "react";
-import { RendererPropTypes } from "../../prop-types";
-import PlotlyChart from "./PlotlyChart";
-import CustomPlotlyChart from "./CustomPlotlyChart";
-import { visualizationsSettings } from "../../visualizationsSettings";
-import "./renderer.less";
-export default function Renderer(_ref) {
-  var options = _ref.options,
-    props = _objectWithoutProperties(_ref, _excluded);
-  if (options.globalSeriesType === "custom" && visualizationsSettings.allowCustomJSVisualizations) {
-    return /*#__PURE__*/React.createElement(CustomPlotlyChart, _extends({
-      options: options
-    }, props));
-  }
-  return /*#__PURE__*/React.createElement(PlotlyChart, _extends({
-    options: options
-  }, props));
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = Renderer;
+const react_1 = __importDefault(require("react"));
+const prop_types_1 = require("@/visualizations/prop-types");
+const PlotlyChart_1 = __importDefault(require("./PlotlyChart"));
+const CustomPlotlyChart_1 = __importDefault(require("./CustomPlotlyChart"));
+const visualizationsSettings_1 = require("@/visualizations/visualizationsSettings");
+require("./renderer.less");
+function Renderer({ options, ...props }) {
+    if (options.globalSeriesType === "custom" && visualizationsSettings_1.visualizationsSettings.allowCustomJSVisualizations) {
+        return react_1.default.createElement(CustomPlotlyChart_1.default, { options: options, ...props });
+    }
+    return react_1.default.createElement(PlotlyChart_1.default, { options: options, ...props });
 }
-Renderer.propTypes = RendererPropTypes;
-//# sourceMappingURL=index.js.map
+Renderer.propTypes = prop_types_1.RendererPropTypes;

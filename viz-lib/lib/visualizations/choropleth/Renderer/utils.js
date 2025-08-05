@@ -1,99 +1,108 @@
-import { isString, isObject, isFinite, each, map, extend, uniq, filter, first } from "lodash";
-import chroma from "chroma-js";
-import { createNumberFormatter as createFormatter } from "../../../lib/value-format";
-export function darkenColor(color) {
-  return chroma(color).darken().hex();
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.darkenColor = darkenColor;
+exports.createNumberFormatter = createNumberFormatter;
+exports.prepareData = prepareData;
+exports.prepareFeatureProperties = prepareFeatureProperties;
+exports.getValueForFeature = getValueForFeature;
+exports.getColorByValue = getColorByValue;
+exports.createScale = createScale;
+const lodash_1 = require("lodash");
+const chroma_js_1 = __importDefault(require("chroma-js"));
+const value_format_1 = require("@/lib/value-format");
+function darkenColor(color) {
+    return (0, chroma_js_1.default)(color)
+        .darken()
+        .hex();
 }
-export function createNumberFormatter(format, placeholder) {
-  var formatter = createFormatter(format);
-  return value => {
-    if (isFinite(value)) {
-      return formatter(value);
+function createNumberFormatter(format, placeholder) {
+    const formatter = (0, value_format_1.createNumberFormatter)(format);
+    return (value) => {
+        if ((0, lodash_1.isFinite)(value)) {
+            return formatter(value);
+        }
+        return placeholder;
+    };
+}
+function prepareData(data, keyColumn, valueColumn) {
+    if (!keyColumn || !valueColumn) {
+        return {};
     }
-    return placeholder;
-  };
+    const result = {};
+    (0, lodash_1.each)(data, item => {
+        if (item[keyColumn]) {
+            const value = parseFloat(item[valueColumn]);
+            // @ts-expect-error ts-migrate(7053) FIXME: Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
+            result[item[keyColumn]] = {
+                code: item[keyColumn],
+                value: (0, lodash_1.isFinite)(value) ? value : undefined,
+                item,
+            };
+        }
+    });
+    return result;
 }
-export function prepareData(data, keyColumn, valueColumn) {
-  if (!keyColumn || !valueColumn) {
-    return {};
-  }
-  var result = {};
-  each(data, item => {
-    if (item[keyColumn]) {
-      var value = parseFloat(item[valueColumn]);
-      // @ts-expect-error ts-migrate(7053) FIXME: Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
-      result[item[keyColumn]] = {
-        code: item[keyColumn],
-        value: isFinite(value) ? value : undefined,
-        item
-      };
-    }
-  });
-  return result;
-}
-export function prepareFeatureProperties(feature, valueFormatted, data, targetField) {
-  var result = {};
-  each(feature.properties, (value, key) => {
+function prepareFeatureProperties(feature, valueFormatted, data, targetField) {
+    const result = {};
+    (0, lodash_1.each)(feature.properties, (value, key) => {
+        // @ts-expect-error ts-migrate(7053) FIXME: Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
+        result["@@" + key] = value;
+    });
     // @ts-expect-error ts-migrate(7053) FIXME: Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
-    result["@@" + key] = value;
-  });
-  // @ts-expect-error ts-migrate(7053) FIXME: Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
-  result["@@value"] = valueFormatted;
-  var datum = data[feature.properties[targetField]] || {};
-  return extend(result, datum.item);
+    result["@@value"] = valueFormatted;
+    const datum = data[feature.properties[targetField]] || {};
+    return (0, lodash_1.extend)(result, datum.item);
 }
-export function getValueForFeature(feature, data, targetField) {
-  var code = feature.properties[targetField];
-  if (isString(code) && isObject(data[code])) {
-    return data[code].value;
-  }
-  return undefined;
-}
-export function getColorByValue(value, limits, colors, defaultColor) {
-  if (isFinite(value)) {
-    for (var i = 0; i < limits.length; i += 1) {
-      if (value <= limits[i]) {
-        return colors[i];
-      }
+function getValueForFeature(feature, data, targetField) {
+    const code = feature.properties[targetField];
+    if ((0, lodash_1.isString)(code) && (0, lodash_1.isObject)(data[code])) {
+        return data[code].value;
     }
-  }
-  return defaultColor;
+    return undefined;
 }
-export function createScale(features, data, options) {
-  // Calculate limits
-  var values = uniq(filter(map(features, feature => getValueForFeature(feature, data, options.targetField)), isFinite));
-  if (values.length === 0) {
-    return {
-      limits: [],
-      colors: [],
-      legend: []
-    };
-  }
-  var steps = Math.min(values.length, options.steps);
-  if (steps === 1) {
-    return {
-      limits: values,
-      colors: [options.colors.max],
-      legend: [{
-        color: options.colors.max,
-        limit: first(values)
-      }]
-    };
-  }
-  var limits = chroma.limits(values, options.clusteringMode, steps - 1);
-
-  // Create color buckets
-  var colors = chroma.scale([options.colors.min, options.colors.max]).colors(limits.length);
-
-  // Group values for legend
-  var legend = map(colors, (color, index) => ({
-    color,
-    limit: limits[index]
-  })).reverse();
-  return {
-    limits,
-    colors,
-    legend
-  };
+function getColorByValue(value, limits, colors, defaultColor) {
+    if ((0, lodash_1.isFinite)(value)) {
+        for (let i = 0; i < limits.length; i += 1) {
+            if (value <= limits[i]) {
+                return colors[i];
+            }
+        }
+    }
+    return defaultColor;
 }
-//# sourceMappingURL=utils.js.map
+function createScale(features, data, options) {
+    // Calculate limits
+    const values = (0, lodash_1.uniq)((0, lodash_1.filter)((0, lodash_1.map)(features, feature => getValueForFeature(feature, data, options.targetField)), lodash_1.isFinite));
+    if (values.length === 0) {
+        return {
+            limits: [],
+            colors: [],
+            legend: [],
+        };
+    }
+    const steps = Math.min(values.length, options.steps);
+    if (steps === 1) {
+        return {
+            limits: values,
+            colors: [options.colors.max],
+            legend: [
+                {
+                    color: options.colors.max,
+                    limit: (0, lodash_1.first)(values),
+                },
+            ],
+        };
+    }
+    const limits = chroma_js_1.default.limits(values, options.clusteringMode, steps - 1);
+    // Create color buckets
+    const colors = chroma_js_1.default.scale([options.colors.min, options.colors.max]).colors(limits.length);
+    // Group values for legend
+    const legend = (0, lodash_1.map)(colors, (color, index) => ({
+        color,
+        limit: limits[index],
+    })).reverse();
+    return { limits, colors, legend };
+}

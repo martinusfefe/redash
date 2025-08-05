@@ -1,39 +1,29 @@
-var _excluded = ["className", "children"],
-  _excluded2 = ["className", "children"];
-function _extends() { _extends = Object.assign ? Object.assign.bind() : function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
-function _objectWithoutProperties(source, excluded) { if (source == null) return {}; var target = _objectWithoutPropertiesLoose(source, excluded); var key, i; if (Object.getOwnPropertySymbols) { var sourceSymbolKeys = Object.getOwnPropertySymbols(source); for (i = 0; i < sourceSymbolKeys.length; i++) { key = sourceSymbolKeys[i]; if (excluded.indexOf(key) >= 0) continue; if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue; target[key] = source[key]; } } return target; }
-function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) return {}; var target = {}; var sourceKeys = Object.keys(source); var key, i; for (i = 0; i < sourceKeys.length; i++) { key = sourceKeys[i]; if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } return target; }
-import React from "react";
-import cx from "classnames";
-import "./Section.less";
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = Section;
+const react_1 = __importDefault(require("react"));
+const classnames_1 = __importDefault(require("classnames"));
+require("./Section.less");
 // @ts-expect-error ts-migrate(2700) FIXME: Rest types may only be created from object types.
-function SectionTitle(_ref) {
-  var className = _ref.className,
-    children = _ref.children,
-    props = _objectWithoutProperties(_ref, _excluded);
-  if (!children) {
-    return null;
-  }
-  return /*#__PURE__*/React.createElement("h4", _extends({
-    className: cx("visualization-editor-section-title", className)
-  }, props), children);
+function SectionTitle({ className, children, ...props }) {
+    if (!children) {
+        return null;
+    }
+    return (react_1.default.createElement("h4", { className: (0, classnames_1.default)("visualization-editor-section-title", className), ...props }, children));
 }
 SectionTitle.defaultProps = {
-  className: null,
-  children: null
+    className: null,
+    children: null,
 };
 // @ts-expect-error ts-migrate(2700) FIXME: Rest types may only be created from object types.
-export default function Section(_ref2) {
-  var className = _ref2.className,
-    children = _ref2.children,
-    props = _objectWithoutProperties(_ref2, _excluded2);
-  return /*#__PURE__*/React.createElement("div", _extends({
-    className: cx("visualization-editor-section", className)
-  }, props), children);
+function Section({ className, children, ...props }) {
+    return (react_1.default.createElement("div", { className: (0, classnames_1.default)("visualization-editor-section", className), ...props }, children));
 }
 Section.defaultProps = {
-  className: null,
-  children: null
+    className: null,
+    children: null,
 };
 Section.Title = SectionTitle;
-//# sourceMappingURL=Section.js.map
