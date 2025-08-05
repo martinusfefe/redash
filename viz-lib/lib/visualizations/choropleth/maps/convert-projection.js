@@ -1,3 +1,5 @@
+"use strict";
+
 // This helper converts USA map from Mercator projection to Albers (USA)
 // Usage: `node convert-projection.js > usa-albers.geo.json`
 

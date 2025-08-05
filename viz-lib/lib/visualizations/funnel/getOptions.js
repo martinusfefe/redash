@@ -1,4 +1,10 @@
-import { isFinite, map, merge, includes } from "lodash";
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = getOptions;
+var _lodash = require("lodash");
 var DEFAULT_OPTIONS = {
   stepCol: {
     colName: null,
@@ -21,22 +27,22 @@ var DEFAULT_OPTIONS = {
   numberFormat: "0,0[.]00",
   percentFormat: "0[.]00%"
 };
-export default function getOptions(options, _ref) {
+function getOptions(options, _ref) {
   var columns = _ref.columns;
-  options = merge({}, DEFAULT_OPTIONS, options);
+  options = (0, _lodash.merge)({}, DEFAULT_OPTIONS, options);
 
   // Validate
-  var availableColumns = map(columns, c => c.name);
-  if (!includes(availableColumns, options.stepCol.colName)) {
+  var availableColumns = (0, _lodash.map)(columns, c => c.name);
+  if (!(0, _lodash.includes)(availableColumns, options.stepCol.colName)) {
     options.stepCol.colName = null;
   }
-  if (!includes(availableColumns, options.valueCol.colName)) {
+  if (!(0, _lodash.includes)(availableColumns, options.valueCol.colName)) {
     options.valueCol.colName = null;
   }
-  if (!includes(availableColumns, options.sortKeyCol.colName)) {
+  if (!(0, _lodash.includes)(availableColumns, options.sortKeyCol.colName)) {
     options.sortKeyCol.colName = null;
   }
-  if (!isFinite(options.itemsLimit)) {
+  if (!(0, _lodash.isFinite)(options.itemsLimit)) {
     options.itemsLimit = DEFAULT_OPTIONS.itemsLimit;
   }
   if (options.itemsLimit < 2) {

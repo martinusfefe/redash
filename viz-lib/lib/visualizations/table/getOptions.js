@@ -1,10 +1,17 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = getOptions;
+var _lodash = _interopRequireDefault(require("lodash"));
+var _visualizationsSettings = require("../visualizationsSettings");
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
 function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
-import _ from "lodash";
-import { visualizationsSettings } from "../visualizationsSettings";
 var DEFAULT_OPTIONS = {
   itemsPerPage: 25,
   paginationSize: "default" // not editable through Editor
@@ -24,7 +31,7 @@ function getColumnNameWithoutType(column) {
   if (parts[0] === "" && parts.length === 2) {
     return parts[1];
   }
-  if (!_.includes(filterTypes, parts[1])) {
+  if (!_lodash.default.includes(filterTypes, parts[1])) {
     return column;
   }
   return parts[0];
@@ -40,7 +47,7 @@ function getDefaultColumnsOptions(columns) {
     date: "datetime",
     datetime: "datetime"
   };
-  return _.map(columns, (col, index) => ({
+  return _lodash.default.map(columns, (col, index) => ({
     name: col.name,
     type: col.type,
     // @ts-expect-error ts-migrate(7053) FIXME: Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
@@ -57,20 +64,20 @@ function getDefaultColumnsOptions(columns) {
 }
 function getDefaultFormatOptions(column) {
   var dateTimeFormat = {
-    date: visualizationsSettings.dateFormat || "DD/MM/YYYY",
-    datetime: visualizationsSettings.dateTimeFormat || "DD/MM/YYYY HH:mm"
+    date: _visualizationsSettings.visualizationsSettings.dateFormat || "DD/MM/YYYY",
+    datetime: _visualizationsSettings.visualizationsSettings.dateTimeFormat || "DD/MM/YYYY HH:mm"
   };
   var numberFormat = {
-    integer: visualizationsSettings.integerFormat || "0,0",
-    float: visualizationsSettings.floatFormat || "0,0.00"
+    integer: _visualizationsSettings.visualizationsSettings.integerFormat || "0,0",
+    float: _visualizationsSettings.visualizationsSettings.floatFormat || "0,0.00"
   };
   return {
     // @ts-expect-error ts-migrate(7053) FIXME: Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
     dateTimeFormat: dateTimeFormat[column.type],
     // @ts-expect-error ts-migrate(7053) FIXME: Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
     numberFormat: numberFormat[column.type],
-    nullValue: visualizationsSettings.nullValue,
-    booleanValues: visualizationsSettings.booleanValues || ["false", "true"],
+    nullValue: _visualizationsSettings.visualizationsSettings.nullValue,
+    booleanValues: _visualizationsSettings.visualizationsSettings.booleanValues || ["false", "true"],
     // `image` cell options
     imageUrlTemplate: "{{ @ }}",
     imageTitleTemplate: "{{ @ }}",
@@ -84,13 +91,13 @@ function getDefaultFormatOptions(column) {
   };
 }
 function wereColumnsReordered(queryColumns, visualizationColumns) {
-  queryColumns = _.map(queryColumns, col => col.name);
-  visualizationColumns = _.map(visualizationColumns, col => col.name);
+  queryColumns = _lodash.default.map(queryColumns, col => col.name);
+  visualizationColumns = _lodash.default.map(visualizationColumns, col => col.name);
 
   // Some columns may be removed - so skip them (but keep original order)
-  visualizationColumns = _.filter(visualizationColumns, col => _.includes(queryColumns, col));
+  visualizationColumns = _lodash.default.filter(visualizationColumns, col => _lodash.default.includes(queryColumns, col));
   // Pick query columns that were previously saved with viz (but keep order too)
-  queryColumns = _.filter(queryColumns, col => _.includes(visualizationColumns, col));
+  queryColumns = _lodash.default.filter(queryColumns, col => _lodash.default.includes(visualizationColumns, col));
 
   // Both array now have the same size as they both contains only common columns
   // (in fact, it was an intersection, that kept order of items on both arrays).
@@ -106,19 +113,19 @@ function wereColumnsReordered(queryColumns, visualizationColumns) {
 function getColumnsOptions(columns, visualizationColumns) {
   var options = getDefaultColumnsOptions(columns);
   if (wereColumnsReordered(columns, visualizationColumns)) {
-    visualizationColumns = _.fromPairs(_.map(visualizationColumns, (col, index) => [col.name, _.extend({}, col, {
+    visualizationColumns = _lodash.default.fromPairs(_lodash.default.map(visualizationColumns, (col, index) => [col.name, _lodash.default.extend({}, col, {
       order: index
     })]));
   } else {
-    visualizationColumns = _.fromPairs(_.map(visualizationColumns, col => [col.name, _.omit(col, "order")]));
+    visualizationColumns = _lodash.default.fromPairs(_lodash.default.map(visualizationColumns, col => [col.name, _lodash.default.omit(col, "order")]));
   }
-  _.each(options, col => _.extend(col, visualizationColumns[col.name]));
-  return _.sortBy(options, "order");
+  _lodash.default.each(options, col => _lodash.default.extend(col, visualizationColumns[col.name]));
+  return _lodash.default.sortBy(options, "order");
 }
-export default function getOptions(options, _ref) {
+function getOptions(options, _ref) {
   var columns = _ref.columns;
   options = _objectSpread(_objectSpread({}, DEFAULT_OPTIONS), options);
-  options.columns = _.map(getColumnsOptions(columns, options.columns), col => _objectSpread(_objectSpread({}, getDefaultFormatOptions(col)), col));
+  options.columns = _lodash.default.map(getColumnsOptions(columns, options.columns), col => _objectSpread(_objectSpread({}, getDefaultFormatOptions(col)), col));
   return options;
 }
 //# sourceMappingURL=getOptions.js.map

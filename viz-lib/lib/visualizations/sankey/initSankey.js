@@ -1,6 +1,15 @@
-import { isNil, map, extend, sortBy, includes, filter, reduce, find, keys, values, identity, mapValues, every, isNaN, isNumber, isString } from "lodash";
-import * as d3 from "d3";
-import d3sankey from "./d3sankey";
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = initSankey;
+var _lodash = require("lodash");
+var d3 = _interopRequireWildcard(require("d3"));
+var _d3sankey = _interopRequireDefault(require("./d3sankey"));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
+function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 function getConnectedNodes(node) {
   console.log(node);
   // source link = this node is the source, I need the targets
@@ -19,9 +28,9 @@ function graph(data) {
   var nodes = [];
   var validKey = key => key !== "value";
   // @ts-expect-error
-  var dataKeys = sortBy(filter(keys(data[0]), validKey), identity);
+  var dataKeys = (0, _lodash.sortBy)((0, _lodash.filter)((0, _lodash.keys)(data[0]), validKey), _lodash.identity);
   function normalizeName(name) {
-    if (!isNil(name)) {
+    if (!(0, _lodash.isNil)(name)) {
       return "" + name;
     }
     return "Exit";
@@ -77,10 +86,10 @@ function graph(data) {
   // @ts-expect-error ts-migrate(2339) FIXME: Property 'scale' does not exist on type 'typeof im... Remove this comment to see the full error message
   var color = d3.scale.category20();
   return {
-    nodes: map(nodes, d => extend(d, {
+    nodes: (0, _lodash.map)(nodes, d => (0, _lodash.extend)(d, {
       color: color(d.name.replace(/ .*/, ""))
     })),
-    links: values(links)
+    links: (0, _lodash.values)(links)
   };
 }
 function spreadNodes(height, data) {
@@ -90,12 +99,12 @@ function spreadNodes(height, data) {
   // @ts-expect-error
   .map(d => d.values);
   nodesByBreadth.forEach(nodes => {
-    nodes = filter(sortBy(nodes, node => -node.value), node => node.name !== "Exit");
+    nodes = (0, _lodash.filter)((0, _lodash.sortBy)(nodes, node => -node.value), node => node.name !== "Exit");
 
     // @ts-expect-error ts-migrate(2571) FIXME: Object is of type 'unknown'.
     var sum = d3.sum(nodes, o => o.dy);
     var padding = (height - sum) / nodes.length;
-    reduce(nodes, (y0, node) => {
+    (0, _lodash.reduce)(nodes, (y0, node) => {
       node.y = y0;
       return y0 + node.dy + padding;
     }, 0);
@@ -103,12 +112,12 @@ function spreadNodes(height, data) {
 }
 function isDataValid(data) {
   // data should contain column named 'value', otherwise no reason to render anything at all
-  if (!data || !find(data.columns, c => c.name === "value")) {
+  if (!data || !(0, _lodash.find)(data.columns, c => c.name === "value")) {
     return false;
   }
   // prepareData will have coerced any invalid data rows into NaN, which is verified below
-  return every(data.rows, row => every(row, v => {
-    if (!v || isString(v)) {
+  return (0, _lodash.every)(data.rows, row => (0, _lodash.every)(row, v => {
+    if (!v || (0, _lodash.isString)(v)) {
       return true;
     }
     return isFinite(v);
@@ -117,14 +126,14 @@ function isDataValid(data) {
 
 // will coerce number strings into valid numbers
 function prepareDataRows(rows) {
-  return map(rows, row => mapValues(row, v => {
-    if (!v || isNumber(v)) {
+  return (0, _lodash.map)(rows, row => (0, _lodash.mapValues)(row, v => {
+    if (!v || (0, _lodash.isNumber)(v)) {
       return v;
     }
-    return isNaN(parseFloat(v)) ? v : parseFloat(v);
+    return (0, _lodash.isNaN)(parseFloat(v)) ? v : parseFloat(v);
   }));
 }
-export default function initSankey(data) {
+function initSankey(data) {
   data.rows = prepareDataRows(data.rows);
   if (!isDataValid(data)) {
     return element => {
@@ -153,7 +162,7 @@ export default function initSankey(data) {
     var svg = d3.select(element).append("svg").attr("class", "sankey").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom).append("g").attr("transform", "translate(".concat(margin.left, ",").concat(margin.top, ")"));
 
     // Set the sankey diagram properties
-    var sankey = d3sankey().nodeWidth(15).nodePadding(10).size([width, height]);
+    var sankey = (0, _d3sankey.default)().nodeWidth(15).nodePadding(10).size([width, height]);
     var path = sankey.link();
     sankey.nodes(data.nodes).links(data.links).layout(0);
     spreadNodes(height, data);
@@ -167,14 +176,14 @@ export default function initSankey(data) {
     var node = svg.append("g").selectAll(".node").data(data.nodes).enter().append("g").filter(n => n.name !== "Exit").attr("class", "node").attr("transform", d => "translate(".concat(d.x, ",").concat(d.y, ")"));
     function nodeMouseOver(currentNode) {
       var nodes = getConnectedNodes(currentNode);
-      nodes = map(nodes, i => i.id);
+      nodes = (0, _lodash.map)(nodes, i => i.id);
       node.filter(d => {
         if (d === currentNode) {
           return false;
         }
-        return !includes(nodes, d.id);
+        return !(0, _lodash.includes)(nodes, d.id);
       }).style("opacity", 0.2);
-      link.filter(l => !(includes(currentNode.sourceLinks, l) || includes(currentNode.targetLinks, l))).style("opacity", 0.2);
+      link.filter(l => !((0, _lodash.includes)(currentNode.sourceLinks, l) || (0, _lodash.includes)(currentNode.targetLinks, l))).style("opacity", 0.2);
     }
     function nodeMouseOut() {
       node.style("opacity", 1);

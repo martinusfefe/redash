@@ -1,13 +1,16 @@
-import React from "react";
-import enzyme from "enzyme";
-import getOptions from "../getOptions";
-import SeriesSettings from "./SeriesSettings";
+"use strict";
+
+var _react = _interopRequireDefault(require("react"));
+var _enzyme = _interopRequireDefault(require("enzyme"));
+var _getOptions = _interopRequireDefault(require("../getOptions"));
+var _SeriesSettings = _interopRequireDefault(require("./SeriesSettings"));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 function findByTestID(wrapper, testId) {
   return wrapper.find("[data-test=\"".concat(testId, "\"]"));
 }
 function mount(options, done) {
-  options = getOptions(options);
-  return enzyme.mount( /*#__PURE__*/React.createElement(SeriesSettings, {
+  options = (0, _getOptions.default)(options);
+  return _enzyme.default.mount( /*#__PURE__*/_react.default.createElement(_SeriesSettings.default, {
     visualizationName: "Test",
     data: {
       columns: [{

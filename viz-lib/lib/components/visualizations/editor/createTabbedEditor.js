@@ -1,23 +1,32 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.TabbedEditor = TabbedEditor;
+exports.UpdateOptionsStrategy = void 0;
+exports.default = createTabbedEditor;
+var _lodash = require("lodash");
+var _react = _interopRequireDefault(require("react"));
+var _tabs = _interopRequireDefault(require("antd/lib/tabs"));
 var _excluded = ["tabs", "options", "data", "onOptionsChange"];
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 function _extends() { _extends = Object.assign ? Object.assign.bind() : function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 function _objectWithoutProperties(source, excluded) { if (source == null) return {}; var target = _objectWithoutPropertiesLoose(source, excluded); var key, i; if (Object.getOwnPropertySymbols) { var sourceSymbolKeys = Object.getOwnPropertySymbols(source); for (i = 0; i < sourceSymbolKeys.length; i++) { key = sourceSymbolKeys[i]; if (excluded.indexOf(key) >= 0) continue; if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue; target[key] = source[key]; } } return target; }
 function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) return {}; var target = {}; var sourceKeys = Object.keys(source); var key, i; for (i = 0; i < sourceKeys.length; i++) { key = sourceKeys[i]; if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } return target; }
-import { isFunction, map, filter, extend, merge } from "lodash";
-import React from "react";
-import Tabs from "antd/lib/tabs";
-export var UpdateOptionsStrategy = {
-  replace: (existingOptions, newOptions) => merge({}, newOptions),
-  shallowMerge: (existingOptions, newOptions) => extend({}, existingOptions, newOptions),
-  deepMerge: (existingOptions, newOptions) => merge({}, existingOptions, newOptions)
+var UpdateOptionsStrategy = {
+  replace: (existingOptions, newOptions) => (0, _lodash.merge)({}, newOptions),
+  shallowMerge: (existingOptions, newOptions) => (0, _lodash.extend)({}, existingOptions, newOptions),
+  deepMerge: (existingOptions, newOptions) => (0, _lodash.merge)({}, existingOptions, newOptions)
 };
 
 /*
 (ts-migrate) TODO: Migrate the remaining prop types
 ...EditorPropTypes
 */
-
+exports.UpdateOptionsStrategy = UpdateOptionsStrategy;
 // @ts-expect-error ts-migrate(2339) FIXME: Property 'options' does not exist on type 'Props'.
-export function TabbedEditor(_ref) {
+function TabbedEditor(_ref) {
   var tabs = _ref.tabs,
     options = _ref.options,
     data = _ref.data,
@@ -29,20 +38,20 @@ export function TabbedEditor(_ref) {
   };
 
   // @ts-expect-error ts-migrate(2322) FIXME: Type '(number | ((() => string) & (() => string)) ... Remove this comment to see the full error message
-  tabs = filter(tabs, tab => isFunction(tab.isAvailable) ? tab.isAvailable(options, data) : true);
-  return /*#__PURE__*/React.createElement(Tabs, {
+  tabs = (0, _lodash.filter)(tabs, tab => (0, _lodash.isFunction)(tab.isAvailable) ? tab.isAvailable(options, data) : true);
+  return /*#__PURE__*/_react.default.createElement(_tabs.default, {
     animated: false,
     tabBarGutter: 20
-  }, map(tabs, _ref2 => {
+  }, (0, _lodash.map)(tabs, _ref2 => {
     var key = _ref2.key,
       title = _ref2.title,
       Component = _ref2.component;
-    return /*#__PURE__*/React.createElement(Tabs.TabPane, {
+    return /*#__PURE__*/_react.default.createElement(_tabs.default.TabPane, {
       key: key,
-      tab: /*#__PURE__*/React.createElement("span", {
+      tab: /*#__PURE__*/_react.default.createElement("span", {
         "data-test": "VisualizationEditor.Tabs.".concat(key)
-      }, isFunction(title) ? title(options) : title)
-    }, /*#__PURE__*/React.createElement(Component, _extends({
+      }, (0, _lodash.isFunction)(title) ? title(options) : title)
+    }, /*#__PURE__*/_react.default.createElement(Component, _extends({
       options: options,
       data: data,
       onOptionsChange: optionsChanged
@@ -52,9 +61,9 @@ export function TabbedEditor(_ref) {
 TabbedEditor.defaultProps = {
   tabs: []
 };
-export default function createTabbedEditor(tabs) {
+function createTabbedEditor(tabs) {
   return function TabbedEditorWrapper(props) {
-    return /*#__PURE__*/React.createElement(TabbedEditor, _extends({}, props, {
+    return /*#__PURE__*/_react.default.createElement(TabbedEditor, _extends({}, props, {
       tabs: tabs
     }));
   };

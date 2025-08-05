@@ -1,5 +1,12 @@
-import _ from "lodash";
-import moment from "moment";
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = prepareData;
+var _lodash = _interopRequireDefault(require("lodash"));
+var _moment = _interopRequireDefault(require("moment"));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 var momentInterval = {
   weekly: "weeks",
   daily: "days",
@@ -7,8 +14,8 @@ var momentInterval = {
 };
 function groupData(sortedData) {
   var result = {};
-  _.each(sortedData, item => {
-    var date = moment(item.date);
+  _lodash.default.each(sortedData, item => {
+    var date = (0, _moment.default)(item.date);
     var groupKey = date.valueOf();
     // @ts-expect-error ts-migrate(7053) FIXME: Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
     result[groupKey] = result[groupKey] || {
@@ -19,18 +26,18 @@ function groupData(sortedData) {
     // @ts-expect-error ts-migrate(7053) FIXME: Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
     result[groupKey].values[item.stage] = parseInt(item.value, 10) || null;
   });
-  return _.values(result);
+  return _lodash.default.values(result);
 }
 function prepareDiagonalData(sortedData, options) {
   var timeInterval = options.timeInterval;
   var grouped = groupData(sortedData);
-  var firstStage = _.min(_.map(sortedData, i => i.stage));
+  var firstStage = _lodash.default.min(_lodash.default.map(sortedData, i => i.stage));
   // @ts-expect-error ts-migrate(2571) FIXME: Object is of type 'unknown'.
-  var stageCount = moment(_.last(grouped).date).diff(_.first(grouped).date, momentInterval[timeInterval]);
+  var stageCount = (0, _moment.default)(_lodash.default.last(grouped).date).diff(_lodash.default.first(grouped).date, momentInterval[timeInterval]);
   var lastStage = firstStage + stageCount;
   var previousDate = null;
   var data = [];
-  _.each(grouped, group => {
+  _lodash.default.each(grouped, group => {
     if (previousDate !== null) {
       // @ts-expect-error ts-migrate(2571) FIXME: Object is of type 'unknown'.
       var diff = Math.abs(previousDate.diff(group.date, momentInterval[timeInterval]));
@@ -65,12 +72,12 @@ function prepareDiagonalData(sortedData, options) {
 function prepareSimpleData(sortedData, options) {
   var timeInterval = options.timeInterval;
   var grouped = groupData(sortedData);
-  var stages = _.map(sortedData, i => i.stage);
-  var firstStage = _.min(stages);
-  var lastStage = _.max(stages);
+  var stages = _lodash.default.map(sortedData, i => i.stage);
+  var firstStage = _lodash.default.min(stages);
+  var lastStage = _lodash.default.max(stages);
   var previousDate = null;
   var data = [];
-  _.each(grouped, group => {
+  _lodash.default.each(grouped, group => {
     if (previousDate !== null) {
       // @ts-expect-error ts-migrate(2571) FIXME: Object is of type 'unknown'.
       var diff = Math.abs(previousDate.diff(group.date, momentInterval[timeInterval]));
@@ -94,24 +101,24 @@ function prepareSimpleData(sortedData, options) {
   return data;
 }
 function isDataValid(rawData, options) {
-  var columnNames = _.map(rawData.columns, c => c.name);
-  return rawData.rows.length > 0 && _.includes(columnNames, options.dateColumn) && _.includes(columnNames, options.stageColumn) && _.includes(columnNames, options.totalColumn) && _.includes(columnNames, options.valueColumn);
+  var columnNames = _lodash.default.map(rawData.columns, c => c.name);
+  return rawData.rows.length > 0 && _lodash.default.includes(columnNames, options.dateColumn) && _lodash.default.includes(columnNames, options.stageColumn) && _lodash.default.includes(columnNames, options.totalColumn) && _lodash.default.includes(columnNames, options.valueColumn);
 }
-export default function prepareData(rawData, options) {
+function prepareData(rawData, options) {
   if (!isDataValid(rawData, options)) {
     return {
       data: [],
       initialDate: null
     };
   }
-  rawData = _.map(rawData.rows, item => ({
+  rawData = _lodash.default.map(rawData.rows, item => ({
     date: item[options.dateColumn],
     stage: parseInt(item[options.stageColumn], 10),
     total: parseFloat(item[options.totalColumn]),
     value: parseFloat(item[options.valueColumn])
   }));
-  var sortedData = _.sortBy(rawData, r => r.date + r.stage);
-  var initialDate = moment(sortedData[0].date).toDate();
+  var sortedData = _lodash.default.sortBy(rawData, r => r.date + r.stage);
+  var initialDate = (0, _moment.default)(sortedData[0].date).toDate();
   var data;
   switch (options.mode) {
     case "simple":

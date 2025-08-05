@@ -1,34 +1,43 @@
-import { isFunction, each, map, toString, clone } from "lodash";
-import chroma from "chroma-js";
-import L from "leaflet";
-import "leaflet.markercluster";
-import "leaflet/dist/leaflet.css";
-import "leaflet.markercluster/dist/MarkerCluster.css";
-import "leaflet.markercluster/dist/MarkerCluster.Default.css";
-import "beautifymarker";
-import "beautifymarker/leaflet-beautify-marker-icon.css";
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = initMap;
+var _lodash = require("lodash");
+var _chromaJs = _interopRequireDefault(require("chroma-js"));
+var _leaflet = _interopRequireDefault(require("leaflet"));
+require("leaflet.markercluster");
+require("leaflet/dist/leaflet.css");
+require("leaflet.markercluster/dist/MarkerCluster.css");
+require("leaflet.markercluster/dist/MarkerCluster.Default.css");
+require("beautifymarker");
+require("beautifymarker/leaflet-beautify-marker-icon.css");
+var _markerIcon = _interopRequireDefault(require("leaflet/dist/images/marker-icon.png"));
+var _markerIcon2x = _interopRequireDefault(require("leaflet/dist/images/marker-icon-2x.png"));
+var _markerShadow = _interopRequireDefault(require("leaflet/dist/images/marker-shadow.png"));
+require("leaflet-fullscreen");
+require("leaflet-fullscreen/dist/leaflet.fullscreen.css");
+var _valueFormat = require("../../lib/value-format");
+var _sanitize = _interopRequireDefault(require("../../services/sanitize"));
+var _resizeObserver = _interopRequireDefault(require("../../services/resizeObserver"));
+var _chooseTextColorForBackground = _interopRequireDefault(require("../../lib/chooseTextColorForBackground"));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 // @ts-expect-error ts-migrate(2307) FIXME: Cannot find module 'leaflet/dist/images/marker-ico... Remove this comment to see the full error message
-import markerIcon from "leaflet/dist/images/marker-icon.png";
+
 // @ts-expect-error ts-migrate(2307) FIXME: Cannot find module 'leaflet/dist/images/marker-ico... Remove this comment to see the full error message
-import markerIconRetina from "leaflet/dist/images/marker-icon-2x.png";
+
 // @ts-expect-error ts-migrate(2307) FIXME: Cannot find module 'leaflet/dist/images/marker-sha... Remove this comment to see the full error message
-import markerShadow from "leaflet/dist/images/marker-shadow.png";
-import "leaflet-fullscreen";
-import "leaflet-fullscreen/dist/leaflet.fullscreen.css";
-import { formatSimpleTemplate } from "../../lib/value-format";
-import sanitize from "../../services/sanitize";
-import resizeObserver from "../../services/resizeObserver";
-import chooseTextColorForBackground from "../../lib/chooseTextColorForBackground";
 
 // This is a workaround for an issue with giving Leaflet load the icon on its own.
-L.Icon.Default.mergeOptions({
-  iconUrl: markerIcon,
-  iconRetinaUrl: markerIconRetina,
-  shadowUrl: markerShadow
+_leaflet.default.Icon.Default.mergeOptions({
+  iconUrl: _markerIcon.default,
+  iconRetinaUrl: _markerIcon2x.default,
+  shadowUrl: _markerShadow.default
 });
 
 // @ts-expect-error ts-migrate(2339) FIXME: Property '_getIconUrl' does not exist on type 'Def... Remove this comment to see the full error message
-delete L.Icon.Default.prototype._getIconUrl;
+delete _leaflet.default.Icon.Default.prototype._getIconUrl;
 var iconAnchors = {
   marker: [14, 32],
   circle: [10, 10],
@@ -41,40 +50,40 @@ var popupAnchors = {
   rectangle: [0, -3],
   circle: [1, -3]
 };
-var createHeatpointMarker = (lat, lon, color) => L.circleMarker([lat, lon], {
+var createHeatpointMarker = (lat, lon, color) => _leaflet.default.circleMarker([lat, lon], {
   fillColor: color,
   fillOpacity: 0.9,
   stroke: false
 });
 
 // @ts-expect-error ts-migrate(2339) FIXME: Property 'MarkerClusterIcon' does not exist on typ... Remove this comment to see the full error message
-L.MarkerClusterIcon = L.DivIcon.extend({
+_leaflet.default.MarkerClusterIcon = _leaflet.default.DivIcon.extend({
   options: {
     color: null,
     className: "marker-cluster",
-    iconSize: new L.Point(40, 40)
+    iconSize: new _leaflet.default.Point(40, 40)
   },
   // @ts-expect-error ts-migrate(7019) FIXME: Rest parameter 'args' implicitly has an 'any[]' ty... Remove this comment to see the full error message
   createIcon() {
-    var color = chroma(this.options.color);
-    var textColor = chooseTextColorForBackground(color);
+    var color = (0, _chromaJs.default)(this.options.color);
+    var textColor = (0, _chooseTextColorForBackground.default)(color);
     var borderColor = color.alpha(0.4).css();
     var backgroundColor = color.alpha(0.8).css();
     for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
       args[_key] = arguments[_key];
     }
-    var icon = L.DivIcon.prototype.createIcon.call(this, ...args);
-    icon.innerHTML = "\n      <div style=\"background: ".concat(backgroundColor, "\">\n        <span style=\"color: ").concat(textColor, "\">").concat(toString(this.options.html), "</span>\n      </div>\n    ");
+    var icon = _leaflet.default.DivIcon.prototype.createIcon.call(this, ...args);
+    icon.innerHTML = "\n      <div style=\"background: ".concat(backgroundColor, "\">\n        <span style=\"color: ").concat(textColor, "\">").concat((0, _lodash.toString)(this.options.html), "</span>\n      </div>\n    ");
     icon.style.background = borderColor;
     return icon;
   }
 });
 // @ts-expect-error ts-migrate(2339) FIXME: Property 'markerClusterIcon' does not exist on typ... Remove this comment to see the full error message
-L.markerClusterIcon = function () {
+_leaflet.default.markerClusterIcon = function () {
   for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
     args[_key2] = arguments[_key2];
   }
-  return new L.MarkerClusterIcon(...args);
+  return new _leaflet.default.MarkerClusterIcon(...args);
 };
 function createIconMarker(lat, lon, _ref) {
   var iconShape = _ref.iconShape,
@@ -83,7 +92,7 @@ function createIconMarker(lat, lon, _ref) {
     backgroundColor = _ref.backgroundColor,
     borderColor = _ref.borderColor;
   // @ts-expect-error ts-migrate(2339) FIXME: Property 'BeautifyIcon' does not exist on type 'ty... Remove this comment to see the full error message
-  var icon = L.BeautifyIcon.icon({
+  var icon = _leaflet.default.BeautifyIcon.icon({
     iconShape,
     icon: iconFont,
     iconSize: iconShape === "rectangle" ? [22, 22] : false,
@@ -96,16 +105,16 @@ function createIconMarker(lat, lon, _ref) {
     backgroundColor,
     borderColor
   });
-  return L.marker([lat, lon], {
+  return _leaflet.default.marker([lat, lon], {
     icon
   });
 }
 function createMarkerClusterGroup(color) {
   // @ts-expect-error ts-migrate(2339) FIXME: Property 'markerClusterGroup' does not exist on ty... Remove this comment to see the full error message
-  return L.markerClusterGroup({
+  return _leaflet.default.markerClusterGroup({
     iconCreateFunction(cluster) {
       // @ts-expect-error ts-migrate(2339) FIXME: Property 'markerClusterIcon' does not exist on typ... Remove this comment to see the full error message
-      return L.markerClusterIcon({
+      return _leaflet.default.markerClusterIcon({
         color,
         html: cluster.getChildCount()
       });
@@ -118,14 +127,14 @@ function createMarkersLayer(options, _ref2) {
   var classify = options.classify,
     clusterMarkers = options.clusterMarkers,
     customizeMarkers = options.customizeMarkers;
-  var result = clusterMarkers ? createMarkerClusterGroup(color) : L.featureGroup();
+  var result = clusterMarkers ? createMarkerClusterGroup(color) : _leaflet.default.featureGroup();
 
   // create markers
-  each(points, _ref3 => {
+  (0, _lodash.each)(points, _ref3 => {
     var lat = _ref3.lat,
       lon = _ref3.lon,
       row = _ref3.row;
-    var rowCopy = clone(row);
+    var rowCopy = (0, _lodash.clone)(row);
     rowCopy[options.latColName] = lat;
     rowCopy[options.lonColName] = lon;
     var marker;
@@ -135,40 +144,40 @@ function createMarkersLayer(options, _ref2) {
       if (customizeMarkers) {
         marker = createIconMarker(lat, lon, options);
       } else {
-        marker = L.marker([lat, lon]);
+        marker = _leaflet.default.marker([lat, lon]);
       }
     }
     if (options.tooltip.enabled) {
       if (options.tooltip.template !== "") {
-        marker.bindTooltip(sanitize(formatSimpleTemplate(options.tooltip.template, rowCopy)));
+        marker.bindTooltip((0, _sanitize.default)((0, _valueFormat.formatSimpleTemplate)(options.tooltip.template, rowCopy)));
       } else {
         marker.bindTooltip("\n          <strong>".concat(lat, ", ").concat(lon, "</strong>\n        "));
       }
     }
     if (options.popup.enabled) {
       if (options.popup.template !== "") {
-        marker.bindPopup(sanitize(formatSimpleTemplate(options.popup.template, rowCopy)));
+        marker.bindPopup((0, _sanitize.default)((0, _valueFormat.formatSimpleTemplate)(options.popup.template, rowCopy)));
       } else {
-        marker.bindPopup("\n          <ul style=\"list-style-type: none; padding-left: 0\">\n            <li><strong>".concat(lat, ", ").concat(lon, "</strong>\n            ").concat(map(row, (v, k) => "<li>".concat(k, ": ").concat(v, "</li>")).join(""), "\n          </ul>\n        "));
+        marker.bindPopup("\n          <ul style=\"list-style-type: none; padding-left: 0\">\n            <li><strong>".concat(lat, ", ").concat(lon, "</strong>\n            ").concat((0, _lodash.map)(row, (v, k) => "<li>".concat(k, ": ").concat(v, "</li>")).join(""), "\n          </ul>\n        "));
       }
     }
     result.addLayer(marker);
   });
   return result;
 }
-export default function initMap(container) {
-  var _map = L.map(container, {
+function initMap(container) {
+  var _map = _leaflet.default.map(container, {
     center: [0.0, 0.0],
     zoom: 1,
     scrollWheelZoom: false,
     // @ts-expect-error ts-migrate(2345) FIXME: Argument of type '{ center: [number, number]; zoom... Remove this comment to see the full error message
     fullscreenControl: true
   });
-  var _tileLayer = L.tileLayer("//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+  var _tileLayer = _leaflet.default.tileLayer("//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
   }).addTo(_map);
-  var _markerLayers = L.featureGroup().addTo(_map);
-  var _layersControls = L.control.layers().addTo(_map);
+  var _markerLayers = _leaflet.default.featureGroup().addTo(_map);
+  var _layersControls = _leaflet.default.control.layers().addTo(_map);
   var onBoundsChange = () => {};
   var boundsChangedFromMap = false;
   var onMapMoveEnd = () => {
@@ -189,7 +198,7 @@ export default function initMap(container) {
       _markerLayers.removeLayer(layer);
       _layersControls.removeLayer(layer);
     });
-    each(groups, group => {
+    (0, _lodash.each)(groups, group => {
       var layer = createMarkersLayer(options, group);
       _markerLayers.addLayer(layer);
       _layersControls.addOverlay(layer, group.name);
@@ -204,7 +213,7 @@ export default function initMap(container) {
   }
   function updateBounds(bounds) {
     if (!boundsChangedFromMap) {
-      bounds = bounds ? L.latLngBounds([bounds._southWest.lat, bounds._southWest.lng], [bounds._northEast.lat, bounds._northEast.lng]) : _markerLayers.getBounds();
+      bounds = bounds ? _leaflet.default.latLngBounds([bounds._southWest.lat, bounds._southWest.lng], [bounds._northEast.lat, bounds._northEast.lng]) : _markerLayers.getBounds();
       if (bounds.isValid()) {
         _map.fitBounds(bounds, {
           animate: false,
@@ -213,7 +222,7 @@ export default function initMap(container) {
       }
     }
   }
-  var unwatchResize = resizeObserver(container, () => {
+  var unwatchResize = (0, _resizeObserver.default)(container, () => {
     _map.invalidateSize(false);
   });
   return {
@@ -221,7 +230,7 @@ export default function initMap(container) {
       return onBoundsChange;
     },
     set onBoundsChange(value) {
-      onBoundsChange = isFunction(value) ? value : () => {};
+      onBoundsChange = (0, _lodash.isFunction)(value) ? value : () => {};
     },
     updateLayers,
     updateBounds,

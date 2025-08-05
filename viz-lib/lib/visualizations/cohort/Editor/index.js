@@ -1,23 +1,31 @@
-import createTabbedEditor from "../../../components/visualizations/editor/createTabbedEditor";
-import ColumnsSettings from "./ColumnsSettings";
-import OptionsSettings from "./OptionsSettings";
-import ColorsSettings from "./ColorsSettings";
-import AppearanceSettings from "./AppearanceSettings";
-export default createTabbedEditor([{
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _createTabbedEditor = _interopRequireDefault(require("../../../components/visualizations/editor/createTabbedEditor"));
+var _ColumnsSettings = _interopRequireDefault(require("./ColumnsSettings"));
+var _OptionsSettings = _interopRequireDefault(require("./OptionsSettings"));
+var _ColorsSettings = _interopRequireDefault(require("./ColorsSettings"));
+var _AppearanceSettings = _interopRequireDefault(require("./AppearanceSettings"));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _default = (0, _createTabbedEditor.default)([{
   key: "Columns",
   title: "Columns",
-  component: ColumnsSettings
+  component: _ColumnsSettings.default
 }, {
   key: "Options",
   title: "Options",
-  component: OptionsSettings
+  component: _OptionsSettings.default
 }, {
   key: "Colors",
   title: "Colors",
-  component: ColorsSettings
+  component: _ColorsSettings.default
 }, {
   key: "Appearance",
   title: "Appearance",
-  component: AppearanceSettings
+  component: _AppearanceSettings.default
 }]);
+exports.default = _default;
 //# sourceMappingURL=index.js.map

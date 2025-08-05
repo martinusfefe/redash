@@ -1,19 +1,27 @@
-import React from "react";
-import { extend } from "lodash";
-import Tooltip from "antd/lib/tooltip";
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.updateVisualizationsSettings = updateVisualizationsSettings;
+exports.visualizationsSettings = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _lodash = require("lodash");
+var _tooltip = _interopRequireDefault(require("antd/lib/tooltip"));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 function HelpTrigger(_ref) {
   var title = _ref.title,
     href = _ref.href,
     className = _ref.className,
     children = _ref.children;
-  return /*#__PURE__*/React.createElement(Tooltip, {
-    title: /*#__PURE__*/React.createElement(React.Fragment, null, title, /*#__PURE__*/React.createElement("i", {
+  return /*#__PURE__*/_react.default.createElement(_tooltip.default, {
+    title: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, title, /*#__PURE__*/_react.default.createElement("i", {
       className: "fa fa-external-link",
       style: {
         marginLeft: 5
       }
     }))
-  }, /*#__PURE__*/React.createElement("a", {
+  }, /*#__PURE__*/_react.default.createElement("a", {
     className: className,
     href: href,
     target: "_blank",
@@ -26,9 +34,9 @@ HelpTrigger.defaultValues = {
   children: null
 };
 function Link(props) {
-  return /*#__PURE__*/React.createElement("a", props);
+  return /*#__PURE__*/_react.default.createElement("a", props);
 }
-export var visualizationsSettings = {
+var visualizationsSettings = {
   HelpTriggerComponent: HelpTrigger,
   LinkComponent: Link,
   dateFormat: "DD/MM/YYYY",
@@ -42,7 +50,8 @@ export var visualizationsSettings = {
   hidePlotlyModeBar: false,
   choroplethAvailableMaps: {}
 };
-export function updateVisualizationsSettings(options) {
-  extend(visualizationsSettings, options);
+exports.visualizationsSettings = visualizationsSettings;
+function updateVisualizationsSettings(options) {
+  (0, _lodash.extend)(visualizationsSettings, options);
 }
 //# sourceMappingURL=visualizationsSettings.js.map

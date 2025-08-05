@@ -1,20 +1,27 @@
-import { isNil, trimStart } from "lodash";
-import React from "react";
-import { Section, Switch, TextArea } from "../../../components/visualizations/editor";
-import { EditorPropTypes } from "../../prop-types";
-var defaultCustomCode = trimStart("\n// Available variables are x, ys, element, and Plotly\n// Type console.log(x, ys); for more info about x and ys\n// To plot your graph call Plotly.plot(element, ...)\n// Plotly examples and docs: https://plot.ly/javascript/\n");
-export default function CustomChartSettings(_ref) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = CustomChartSettings;
+var _lodash = require("lodash");
+var _react = _interopRequireDefault(require("react"));
+var _editor = require("../../../components/visualizations/editor");
+var _propTypes = require("../../prop-types");
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var defaultCustomCode = (0, _lodash.trimStart)("\n// Available variables are x, ys, element, and Plotly\n// Type console.log(x, ys); for more info about x and ys\n// To plot your graph call Plotly.plot(element, ...)\n// Plotly examples and docs: https://plot.ly/javascript/\n");
+function CustomChartSettings(_ref) {
   var options = _ref.options,
     onOptionsChange = _ref.onOptionsChange;
-  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Section, null, /*#__PURE__*/React.createElement(TextArea, {
+  return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_editor.Section, null, /*#__PURE__*/_react.default.createElement(_editor.TextArea, {
     label: "Custom code",
     "data-test": "Chart.Custom.Code",
     rows: "10",
-    defaultValue: isNil(options.customCode) ? defaultCustomCode : options.customCode,
+    defaultValue: (0, _lodash.isNil)(options.customCode) ? defaultCustomCode : options.customCode,
     onChange: event => onOptionsChange({
       customCode: event.target.value
     })
-  })), /*#__PURE__*/React.createElement(Section, null, /*#__PURE__*/React.createElement(Switch
+  })), /*#__PURE__*/_react.default.createElement(_editor.Section, null, /*#__PURE__*/_react.default.createElement(_editor.Switch
   // @ts-expect-error ts-migrate(2322) FIXME: Type 'string' is not assignable to type 'never'.
   , {
     "data-test": "Chart.Custom.EnableConsoleLogs"
@@ -26,7 +33,7 @@ export default function CustomChartSettings(_ref) {
     onChange: enableConsoleLogs => onOptionsChange({
       enableConsoleLogs
     })
-  }, "Show errors in the console")), /*#__PURE__*/React.createElement(Section, null, /*#__PURE__*/React.createElement(Switch
+  }, "Show errors in the console")), /*#__PURE__*/_react.default.createElement(_editor.Section, null, /*#__PURE__*/_react.default.createElement(_editor.Switch
   // @ts-expect-error ts-migrate(2322) FIXME: Type 'string' is not assignable to type 'never'.
   , {
     id: "chart-editor-auto-update-custom-chart"
@@ -43,5 +50,5 @@ export default function CustomChartSettings(_ref) {
     })
   }, "Auto update graph")));
 }
-CustomChartSettings.propTypes = EditorPropTypes;
+CustomChartSettings.propTypes = _propTypes.EditorPropTypes;
 //# sourceMappingURL=CustomChartSettings.js.map

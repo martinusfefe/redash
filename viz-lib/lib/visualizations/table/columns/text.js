@@ -1,11 +1,18 @@
-import React from "react";
-import HtmlContent from "../../../components/HtmlContent";
-import { Section, Checkbox } from "../../../components/visualizations/editor";
-import { createTextFormatter } from "../../../lib/value-format";
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = initTextColumn;
+var _react = _interopRequireDefault(require("react"));
+var _HtmlContent = _interopRequireDefault(require("../../../components/HtmlContent"));
+var _editor = require("../../../components/visualizations/editor");
+var _valueFormat = require("../../../lib/value-format");
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 function Editor(_ref) {
   var column = _ref.column,
     _onChange = _ref.onChange;
-  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Section, null, /*#__PURE__*/React.createElement(Checkbox, {
+  return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_editor.Section, null, /*#__PURE__*/_react.default.createElement(_editor.Checkbox, {
     "data-test": "Table.ColumnEditor.Text.AllowHTML",
     checked: column.allowHTML,
     onChange: event => _onChange({
@@ -14,7 +21,7 @@ function Editor(_ref) {
   }, "Allow HTML content")), column.allowHTML &&
   /*#__PURE__*/
   // @ts-expect-error ts-migrate(2745) FIXME: This JSX tag's 'children' prop expects type 'never... Remove this comment to see the full error message
-  React.createElement(Section, null, /*#__PURE__*/React.createElement(Checkbox, {
+  _react.default.createElement(_editor.Section, null, /*#__PURE__*/_react.default.createElement(_editor.Checkbox, {
     "data-test": "Table.ColumnEditor.Text.HighlightLinks",
     checked: column.highlightLinks,
     onChange: event => _onChange({
@@ -22,8 +29,8 @@ function Editor(_ref) {
     })
   }, "Highlight links")));
 }
-export default function initTextColumn(column) {
-  var format = createTextFormatter(column.allowHTML && column.highlightLinks);
+function initTextColumn(column) {
+  var format = (0, _valueFormat.createTextFormatter)(column.allowHTML && column.highlightLinks);
   function prepareData(row) {
     return {
       text: format(row[column.name])
@@ -34,7 +41,7 @@ export default function initTextColumn(column) {
     // eslint-disable-line react/prop-types
     var _prepareData = prepareData(row),
       text = _prepareData.text;
-    return column.allowHTML ? /*#__PURE__*/React.createElement(HtmlContent, null, text) : text;
+    return column.allowHTML ? /*#__PURE__*/_react.default.createElement(_HtmlContent.default, null, text) : text;
   }
   TextColumn.prepareData = prepareData;
   return TextColumn;

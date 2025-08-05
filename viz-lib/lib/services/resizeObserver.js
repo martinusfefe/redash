@@ -1,3 +1,9 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = observe;
 var items = new Map();
 function checkItems() {
   if (items.size > 0) {
@@ -15,7 +21,7 @@ function checkItems() {
     setTimeout(checkItems, 100);
   }
 }
-export default function observe(node, callback) {
+function observe(node, callback) {
   if (node && !items.has(node)) {
     var shouldTrigger = items.size === 0;
     items.set(node, {

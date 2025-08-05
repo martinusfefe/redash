@@ -1,7 +1,14 @@
-import { map } from "lodash";
-import React from "react";
-import { Section, Select } from "../../../components/visualizations/editor";
-import { EditorPropTypes } from "../../prop-types";
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = OptionsSettings;
+var _lodash = require("lodash");
+var _react = _interopRequireDefault(require("react"));
+var _editor = require("../../../components/visualizations/editor");
+var _propTypes = require("../../prop-types");
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 var CohortTimeIntervals = {
   daily: "Daily",
   weekly: "Weekly",
@@ -11,10 +18,10 @@ var CohortModes = {
   diagonal: "Fill gaps with zeros",
   simple: "Show data as is"
 };
-export default function OptionsSettings(_ref) {
+function OptionsSettings(_ref) {
   var options = _ref.options,
     onOptionsChange = _ref.onOptionsChange;
-  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Section, null, /*#__PURE__*/React.createElement(Select, {
+  return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_editor.Section, null, /*#__PURE__*/_react.default.createElement(_editor.Select, {
     layout: "horizontal",
     label: "Time Interval",
     "data-test": "Cohort.TimeInterval",
@@ -22,13 +29,13 @@ export default function OptionsSettings(_ref) {
     onChange: timeInterval => onOptionsChange({
       timeInterval
     })
-  }, map(CohortTimeIntervals, (name, value) =>
+  }, (0, _lodash.map)(CohortTimeIntervals, (name, value) =>
   /*#__PURE__*/
   // @ts-expect-error ts-migrate(2339) FIXME: Property 'Option' does not exist on type '({ class... Remove this comment to see the full error message
-  React.createElement(Select.Option, {
+  _react.default.createElement(_editor.Select.Option, {
     key: value,
     "data-test": "Cohort.TimeInterval." + value
-  }, name)))), /*#__PURE__*/React.createElement(Section, null, /*#__PURE__*/React.createElement(Select, {
+  }, name)))), /*#__PURE__*/_react.default.createElement(_editor.Section, null, /*#__PURE__*/_react.default.createElement(_editor.Select, {
     layout: "horizontal",
     label: "Mode",
     "data-test": "Cohort.Mode",
@@ -36,13 +43,13 @@ export default function OptionsSettings(_ref) {
     onChange: mode => onOptionsChange({
       mode
     })
-  }, map(CohortModes, (name, value) =>
+  }, (0, _lodash.map)(CohortModes, (name, value) =>
   /*#__PURE__*/
   // @ts-expect-error ts-migrate(2339) FIXME: Property 'Option' does not exist on type '({ class... Remove this comment to see the full error message
-  React.createElement(Select.Option, {
+  _react.default.createElement(_editor.Select.Option, {
     key: value,
     "data-test": "Cohort.Mode." + value
   }, name)))));
 }
-OptionsSettings.propTypes = EditorPropTypes;
+OptionsSettings.propTypes = _propTypes.EditorPropTypes;
 //# sourceMappingURL=OptionsSettings.js.map

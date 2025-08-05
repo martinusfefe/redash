@@ -1,7 +1,13 @@
-import { isObject, isUndefined, filter, map } from "lodash";
-import { getPieDimensions } from "./preparePieData";
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = prepareLayout;
+var _lodash = require("lodash");
+var _preparePieData = require("./preparePieData");
 function getAxisTitle(axis) {
-  return isObject(axis.title) ? axis.title.text : null;
+  return (0, _lodash.isObject)(axis.title) ? axis.title.text : null;
 }
 function getAxisScaleType(axis) {
   switch (axis.type) {
@@ -30,7 +36,7 @@ function prepareXAxis(axisOptions, additionalOptions) {
       axis.categoryorder = "category ascending";
     }
   }
-  if (!isUndefined(axisOptions.labels)) {
+  if (!(0, _lodash.isUndefined)(axisOptions.labels)) {
     // @ts-expect-error ts-migrate(2339) FIXME: Property 'showticklabels' does not exist on type '... Remove this comment to see the full error message
     axis.showticklabels = axisOptions.labels.enabled;
   }
@@ -49,7 +55,7 @@ function prepareYAxis(axisOptions) {
 }
 function preparePieLayout(layout, options, data) {
   var hasName = /{{\s*@@name\s*}}/.test(options.textFormat);
-  var _getPieDimensions = getPieDimensions(data),
+  var _getPieDimensions = (0, _preparePieData.getPieDimensions)(data),
     cellsInRow = _getPieDimensions.cellsInRow,
     cellWidth = _getPieDimensions.cellWidth,
     cellHeight = _getPieDimensions.cellHeight,
@@ -57,7 +63,7 @@ function preparePieLayout(layout, options, data) {
   if (hasName) {
     layout.annotations = [];
   } else {
-    layout.annotations = filter(map(data, (series, index) => {
+    layout.annotations = (0, _lodash.filter)((0, _lodash.map)(data, (series, index) => {
       // @ts-expect-error ts-migrate(2362) FIXME: The left-hand side of an arithmetic operation must... Remove this comment to see the full error message
       var xPosition = index % cellsInRow * cellWidth;
       // @ts-expect-error ts-migrate(2362) FIXME: The left-hand side of an arithmetic operation must... Remove this comment to see the full error message
@@ -94,7 +100,7 @@ function prepareBoxLayout(layout, options, data) {
   layout.boxgroupgap = 0.5;
   return layout;
 }
-export default function prepareLayout(element, options, data) {
+function prepareLayout(element, options, data) {
   var layout = {
     margin: {
       l: 10,

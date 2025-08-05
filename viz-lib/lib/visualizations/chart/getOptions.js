@@ -1,5 +1,11 @@
-import { merge } from "lodash";
-import { visualizationsSettings } from "../visualizationsSettings";
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = getOptions;
+var _lodash = require("lodash");
+var _visualizationsSettings = require("../visualizationsSettings");
 var DEFAULT_OPTIONS = {
   globalSeriesType: "column",
   sortX: true,
@@ -56,10 +62,10 @@ var DEFAULT_OPTIONS = {
 
   missingValuesAsZero: true
 };
-export default function getOptions(options) {
-  var result = merge({}, DEFAULT_OPTIONS, {
+function getOptions(options) {
+  var result = (0, _lodash.merge)({}, DEFAULT_OPTIONS, {
     showDataLabels: options.globalSeriesType === "pie",
-    dateTimeFormat: visualizationsSettings.dateTimeFormat
+    dateTimeFormat: _visualizationsSettings.visualizationsSettings.dateTimeFormat
   }, options);
 
   // Backward compatibility

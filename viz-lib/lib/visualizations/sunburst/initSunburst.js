@@ -1,9 +1,17 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = initSunburst;
+var d3 = _interopRequireWildcard(require("d3"));
+var _lodash = require("lodash");
+function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
+function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 /**
  * The following is based on @chrisrzhou's example from: http://bl.ocks.org/chrisrzhou/d5bdd8546f64ca0e4366.
  */
 
-import * as d3 from "d3";
-import { has, map, keys, groupBy, sortBy, filter, find, compact, first, every, identity } from "lodash";
 var exitNode = "<<<Exit>>>";
 // @ts-expect-error ts-migrate(2339) FIXME: Property 'scale' does not exist on type 'typeof im... Remove this comment to see the full error message
 var colors = d3.scale.category10();
@@ -24,28 +32,28 @@ function getAncestors(node) {
   return path;
 }
 function buildNodesFromHierarchyData(data) {
-  var grouped = groupBy(data, "sequence");
-  return map(grouped, value => {
-    var sorted = sortBy(value, "stage");
+  var grouped = (0, _lodash.groupBy)(data, "sequence");
+  return (0, _lodash.map)(grouped, value => {
+    var sorted = (0, _lodash.sortBy)(value, "stage");
     return {
       size: value[0].value || 0,
       sequence: value[0].sequence,
-      nodes: map(sorted, i => i.node)
+      nodes: (0, _lodash.map)(sorted, i => i.node)
     };
   });
 }
 function buildNodesFromTableData(data) {
   var validKey = key => key !== "value";
-  var dataKeys = sortBy(filter(keys(data[0]), validKey), identity);
-  return map(data, (row, sequence) => ({
+  var dataKeys = (0, _lodash.sortBy)((0, _lodash.filter)((0, _lodash.keys)(data[0]), validKey), _lodash.identity);
+  return (0, _lodash.map)(data, (row, sequence) => ({
     size: row.value || 0,
     sequence,
-    nodes: compact(map(dataKeys, key => row[key]))
+    nodes: (0, _lodash.compact)((0, _lodash.map)(dataKeys, key => row[key]))
   }));
 }
 function isDataInHierarchyFormat(data) {
-  var firstRow = first(data);
-  return every(["sequence", "stage", "node", "value"], field => has(firstRow, field));
+  var firstRow = (0, _lodash.first)(data);
+  return (0, _lodash.every)(["sequence", "stage", "node", "value"], field => (0, _lodash.has)(firstRow, field));
 }
 function buildHierarchy(data) {
   data = isDataInHierarchyFormat(data) ? buildNodesFromHierarchyData(data) : buildNodesFromTableData(data);
@@ -76,7 +84,7 @@ function buildHierarchy(data) {
       }
 
       // @ts-expect-error ts-migrate(2339) FIXME: Property 'name' does not exist on type 'never'.
-      var childNode = find(children, child => child.name === nodeName);
+      var childNode = (0, _lodash.find)(children, child => child.name === nodeName);
       if (isLeaf && childNode) {
         // @ts-expect-error ts-migrate(2339) FIXME: Property 'children' does not exist on type 'never'... Remove this comment to see the full error message
         childNode.children = childNode.children || [];
@@ -116,7 +124,7 @@ function buildHierarchy(data) {
 function isDataValid(data) {
   return data && data.rows.length > 0;
 }
-export default function initSunburst(data) {
+function initSunburst(data) {
   if (!isDataValid(data)) {
     return element => {
       d3.select(element).selectAll("*").remove();

@@ -1,15 +1,25 @@
-import { map, max, uniq, sortBy, flatten, find, findIndex } from "lodash";
-import { createNumberFormatter } from "../../../lib/value-format";
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = prepareHeatmapData;
+var _lodash = require("lodash");
+var _valueFormat = require("../../../lib/value-format");
+var _colorscale = _interopRequireDefault(require("plotly.js/src/components/colorscale"));
+var d3 = _interopRequireWildcard(require("d3"));
+var _chooseTextColorForBackground = _interopRequireDefault(require("../../../lib/chooseTextColorForBackground"));
+function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
+function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 // @ts-expect-error ts-migrate(7016) FIXME: Could not find a declaration file for module 'plot... Remove this comment to see the full error message
-import Colorscale from "plotly.js/src/components/colorscale";
-import * as d3 from "d3";
-import chooseTextColorForBackground from "../../../lib/chooseTextColorForBackground";
+
 var defaultColorScheme = [[0, "#356aff"], [0.14, "#4a7aff"], [0.28, "#5d87ff"], [0.42, "#7398ff"], [0.56, "#fb8c8c"], [0.71, "#ec6463"], [0.86, "#ec4949"], [1, "#e92827"]];
 function getColor(value, scheme) {
   if (value == 1) {
     return scheme[scheme.length - 1][1];
   }
-  var upperboundIndex = findIndex(scheme, range => value < range[0]);
+  var upperboundIndex = (0, _lodash.findIndex)(scheme, range => value < range[0]);
   var scale = d3.interpolate(scheme[upperboundIndex - 1][1], scheme[upperboundIndex][1]);
   return scale(value);
 }
@@ -26,14 +36,14 @@ function prepareSeries(series, options, additionalOptions) {
   };
 
   // @ts-expect-error ts-migrate(2322) FIXME: Type 'any[]' is not assignable to type 'never[]'.
-  plotlySeries.x = uniq(map(series.data, v => v.x));
+  plotlySeries.x = (0, _lodash.uniq)((0, _lodash.map)(series.data, v => v.x));
   // @ts-expect-error ts-migrate(2322) FIXME: Type 'any[]' is not assignable to type 'never[]'.
-  plotlySeries.y = uniq(map(series.data, v => v.y));
+  plotlySeries.y = (0, _lodash.uniq)((0, _lodash.map)(series.data, v => v.y));
   if (options.sortX) {
-    plotlySeries.x = sortBy(plotlySeries.x);
+    plotlySeries.x = (0, _lodash.sortBy)(plotlySeries.x);
   }
   if (options.sortY) {
-    plotlySeries.y = sortBy(plotlySeries.y);
+    plotlySeries.y = (0, _lodash.sortBy)(plotlySeries.y);
   }
   if (options.reverseX) {
     plotlySeries.x.reverse();
@@ -41,7 +51,7 @@ function prepareSeries(series, options, additionalOptions) {
   if (options.reverseY) {
     plotlySeries.y.reverse();
   }
-  var zMax = max(map(series.data, d => d.zVal));
+  var zMax = (0, _lodash.max)((0, _lodash.map)(series.data, d => d.zVal));
 
   // Use text trace instead of default annotation for better performance
   var dataLabels = {
@@ -58,7 +68,7 @@ function prepareSeries(series, options, additionalOptions) {
   for (var i = 0; i < plotlySeries.y.length; i += 1) {
     var item = [];
     for (var j = 0; j < plotlySeries.x.length; j += 1) {
-      var datum = find(series.data, {
+      var datum = (0, _lodash.find)(series.data, {
         x: plotlySeries.x[j],
         y: plotlySeries.y[i]
       });
@@ -71,7 +81,7 @@ function prepareSeries(series, options, additionalOptions) {
         dataLabels.text.push(formatNumber(zValue));
         if (options.colorScheme) {
           var bgcolor = getColor(zValue / zMax, colorScheme);
-          var fgcolor = chooseTextColorForBackground(bgcolor);
+          var fgcolor = (0, _chooseTextColorForBackground.default)(bgcolor);
           // @ts-expect-error ts-migrate(2345) FIXME: Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
           dataLabels.textfont.color.push(fgcolor);
         }
@@ -85,19 +95,19 @@ function prepareSeries(series, options, additionalOptions) {
   }
   return [plotlySeries];
 }
-export default function prepareHeatmapData(seriesList, options) {
+function prepareHeatmapData(seriesList, options) {
   var colorScheme = [];
   if (!options.colorScheme) {
     colorScheme = defaultColorScheme;
   } else if (options.colorScheme === "Custom...") {
     colorScheme = [[0, options.heatMinColor], [1, options.heatMaxColor]];
   } else {
-    colorScheme = Colorscale.getScale(options.colorScheme);
+    colorScheme = _colorscale.default.getScale(options.colorScheme);
   }
   var additionalOptions = {
     colorScheme,
-    formatNumber: createNumberFormatter(options.numberFormat)
+    formatNumber: (0, _valueFormat.createNumberFormatter)(options.numberFormat)
   };
-  return flatten(map(seriesList, series => prepareSeries(series, options, additionalOptions)));
+  return (0, _lodash.flatten)((0, _lodash.map)(seriesList, series => prepareSeries(series, options, additionalOptions)));
 }
 //# sourceMappingURL=prepareHeatmapData.js.map

@@ -1,12 +1,19 @@
-import { map } from "lodash";
-import React from "react";
-import { Section, Select } from "../../../components/visualizations/editor";
-import { EditorPropTypes } from "../../prop-types";
-export default function ColumnsSettings(_ref) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = ColumnsSettings;
+var _lodash = require("lodash");
+var _react = _interopRequireDefault(require("react"));
+var _editor = require("../../../components/visualizations/editor");
+var _propTypes = require("../../prop-types");
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function ColumnsSettings(_ref) {
   var options = _ref.options,
     data = _ref.data,
     onOptionsChange = _ref.onOptionsChange;
-  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Section, null, /*#__PURE__*/React.createElement(Select, {
+  return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_editor.Section, null, /*#__PURE__*/_react.default.createElement(_editor.Select, {
     layout: "horizontal",
     label: "Date (Bucket)",
     "data-test": "Cohort.DateColumn",
@@ -14,17 +21,17 @@ export default function ColumnsSettings(_ref) {
     onChange: dateColumn => onOptionsChange({
       dateColumn
     })
-  }, map(data.columns, _ref2 => {
+  }, (0, _lodash.map)(data.columns, _ref2 => {
     var name = _ref2.name;
     return (
       /*#__PURE__*/
       // @ts-expect-error ts-migrate(2339) FIXME: Property 'Option' does not exist on type '({ class... Remove this comment to see the full error message
-      React.createElement(Select.Option, {
+      _react.default.createElement(_editor.Select.Option, {
         key: name,
         "data-test": "Cohort.DateColumn." + name
       }, name)
     );
-  }))), /*#__PURE__*/React.createElement(Section, null, /*#__PURE__*/React.createElement(Select, {
+  }))), /*#__PURE__*/_react.default.createElement(_editor.Section, null, /*#__PURE__*/_react.default.createElement(_editor.Select, {
     layout: "horizontal",
     label: "Stage",
     "data-test": "Cohort.StageColumn",
@@ -32,17 +39,17 @@ export default function ColumnsSettings(_ref) {
     onChange: stageColumn => onOptionsChange({
       stageColumn
     })
-  }, map(data.columns, _ref3 => {
+  }, (0, _lodash.map)(data.columns, _ref3 => {
     var name = _ref3.name;
     return (
       /*#__PURE__*/
       // @ts-expect-error ts-migrate(2339) FIXME: Property 'Option' does not exist on type '({ class... Remove this comment to see the full error message
-      React.createElement(Select.Option, {
+      _react.default.createElement(_editor.Select.Option, {
         key: name,
         "data-test": "Cohort.StageColumn." + name
       }, name)
     );
-  }))), /*#__PURE__*/React.createElement(Section, null, /*#__PURE__*/React.createElement(Select, {
+  }))), /*#__PURE__*/_react.default.createElement(_editor.Section, null, /*#__PURE__*/_react.default.createElement(_editor.Select, {
     layout: "horizontal",
     label: "Bucket Population Size",
     "data-test": "Cohort.TotalColumn",
@@ -50,17 +57,17 @@ export default function ColumnsSettings(_ref) {
     onChange: totalColumn => onOptionsChange({
       totalColumn
     })
-  }, map(data.columns, _ref4 => {
+  }, (0, _lodash.map)(data.columns, _ref4 => {
     var name = _ref4.name;
     return (
       /*#__PURE__*/
       // @ts-expect-error ts-migrate(2339) FIXME: Property 'Option' does not exist on type '({ class... Remove this comment to see the full error message
-      React.createElement(Select.Option, {
+      _react.default.createElement(_editor.Select.Option, {
         key: name,
         "data-test": "Cohort.TotalColumn." + name
       }, name)
     );
-  }))), /*#__PURE__*/React.createElement(Section, null, /*#__PURE__*/React.createElement(Select, {
+  }))), /*#__PURE__*/_react.default.createElement(_editor.Section, null, /*#__PURE__*/_react.default.createElement(_editor.Select, {
     layout: "horizontal",
     label: "Stage Value",
     "data-test": "Cohort.ValueColumn",
@@ -68,17 +75,17 @@ export default function ColumnsSettings(_ref) {
     onChange: valueColumn => onOptionsChange({
       valueColumn
     })
-  }, map(data.columns, _ref5 => {
+  }, (0, _lodash.map)(data.columns, _ref5 => {
     var name = _ref5.name;
     return (
       /*#__PURE__*/
       // @ts-expect-error ts-migrate(2339) FIXME: Property 'Option' does not exist on type '({ class... Remove this comment to see the full error message
-      React.createElement(Select.Option, {
+      _react.default.createElement(_editor.Select.Option, {
         key: name,
         "data-test": "Cohort.ValueColumn." + name
       }, name)
     );
   }))));
 }
-ColumnsSettings.propTypes = EditorPropTypes;
+ColumnsSettings.propTypes = _propTypes.EditorPropTypes;
 //# sourceMappingURL=ColumnsSettings.js.map

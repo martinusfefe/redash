@@ -1,11 +1,18 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = ColumnMappingSelect;
+var _lodash = require("lodash");
+var _react = _interopRequireDefault(require("react"));
+var _editor = require("../../../components/visualizations/editor");
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
 function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
-import { isString, map, uniq, flatten, filter, sortBy } from "lodash";
-import React from "react";
-import { Section, Select } from "../../../components/visualizations/editor";
 var MappingTypes = {
   x: {
     label: "X Column"
@@ -36,13 +43,13 @@ var SwappedMappingTypes = _objectSpread(_objectSpread({}, MappingTypes), {}, {
     multiple: true
   }
 });
-export default function ColumnMappingSelect(_ref) {
+function ColumnMappingSelect(_ref) {
   var value = _ref.value,
     availableColumns = _ref.availableColumns,
     type = _ref.type,
     _onChange = _ref.onChange,
     areAxesSwapped = _ref.areAxesSwapped;
-  var options = sortBy(filter(uniq(flatten([availableColumns, value])), v => isString(v) && v !== ""));
+  var options = (0, _lodash.sortBy)((0, _lodash.filter)((0, _lodash.uniq)((0, _lodash.flatten)([availableColumns, value])), v => (0, _lodash.isString)(v) && v !== ""));
 
   // this swaps the ui, as the data will be swapped on render
   var _ref2 = !areAxesSwapped ? MappingTypes[type] : SwappedMappingTypes[type],
@@ -51,7 +58,7 @@ export default function ColumnMappingSelect(_ref) {
   return (
     /*#__PURE__*/
     // @ts-expect-error ts-migrate(2745) FIXME: This JSX tag's 'children' prop expects type 'never... Remove this comment to see the full error message
-    React.createElement(Section, null, /*#__PURE__*/React.createElement(Select, {
+    _react.default.createElement(_editor.Section, null, /*#__PURE__*/_react.default.createElement(_editor.Select, {
       label: label,
       "data-test": "Chart.ColumnMapping.".concat(type),
       mode: multiple ? "multiple" : "default",
@@ -62,10 +69,10 @@ export default function ColumnMappingSelect(_ref) {
       // @ts-expect-error ts-migrate(2349) FIXME: This expression is not callable.
       ,
       onChange: column => _onChange(column || null, type)
-    }, map(options, c =>
+    }, (0, _lodash.map)(options, c =>
     /*#__PURE__*/
     // @ts-expect-error ts-migrate(2339) FIXME: Property 'Option' does not exist on type '({ class... Remove this comment to see the full error message
-    React.createElement(Select.Option, {
+    _react.default.createElement(_editor.Select.Option, {
       key: c,
       value: c,
       "data-test": "Chart.ColumnMapping.".concat(type, ".").concat(c)

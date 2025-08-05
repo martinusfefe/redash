@@ -1,17 +1,24 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = prepareDefaultData;
+var _lodash = require("lodash");
+var _chooseTextColorForBackground = _interopRequireDefault(require("../../../lib/chooseTextColorForBackground"));
+var _ColorPalette = require("../../ColorPalette");
+var _utils = require("./utils");
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
 function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
-import { isNil, extend, each, includes, map, sortBy, toString } from "lodash";
-import chooseTextColorForBackground from "../../../lib/chooseTextColorForBackground";
-import { AllColorPaletteArrays, ColorPaletteTypes } from "../../ColorPalette";
-import { cleanNumber, normalizeValue, getSeriesAxis } from "./utils";
 function getSeriesColor(options, seriesOptions, seriesIndex, numSeries) {
   // @ts-expect-error ts-migrate(7053) FIXME: Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
-  var palette = AllColorPaletteArrays[options.color_scheme];
+  var palette = _ColorPalette.AllColorPaletteArrays[options.color_scheme];
   // @ts-expect-error ts-migrate(7053) FIXME: Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
-  if (ColorPaletteTypes[options.color_scheme] === 'continuous' && palette.length > numSeries) {
+  if (_ColorPalette.ColorPaletteTypes[options.color_scheme] === 'continuous' && palette.length > numSeries) {
     var step = (palette.length - 1) / (numSeries - 1 || 1);
     var index = Math.round(step * seriesIndex);
     return seriesOptions.color || palette[index % palette.length];
@@ -28,7 +35,7 @@ function getHoverInfoPattern(options) {
 }
 function prepareBarSeries(series, options, additionalOptions) {
   series.type = "bar";
-  series.offsetgroup = toString(additionalOptions.index);
+  series.offsetgroup = (0, _lodash.toString)(additionalOptions.index);
   if (options.showDataLabels) {
     series.textposition = "inside";
   } else {
@@ -57,7 +64,7 @@ function prepareBubbleSeries(series, options, _ref) {
   series.mode = "markers";
   series.marker = {
     color: seriesColor,
-    size: map(data, i => i.size * coefficient),
+    size: (0, _lodash.map)(data, i => i.size * coefficient),
     sizemode: options.sizemode || "diameter"
   };
   return series;
@@ -83,31 +90,31 @@ function prepareSeries(series, options, numSeries, additionalOptions) {
   var _additionalOptions = additionalOptions,
     hoverInfoPattern = _additionalOptions.hoverInfoPattern,
     index = _additionalOptions.index;
-  var seriesOptions = extend({
+  var seriesOptions = (0, _lodash.extend)({
     type: options.globalSeriesType,
     yAxis: 0
   }, options.seriesOptions[series.name]);
   var seriesColor = getSeriesColor(options, seriesOptions, index, numSeries);
-  var seriesYAxis = getSeriesAxis(series, options);
+  var seriesYAxis = (0, _utils.getSeriesAxis)(series, options);
 
   // Sort by x - `Map` preserves order of items
-  var data = options.sortX ? sortBy(series.data, d => normalizeValue(d.x, options.xAxis.type)) : series.data;
+  var data = options.sortX ? (0, _lodash.sortBy)(series.data, d => (0, _utils.normalizeValue)(d.x, options.xAxis.type)) : series.data;
 
   // For bubble/scatter charts `y` may be any (similar to `x`) - numeric is only bubble size;
   // for other types `y` is always number
-  var cleanYValue = includes(["bubble", "scatter"], seriesOptions.type) ? normalizeValue : v => {
-    v = cleanNumber(v);
-    return options.missingValuesAsZero && isNil(v) ? 0.0 : v;
+  var cleanYValue = (0, _lodash.includes)(["bubble", "scatter"], seriesOptions.type) ? _utils.normalizeValue : v => {
+    v = (0, _utils.cleanNumber)(v);
+    return options.missingValuesAsZero && (0, _lodash.isNil)(v) ? 0.0 : v;
   };
   var sourceData = new Map();
   var xValues = [];
   var yValues = [];
   var yErrorValues = [];
-  each(data, row => {
-    var x = normalizeValue(row.x, options.xAxis.type); // number/datetime/category
+  (0, _lodash.each)(data, row => {
+    var x = (0, _utils.normalizeValue)(row.x, options.xAxis.type); // number/datetime/category
     var y = cleanYValue(row.y, seriesYAxis === "y2" ? options.yAxis[1].type : options.yAxis[0].type); // depends on series type!
-    var yError = cleanNumber(row.yError); // always number
-    var size = cleanNumber(row.size); // always number
+    var yError = (0, _utils.cleanNumber)(row.yError); // always number
+    var size = (0, _utils.cleanNumber)(row.size); // always number
 
     sourceData.set(x, {
       x,
@@ -136,7 +143,7 @@ function prepareSeries(series, options, numSeries, additionalOptions) {
       color: seriesColor
     },
     insidetextfont: {
-      color: chooseTextColorForBackground(seriesColor)
+      color: (0, _chooseTextColorForBackground.default)(seriesColor)
     },
     yaxis: seriesYAxis,
     sourceData
@@ -165,12 +172,12 @@ function prepareSeries(series, options, numSeries, additionalOptions) {
       return plotlySeries;
   }
 }
-export default function prepareDefaultData(seriesList, options) {
+function prepareDefaultData(seriesList, options) {
   var additionalOptions = {
     hoverInfoPattern: getHoverInfoPattern(options)
   };
   var numSeries = seriesList.length;
-  return map(seriesList, (series, index) => prepareSeries(series, options, numSeries, _objectSpread(_objectSpread({}, additionalOptions), {}, {
+  return (0, _lodash.map)(seriesList, (series, index) => prepareSeries(series, options, numSeries, _objectSpread(_objectSpread({}, additionalOptions), {}, {
     index
   })));
 }

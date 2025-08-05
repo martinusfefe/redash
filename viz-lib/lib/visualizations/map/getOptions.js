@@ -1,4 +1,10 @@
-import { merge } from "lodash";
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = getOptions;
+var _lodash = require("lodash");
 var DEFAULT_OPTIONS = {
   latColName: "lat",
   lonColName: "lon",
@@ -22,8 +28,8 @@ var DEFAULT_OPTIONS = {
     template: ""
   }
 };
-export default function getOptions(options) {
-  options = merge({}, DEFAULT_OPTIONS, options);
+function getOptions(options) {
+  options = (0, _lodash.merge)({}, DEFAULT_OPTIONS, options);
   options.mapTileUrl = options.mapTileUrl || DEFAULT_OPTIONS.mapTileUrl;
 
   // Backward compatibility

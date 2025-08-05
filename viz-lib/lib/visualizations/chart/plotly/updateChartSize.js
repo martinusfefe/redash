@@ -1,10 +1,16 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = updateChartSize;
+var _lodash = require("lodash");
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
 function _iterableToArrayLimit(arr, i) { var _i = null == arr ? null : "undefined" != typeof Symbol && arr[Symbol.iterator] || arr["@@iterator"]; if (null != _i) { var _s, _e, _x, _r, _arr = [], _n = !0, _d = !1; try { if (_x = (_i = _i.call(arr)).next, 0 === i) { if (Object(_i) !== _i) return; _n = !1; } else for (; !(_n = (_s = _x.call(_i)).done) && (_arr.push(_s.value), _arr.length !== i); _n = !0); } catch (err) { _d = !0, _e = err; } finally { try { if (!_n && null != _i.return && (_r = _i.return(), Object(_r) !== _r)) return; } finally { if (_d) throw _e; } } return _arr; } }
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-import { find, pick, extend } from "lodash";
 function fixLegendContainer(plotlyElement) {
   var legend = plotlyElement.querySelector(".legend");
   if (legend) {
@@ -19,8 +25,8 @@ function fixLegendContainer(plotlyElement) {
   }
 }
 function placeLegendNextToPlot(plotlyElement, layout) {
-  var transformName = find(["transform", "WebkitTransform", "MozTransform", "MsTransform", "OTransform"], prop => prop in plotlyElement.style);
-  layout.legend = extend({}, layout.legend, {
+  var transformName = (0, _lodash.find)(["transform", "WebkitTransform", "MozTransform", "MsTransform", "OTransform"], prop => prop in plotlyElement.style);
+  layout.legend = (0, _lodash.extend)({}, layout.legend, {
     orientation: "v",
     // vertical legend will be rendered properly, so just place it to the right
     // side of plot
@@ -34,11 +40,11 @@ function placeLegendNextToPlot(plotlyElement, layout) {
     // @ts-expect-error ts-migrate(2538) FIXME: Type 'undefined' cannot be used as an index type.
     legend.style[transformName] = null;
   }
-  return [pick(layout, ["width", "height", "legend"]), null]; // no further updates
+  return [(0, _lodash.pick)(layout, ["width", "height", "legend"]), null]; // no further updates
 }
 
 function placeLegendBelowPlot(plotlyElement, layout) {
-  var transformName = find(["transform", "WebkitTransform", "MozTransform", "MsTransform", "OTransform"], prop => prop in plotlyElement.style);
+  var transformName = (0, _lodash.find)(["transform", "WebkitTransform", "MozTransform", "MsTransform", "OTransform"], prop => prop in plotlyElement.style);
 
   // Save current `layout.height` value because `Plotly.relayout().then(...)` handler may be called multiple
   // times within single update, and since the handler mutates `layout` object - it may lead to bugs
@@ -52,7 +58,7 @@ function placeLegendBelowPlot(plotlyElement, layout) {
   // plot height), re-render plot again and offset legend to the space under
   // the plot.
   // Related issue: https://github.com/plotly/plotly.js/issues/1199
-  layout.legend = extend({}, layout.legend, {
+  layout.legend = (0, _lodash.extend)({}, layout.legend, {
     orientation: "h",
     // locate legend inside of plot area - otherwise plotly will preserve
     // some amount of space under the plot; also this will limit legend height
@@ -66,7 +72,7 @@ function placeLegendBelowPlot(plotlyElement, layout) {
   // set `overflow: visible` to svg containing legend because later we will
   // position legend outside of it
   fixLegendContainer(plotlyElement);
-  return [pick(layout, ["width", "height", "legend"]), () => {
+  return [(0, _lodash.pick)(layout, ["width", "height", "legend"]), () => {
     var legend = plotlyElement.querySelector(".legend"); // eslint-disable-line no-shadow
     if (legend) {
       // compute real height of legend - items may be split into few columnns,
@@ -84,7 +90,7 @@ function placeLegendBelowPlot(plotlyElement, layout) {
       // offset the legend
       // @ts-expect-error ts-migrate(2538) FIXME: Type 'undefined' cannot be used as an index type.
       legend.style[transformName] = "translate(0, " + layout.height + "px)";
-      return [pick(layout, ["height"]), null]; // no further updates
+      return [(0, _lodash.pick)(layout, ["height"]), null]; // no further updates
     }
   }];
 }
@@ -96,7 +102,7 @@ function placeLegendAuto(plotlyElement, layout) {
     return placeLegendNextToPlot(plotlyElement, layout);
   }
 }
-export default function updateChartSize(plotlyElement, layout, options) {
+function updateChartSize(plotlyElement, layout, options) {
   // update layout size to plot container
   // plot size should be at least 5x5px
   layout.width = Math.max(5, Math.floor(plotlyElement.offsetWidth));
@@ -120,7 +126,7 @@ export default function updateChartSize(plotlyElement, layout, options) {
       // no default
     }
   } else {
-    return [pick(layout, ["width", "height"]), null]; // no further updates
+    return [(0, _lodash.pick)(layout, ["width", "height"]), null]; // no further updates
   }
 }
 //# sourceMappingURL=updateChartSize.js.map

@@ -1,29 +1,40 @@
-import React from "react";
-import ReactDOMServer from "react-dom/server";
-import moment from "moment/moment";
-import numeral from "numeral";
-import { isString, isArray, isUndefined, isFinite, isNil, toString } from "lodash";
-import { visualizationsSettings } from "../visualizations/visualizationsSettings";
-numeral.options.scalePercentBy100 = false;
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.createBooleanFormatter = createBooleanFormatter;
+exports.createDateTimeFormatter = createDateTimeFormatter;
+exports.createNumberFormatter = createNumberFormatter;
+exports.createTextFormatter = createTextFormatter;
+exports.formatSimpleTemplate = formatSimpleTemplate;
+var _react = _interopRequireDefault(require("react"));
+var _server = _interopRequireDefault(require("react-dom/server"));
+var _moment = _interopRequireDefault(require("moment/moment"));
+var _numeral = _interopRequireDefault(require("numeral"));
+var _lodash = require("lodash");
+var _visualizationsSettings = require("../visualizations/visualizationsSettings");
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+_numeral.default.options.scalePercentBy100 = false;
 
 // eslint-disable-next-line
 var urlPattern = /(^|[\s\n]|<br\/?>)((?:https?|ftp):\/\/[\-A-Z0-9+\u0026\u2019@#\/%?=()~_|!:,.;]*[\-A-Z0-9+\u0026@#\/%=~()_|])/gi;
 var hasOwnProperty = Object.prototype.hasOwnProperty;
 function NullValueComponent() {
-  return /*#__PURE__*/React.createElement("span", {
+  return /*#__PURE__*/_react.default.createElement("span", {
     className: "display-as-null"
-  }, visualizationsSettings.nullValue);
+  }, _visualizationsSettings.visualizationsSettings.nullValue);
 }
-export function createTextFormatter(highlightLinks) {
+function createTextFormatter(highlightLinks) {
   if (highlightLinks) {
     return value => {
       if (value === null) {
-        return /*#__PURE__*/React.createElement(NullValueComponent, null);
+        return /*#__PURE__*/_react.default.createElement(NullValueComponent, null);
       }
-      if (isString(value)) {
-        var Link = visualizationsSettings.LinkComponent;
+      if ((0, _lodash.isString)(value)) {
+        var Link = _visualizationsSettings.visualizationsSettings.LinkComponent;
         value = value.replace(urlPattern, (unused, prefix, href) => {
-          var link = ReactDOMServer.renderToStaticMarkup( /*#__PURE__*/React.createElement(Link, {
+          var link = _server.default.renderToStaticMarkup( /*#__PURE__*/_react.default.createElement(Link, {
             href: href,
             target: "_blank",
             rel: "noopener noreferrer"
@@ -31,42 +42,42 @@ export function createTextFormatter(highlightLinks) {
           return prefix + link;
         });
       }
-      return toString(value);
+      return (0, _lodash.toString)(value);
     };
   }
-  return value => value === null ? /*#__PURE__*/React.createElement(NullValueComponent, null) : toString(value);
+  return value => value === null ? /*#__PURE__*/_react.default.createElement(NullValueComponent, null) : (0, _lodash.toString)(value);
 }
 function toMoment(value) {
-  if (moment.isMoment(value)) {
+  if (_moment.default.isMoment(value)) {
     return value;
   }
-  if (isFinite(value)) {
-    return moment(value);
+  if ((0, _lodash.isFinite)(value)) {
+    return (0, _moment.default)(value);
   }
   // same as default `moment(value)`, but avoid fallback to `new Date()`
-  return moment(toString(value), [moment.ISO_8601, moment.RFC_2822]);
+  return (0, _moment.default)((0, _lodash.toString)(value), [_moment.default.ISO_8601, _moment.default.RFC_2822]);
 }
-export function createDateTimeFormatter(format) {
-  if (isString(format) && format !== "") {
+function createDateTimeFormatter(format) {
+  if ((0, _lodash.isString)(format) && format !== "") {
     return value => {
       if (value === null) {
-        return /*#__PURE__*/React.createElement(NullValueComponent, null);
+        return /*#__PURE__*/_react.default.createElement(NullValueComponent, null);
       }
       var wrapped = toMoment(value);
-      return wrapped.isValid() ? wrapped.format(format) : toString(value);
+      return wrapped.isValid() ? wrapped.format(format) : (0, _lodash.toString)(value);
     };
   }
-  return value => value === null ? /*#__PURE__*/React.createElement(NullValueComponent, null) : toString(value);
+  return value => value === null ? /*#__PURE__*/_react.default.createElement(NullValueComponent, null) : (0, _lodash.toString)(value);
 }
-export function createBooleanFormatter(values) {
-  if (isArray(values)) {
+function createBooleanFormatter(values) {
+  if ((0, _lodash.isArray)(values)) {
     if (values.length >= 2) {
       // Both `true` and `false` specified
       return value => {
         if (value === null) {
-          return /*#__PURE__*/React.createElement(NullValueComponent, null);
+          return /*#__PURE__*/_react.default.createElement(NullValueComponent, null);
         }
-        if (isNil(value)) {
+        if ((0, _lodash.isNil)(value)) {
           return "";
         }
         return "" + values[value ? 1 : 0];
@@ -78,21 +89,21 @@ export function createBooleanFormatter(values) {
   }
   return value => {
     if (value === null) {
-      return /*#__PURE__*/React.createElement(NullValueComponent, null);
+      return /*#__PURE__*/_react.default.createElement(NullValueComponent, null);
     }
-    if (isNil(value)) {
+    if ((0, _lodash.isNil)(value)) {
       return "";
     }
     return value ? "true" : "false";
   };
 }
-export function createNumberFormatter(format) {
+function createNumberFormatter(format) {
   var canReturnHTMLElement = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-  if (isString(format) && format !== "") {
-    var n = numeral(0); // cache `numeral` instance
+  if ((0, _lodash.isString)(format) && format !== "") {
+    var n = (0, _numeral.default)(0); // cache `numeral` instance
     return value => {
       if (canReturnHTMLElement && value === null) {
-        return /*#__PURE__*/React.createElement(NullValueComponent, null);
+        return /*#__PURE__*/_react.default.createElement(NullValueComponent, null);
       }
       if (value === "" || value === null) {
         return "";
@@ -100,14 +111,14 @@ export function createNumberFormatter(format) {
       return n.set(value).format(format);
     };
   }
-  return value => canReturnHTMLElement && value === null ? /*#__PURE__*/React.createElement(NullValueComponent, null) : toString(value);
+  return value => canReturnHTMLElement && value === null ? /*#__PURE__*/_react.default.createElement(NullValueComponent, null) : (0, _lodash.toString)(value);
 }
-export function formatSimpleTemplate(str, data) {
-  if (!isString(str)) {
+function formatSimpleTemplate(str, data) {
+  if (!(0, _lodash.isString)(str)) {
     return "";
   }
   return str.replace(/{{\s*([^\s]+?)\s*}}/g, (match, prop) => {
-    if (hasOwnProperty.call(data, prop) && !isUndefined(data[prop])) {
+    if (hasOwnProperty.call(data, prop) && !(0, _lodash.isUndefined)(data[prop])) {
       return data[prop];
     }
     return match;

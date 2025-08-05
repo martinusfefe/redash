@@ -1,12 +1,17 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = exports.ColorPaletteTypes = exports.ColorPaletteArray = exports.BaseColors = exports.AllColorPalettes = exports.AllColorPaletteArrays = exports.AdditionalColors = void 0;
+var _lodash = require("lodash");
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
 function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
-import { values } from "lodash";
-
 // Define color palettes
-export var BaseColors = {
+var BaseColors = {
   Blue: "#356AFF",
   Red: "#E92828",
   Green: "#3BD973",
@@ -24,7 +29,8 @@ export var BaseColors = {
 };
 
 // Additional colors for the user to choose from
-export var AdditionalColors = {
+exports.BaseColors = BaseColors;
+var AdditionalColors = {
   "Indian Red": "#981717",
   "Green 2": "#17BF51",
   "Green 3": "#049235",
@@ -32,6 +38,7 @@ export var AdditionalColors = {
   "Dark Violet": "#A58AFF",
   "Pink 2": "#C63FA9"
 };
+exports.AdditionalColors = AdditionalColors;
 var Viridis = {
   1: '#440154',
   2: '#48186a',
@@ -76,24 +83,29 @@ var D3Category10 = {
   10: "#17becf"
 };
 var ColorPalette = _objectSpread(_objectSpread({}, BaseColors), AdditionalColors);
-export var ColorPaletteArray = values(ColorPalette);
-export default ColorPalette;
-export var AllColorPalettes = {
+var ColorPaletteArray = (0, _lodash.values)(ColorPalette);
+exports.ColorPaletteArray = ColorPaletteArray;
+var _default = ColorPalette;
+exports.default = _default;
+var AllColorPalettes = {
   "Redash": ColorPalette,
   "Viridis": Viridis,
   "Tableau 10": Tableau,
   "D3 Category 10": D3Category10
 };
-export var AllColorPaletteArrays = {
+exports.AllColorPalettes = AllColorPalettes;
+var AllColorPaletteArrays = {
   "Redash": ColorPaletteArray,
-  "Viridis": values(Viridis),
-  "Tableau 10": values(Tableau),
-  "D3 Category 10": values(D3Category10)
+  "Viridis": (0, _lodash.values)(Viridis),
+  "Tableau 10": (0, _lodash.values)(Tableau),
+  "D3 Category 10": (0, _lodash.values)(D3Category10)
 };
-export var ColorPaletteTypes = {
+exports.AllColorPaletteArrays = AllColorPaletteArrays;
+var ColorPaletteTypes = {
   "Redash": 'discrete',
   "Viridis": 'continuous',
   "Tableau 10": 'discrete',
   "D3 Category 10": 'discrete'
 };
+exports.ColorPaletteTypes = ColorPaletteTypes;
 //# sourceMappingURL=ColorPalette.js.map

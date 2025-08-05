@@ -1,25 +1,34 @@
-import { maxBy } from "lodash";
-import React, { useMemo } from "react";
-import Table from "antd/lib/table";
-import Tooltip from "antd/lib/tooltip";
-import { RendererPropTypes } from "../../prop-types";
-import ColorPalette from "../../ColorPalette";
-import { createNumberFormatter } from "../../../lib/value-format";
-import prepareData from "./prepareData";
-import FunnelBar from "./FunnelBar";
-import "./index.less";
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = Renderer;
+var _lodash = require("lodash");
+var _react = _interopRequireWildcard(require("react"));
+var _table = _interopRequireDefault(require("antd/lib/table"));
+var _tooltip = _interopRequireDefault(require("antd/lib/tooltip"));
+var _propTypes = require("../../prop-types");
+var _ColorPalette = _interopRequireDefault(require("../../ColorPalette"));
+var _valueFormat = require("../../../lib/value-format");
+var _prepareData = _interopRequireDefault(require("./prepareData"));
+var _FunnelBar = _interopRequireDefault(require("./FunnelBar"));
+require("./index.less");
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
+function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 function generateRowKeyPrefix() {
   return Math.trunc(Math.random() * Number.MAX_SAFE_INTEGER).toString(36) + ":";
 }
-export default function Renderer(_ref) {
+function Renderer(_ref) {
   var data = _ref.data,
     options = _ref.options;
-  var funnelData = useMemo(() => prepareData(data.rows, options), [data, options]);
+  var funnelData = (0, _react.useMemo)(() => (0, _prepareData.default)(data.rows, options), [data, options]);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  var rowKeyPrefix = useMemo(() => generateRowKeyPrefix(), [funnelData]);
-  var formatValue = useMemo(() => createNumberFormatter(options.numberFormat), [options.numberFormat]);
-  var formatPercentValue = useMemo(() => {
-    var format = createNumberFormatter(options.percentFormat);
+  var rowKeyPrefix = (0, _react.useMemo)(() => generateRowKeyPrefix(), [funnelData]);
+  var formatValue = (0, _react.useMemo)(() => (0, _valueFormat.createNumberFormatter)(options.numberFormat), [options.numberFormat]);
+  var formatPercentValue = (0, _react.useMemo)(() => {
+    var format = (0, _valueFormat.createNumberFormatter)(options.percentFormat);
     return value => {
       if (value < options.percentValuesRange.min) {
         return "<".concat(format(options.percentValuesRange.min));
@@ -30,19 +39,19 @@ export default function Renderer(_ref) {
       return format(value);
     };
   }, [options.percentFormat, options.percentValuesRange]);
-  var columns = useMemo(() => {
+  var columns = (0, _react.useMemo)(() => {
     if (funnelData.length === 0) {
       return [];
     }
 
     // @ts-expect-error ts-migrate(2532) FIXME: Object is possibly 'undefined'.
-    var maxToPrevious = maxBy(funnelData, d => isFinite(d.pctPrevious) ? d.pctPrevious : 0).pctPrevious;
+    var maxToPrevious = (0, _lodash.maxBy)(funnelData, d => isFinite(d.pctPrevious) ? d.pctPrevious : 0).pctPrevious;
     return [{
       title: options.stepCol.displayAs,
       dataIndex: "step",
       width: "25%",
       className: "text-ellipsis",
-      render: text => /*#__PURE__*/React.createElement(Tooltip, {
+      render: text => /*#__PURE__*/_react.default.createElement(_tooltip.default, {
         title: text,
         mouseEnterDelay: 0,
         mouseLeaveDelay: 0
@@ -55,9 +64,9 @@ export default function Renderer(_ref) {
       render: (value, item) =>
       /*#__PURE__*/
       // @ts-expect-error ts-migrate(2745) FIXME: This JSX tag's 'children' prop expects type 'never... Remove this comment to see the full error message
-      React.createElement(FunnelBar, {
+      _react.default.createElement(_FunnelBar.default, {
         align: "center",
-        color: ColorPalette.Cyan,
+        color: _ColorPalette.default.Cyan,
         value: item.pctMax
       }, formatValue(value))
     }, {
@@ -74,7 +83,7 @@ export default function Renderer(_ref) {
       render: value =>
       /*#__PURE__*/
       // @ts-expect-error ts-migrate(2745) FIXME: This JSX tag's 'children' prop expects type 'never... Remove this comment to see the full error message
-      React.createElement(FunnelBar, {
+      _react.default.createElement(_FunnelBar.default, {
         className: "funnel-percent-column",
         value: value / maxToPrevious * 100.0
       }, formatPercentValue(value))
@@ -83,9 +92,9 @@ export default function Renderer(_ref) {
   if (funnelData.length === 0) {
     return null;
   }
-  return /*#__PURE__*/React.createElement("div", {
+  return /*#__PURE__*/_react.default.createElement("div", {
     className: "funnel-visualization-container"
-  }, /*#__PURE__*/React.createElement(Table
+  }, /*#__PURE__*/_react.default.createElement(_table.default
   // @ts-expect-error ts-migrate(2322) FIXME: Type '({ title: any; dataIndex: string; width: str... Remove this comment to see the full error message
   , {
     columns: columns,
@@ -94,5 +103,5 @@ export default function Renderer(_ref) {
     pagination: false
   }));
 }
-Renderer.propTypes = RendererPropTypes;
+Renderer.propTypes = _propTypes.RendererPropTypes;
 //# sourceMappingURL=index.js.map

@@ -1,3 +1,9 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
 /* eslint-disable */
 // Inspired by http://informationandvisualization.de/blog/box-plot
 function box() {
@@ -159,5 +165,6 @@ function boxWhiskers(d) {
 function boxQuartiles(d) {
   return [d3.quantile(d, 0.25), d3.quantile(d, 0.5), d3.quantile(d, 0.75)];
 }
-export default box;
+var _default = box;
+exports.default = _default;
 //# sourceMappingURL=d3box.js.map

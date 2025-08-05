@@ -1,14 +1,22 @@
-import createTabbedEditor from "../../../components/visualizations/editor/createTabbedEditor";
-import ColumnsSettings from "./ColumnsSettings";
-import GridSettings from "./GridSettings";
-import "./editor.less";
-export default createTabbedEditor([{
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _createTabbedEditor = _interopRequireDefault(require("../../../components/visualizations/editor/createTabbedEditor"));
+var _ColumnsSettings = _interopRequireDefault(require("./ColumnsSettings"));
+var _GridSettings = _interopRequireDefault(require("./GridSettings"));
+require("./editor.less");
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _default = (0, _createTabbedEditor.default)([{
   key: "Columns",
   title: "Columns",
-  component: ColumnsSettings
+  component: _ColumnsSettings.default
 }, {
   key: "Grid",
   title: "Grid",
-  component: GridSettings
+  component: _GridSettings.default
 }]);
+exports.default = _default;
 //# sourceMappingURL=index.js.map
