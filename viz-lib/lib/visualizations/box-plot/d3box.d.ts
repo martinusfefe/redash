@@ -5,9 +5,9 @@ declare function box(): {
     tickFormat(x: any): any;
     duration(x: any): number | /*elided*/ any;
     domain(x: any): any;
-    value(x: any): /*elided*/ any | NumberConstructor;
-    whiskers(x: any): /*elided*/ any | typeof boxWhiskers;
-    quartiles(x: any): /*elided*/ any | typeof boxQuartiles;
+    value(x: any): NumberConstructor | /*elided*/ any;
+    whiskers(x: any): typeof boxWhiskers | /*elided*/ any;
+    quartiles(x: any): typeof boxQuartiles | /*elided*/ any;
 };
 declare function boxWhiskers(d: any): number[];
 declare function boxQuartiles(d: any): any[];

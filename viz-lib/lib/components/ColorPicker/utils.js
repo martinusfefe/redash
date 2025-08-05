@@ -1,14 +1,19 @@
-import { isArray, findKey } from "lodash";
-import tinycolor from "tinycolor2";
-export function validateColor(value) {
-  var fallback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-  value = tinycolor(value);
-  return value.isValid() ? "#" + value.toHex().toUpperCase() : fallback;
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.validateColor = validateColor;
+exports.getColorName = getColorName;
+const lodash_1 = require("lodash");
+const tinycolor2_1 = __importDefault(require("tinycolor2"));
+function validateColor(value, fallback = null) {
+    value = (0, tinycolor2_1.default)(value);
+    return value.isValid() ? "#" + value.toHex().toUpperCase() : fallback;
 }
-export function getColorName(color, presetColors) {
-  if (isArray(presetColors)) {
-    return color;
-  }
-  return findKey(presetColors, v => validateColor(v) === color) || color;
+function getColorName(color, presetColors) {
+    if ((0, lodash_1.isArray)(presetColors)) {
+        return color;
+    }
+    return (0, lodash_1.findKey)(presetColors, v => validateColor(v) === color) || color;
 }
-//# sourceMappingURL=utils.js.map

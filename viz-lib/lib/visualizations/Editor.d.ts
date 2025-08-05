@@ -1,4 +1,4 @@
-import { EditorPropTypes } from "@/visualizations/prop-types";
+import { EditorPropTypes } from "../visualizations/prop-types";
 type Props = {
     type: string;
 } & typeof EditorPropTypes;

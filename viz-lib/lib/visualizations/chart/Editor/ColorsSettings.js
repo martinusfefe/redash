@@ -1,24 +1,21 @@
-var _excluded = ["options"];
-function _extends() { _extends = Object.assign ? Object.assign.bind() : function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
-function _objectWithoutProperties(source, excluded) { if (source == null) return {}; var target = _objectWithoutPropertiesLoose(source, excluded); var key, i; if (Object.getOwnPropertySymbols) { var sourceSymbolKeys = Object.getOwnPropertySymbols(source); for (i = 0; i < sourceSymbolKeys.length; i++) { key = sourceSymbolKeys[i]; if (excluded.indexOf(key) >= 0) continue; if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue; target[key] = source[key]; } } return target; }
-function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) return {}; var target = {}; var sourceKeys = Object.keys(source); var key, i; for (i = 0; i < sourceKeys.length; i++) { key = sourceKeys[i]; if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } return target; }
-import React from "react";
-import { EditorPropTypes } from "../../prop-types";
-import PieColorsSettings from "./PieColorsSettings";
-import HeatmapColorsSettings from "./HeatmapColorsSettings";
-import DefaultColorsSettings from "./DefaultColorsSettings";
-var components = {
-  pie: PieColorsSettings,
-  heatmap: HeatmapColorsSettings
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-export default function ColorsSettings(_ref) {
-  var options = _ref.options,
-    props = _objectWithoutProperties(_ref, _excluded);
-  // @ts-expect-error ts-migrate(7053) FIXME: Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
-  var Component = components[options.globalSeriesType] || DefaultColorsSettings;
-  return /*#__PURE__*/React.createElement(Component, _extends({
-    options: options
-  }, props));
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = ColorsSettings;
+const react_1 = __importDefault(require("react"));
+const prop_types_1 = require("../../../visualizations/prop-types");
+const PieColorsSettings_1 = __importDefault(require("./PieColorsSettings"));
+const HeatmapColorsSettings_1 = __importDefault(require("./HeatmapColorsSettings"));
+const DefaultColorsSettings_1 = __importDefault(require("./DefaultColorsSettings"));
+const components = {
+    pie: PieColorsSettings_1.default,
+    heatmap: HeatmapColorsSettings_1.default,
+};
+function ColorsSettings({ options, ...props }) {
+    // @ts-expect-error ts-migrate(7053) FIXME: Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
+    const Component = components[options.globalSeriesType] || DefaultColorsSettings_1.default;
+    return react_1.default.createElement(Component, { options: options, ...props });
 }
-ColorsSettings.propTypes = EditorPropTypes;
-//# sourceMappingURL=ColorsSettings.js.map
+ColorsSettings.propTypes = prop_types_1.EditorPropTypes;

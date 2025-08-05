@@ -1,5 +1,5 @@
 import React from "react";
-import { RendererPropTypes } from "@/visualizations/prop-types";
+import { RendererPropTypes } from "../visualizations/prop-types";
 type Props = {
     type: string;
     addonBefore?: React.ReactNode;

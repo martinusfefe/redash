@@ -1,139 +1,127 @@
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
-function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
-function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
-import { isString, each, extend, includes, map, reduce } from "lodash";
-import d3 from "d3";
-import chooseTextColorForBackground from "../../../lib/chooseTextColorForBackground";
-import { AllColorPaletteArrays, ColorPaletteTypes } from "../../ColorPalette";
-import { cleanNumber, normalizeValue } from "./utils";
-export function getPieDimensions(series) {
-  var rows = series.length > 2 ? 2 : 1;
-  var cellsInRow = Math.ceil(series.length / rows);
-  var cellWidth = 1 / cellsInRow;
-  var cellHeight = 1 / rows;
-  var xPadding = 0.02;
-  var yPadding = 0.1;
-  return {
-    rows,
-    cellsInRow,
-    cellWidth,
-    cellHeight,
-    xPadding,
-    yPadding
-  };
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getPieDimensions = getPieDimensions;
+exports.default = preparePieData;
+const lodash_1 = require("lodash");
+const d3_1 = __importDefault(require("d3"));
+const chooseTextColorForBackground_1 = __importDefault(require("../../../lib/chooseTextColorForBackground"));
+const ColorPalette_1 = require("../../../visualizations/ColorPalette");
+const utils_1 = require("./utils");
+function getPieDimensions(series) {
+    const rows = series.length > 2 ? 2 : 1;
+    const cellsInRow = Math.ceil(series.length / rows);
+    const cellWidth = 1 / cellsInRow;
+    const cellHeight = 1 / rows;
+    const xPadding = 0.02;
+    const yPadding = 0.1;
+    return { rows, cellsInRow, cellWidth, cellHeight, xPadding, yPadding };
 }
 function getPieHoverInfoPattern(options) {
-  var hasX = /{{\s*@@x\s*}}/.test(options.textFormat);
-  var result = "text";
-  if (!hasX) result += "+label";
-  return result;
+    const hasX = /{{\s*@@x\s*}}/.test(options.textFormat);
+    let result = "text";
+    if (!hasX)
+        result += "+label";
+    return result;
 }
 function prepareSeries(series, options, additionalOptions) {
-  var cellWidth = additionalOptions.cellWidth,
-    cellHeight = additionalOptions.cellHeight,
-    xPadding = additionalOptions.xPadding,
-    yPadding = additionalOptions.yPadding,
-    cellsInRow = additionalOptions.cellsInRow,
-    hasX = additionalOptions.hasX,
-    index = additionalOptions.index,
-    hoverInfoPattern = additionalOptions.hoverInfoPattern,
-    getValueColor = additionalOptions.getValueColor;
-  var seriesOptions = extend({
-    type: options.globalSeriesType,
-    yAxis: 0
-  }, options.seriesOptions[series.name]);
-  var xPosition = index % cellsInRow * cellWidth;
-  var yPosition = Math.floor(index / cellsInRow) * cellHeight;
-  var labelsValuesMap = new Map();
-  var sourceData = new Map();
-  var seriesTotal = reduce(series.data, (result, row) => {
-    var y = cleanNumber(row.y);
-    return result + Math.abs(y);
-  }, 0);
-  each(series.data, row => {
-    var x = hasX ? normalizeValue(row.x, options.xAxis.type) : "Slice ".concat(index);
-    var y = cleanNumber(row.y);
-    if (labelsValuesMap.has(x)) {
-      labelsValuesMap.set(x, labelsValuesMap.get(x) + y);
-    } else {
-      labelsValuesMap.set(x, y);
-    }
-    var aggregatedY = labelsValuesMap.get(x);
-    sourceData.set(x, {
-      x,
-      y: aggregatedY,
-      yPercent: aggregatedY / seriesTotal * 100,
-      row
+    const { cellWidth, cellHeight, xPadding, yPadding, cellsInRow, hasX, index, hoverInfoPattern, getValueColor, } = additionalOptions;
+    const seriesOptions = (0, lodash_1.extend)({ type: options.globalSeriesType, yAxis: 0 }, options.seriesOptions[series.name]);
+    const xPosition = (index % cellsInRow) * cellWidth;
+    const yPosition = Math.floor(index / cellsInRow) * cellHeight;
+    const labelsValuesMap = new Map();
+    const sourceData = new Map();
+    const seriesTotal = (0, lodash_1.reduce)(series.data, (result, row) => {
+        const y = (0, utils_1.cleanNumber)(row.y);
+        return result + Math.abs(y);
+    }, 0);
+    (0, lodash_1.each)(series.data, row => {
+        const x = hasX ? (0, utils_1.normalizeValue)(row.x, options.xAxis.type) : `Slice ${index}`;
+        const y = (0, utils_1.cleanNumber)(row.y);
+        if (labelsValuesMap.has(x)) {
+            labelsValuesMap.set(x, labelsValuesMap.get(x) + y);
+        }
+        else {
+            labelsValuesMap.set(x, y);
+        }
+        const aggregatedY = labelsValuesMap.get(x);
+        sourceData.set(x, {
+            x,
+            y: aggregatedY,
+            yPercent: (aggregatedY / seriesTotal) * 100,
+            row,
+        });
     });
-  });
-  var markerColors = map(Array.from(sourceData.values()), data => getValueColor(data.row.x));
-  var textColors = map(markerColors, c => chooseTextColorForBackground(c));
-  var labels = Array.from(labelsValuesMap.keys());
-  var values = Array.from(labelsValuesMap.values());
-  return {
-    visible: true,
-    values,
-    labels,
-    type: "pie",
-    hole: 0.4,
-    marker: {
-      colors: markerColors
-    },
-    hoverinfo: hoverInfoPattern,
-    text: [],
-    textinfo: options.showDataLabels ? "percent" : "none",
-    textposition: "inside",
-    textfont: {
-      color: textColors
-    },
-    name: seriesOptions.name || series.name,
-    direction: options.direction.type,
-    domain: {
-      x: [xPosition, xPosition + cellWidth - xPadding],
-      y: [yPosition, yPosition + cellHeight - yPadding]
-    },
-    sourceData,
-    sort: options.piesort,
-    color_scheme: options.color_scheme
-  };
+    const markerColors = (0, lodash_1.map)(Array.from(sourceData.values()), data => getValueColor(data.row.x));
+    const textColors = (0, lodash_1.map)(markerColors, c => (0, chooseTextColorForBackground_1.default)(c));
+    const labels = Array.from(labelsValuesMap.keys());
+    const values = Array.from(labelsValuesMap.values());
+    return {
+        visible: true,
+        values,
+        labels,
+        type: "pie",
+        hole: 0.4,
+        marker: {
+            colors: markerColors,
+        },
+        hoverinfo: hoverInfoPattern,
+        text: [],
+        textinfo: options.showDataLabels ? "percent" : "none",
+        textposition: "inside",
+        textfont: {
+            color: textColors,
+        },
+        name: seriesOptions.name || series.name,
+        direction: options.direction.type,
+        domain: {
+            x: [xPosition, xPosition + cellWidth - xPadding],
+            y: [yPosition, yPosition + cellHeight - yPadding],
+        },
+        sourceData,
+        sort: options.piesort,
+        color_scheme: options.color_scheme,
+    };
 }
-export default function preparePieData(seriesList, options) {
-  // @ts-expect-error ts-migrate(7053) FIXME: Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
-  var palette = AllColorPaletteArrays[options.color_scheme];
-  var valuesColors = {};
-  var getDefaultColor;
-
-  // @ts-expect-error ts-migrate(7053) FIXME: Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
-  if (typeof seriesList[0] !== 'undefined' && ColorPaletteTypes[options.color_scheme] === 'continuous') {
-    var uniqueXValues = [...new Set(seriesList[0].data.map(d => d.x))];
-    var step = (palette.length - 1) / (uniqueXValues.length - 1 || 1);
-    var colorIndices = d3.range(uniqueXValues.length).map(function (i) {
-      return Math.round(step * i);
-    });
-    // @ts-expect-error ts-migrate(2339) FIXME: Property 'scale' does not exist on type 'typeof im... Remove this comment to see the full error message
-    getDefaultColor = d3.scale.ordinal().domain(uniqueXValues) // Set domain as the unique x-values
-    .range(colorIndices.map(index => palette[index]));
-  } else {
-    // @ts-expect-error ts-migrate(2339) FIXME: Property 'scale' does not exist on type 'typeof im... Remove this comment to see the full error message
-    getDefaultColor = d3.scale.ordinal().domain([]).range(palette);
-  }
-  ;
-  each(options.valuesOptions, (item, key) => {
-    if (isString(item.color) && item.color !== "") {
-      // @ts-expect-error ts-migrate(7053) FIXME: Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
-      valuesColors[key] = item.color;
-    }
-  });
-  var additionalOptions = _objectSpread(_objectSpread({}, getPieDimensions(seriesList)), {}, {
-    hasX: includes(options.columnMapping, "x"),
-    hoverInfoPattern: getPieHoverInfoPattern(options),
+function preparePieData(seriesList, options) {
     // @ts-expect-error ts-migrate(7053) FIXME: Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
-    getValueColor: v => valuesColors[v] || getDefaultColor(v)
-  });
-  return map(seriesList, (series, index) => prepareSeries(series, options, _objectSpread(_objectSpread({}, additionalOptions), {}, {
-    index
-  })));
+    const palette = ColorPalette_1.AllColorPaletteArrays[options.color_scheme];
+    const valuesColors = {};
+    let getDefaultColor;
+    // @ts-expect-error ts-migrate(7053) FIXME: Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
+    if (typeof (seriesList[0]) !== 'undefined' && ColorPalette_1.ColorPaletteTypes[options.color_scheme] === 'continuous') {
+        const uniqueXValues = [...new Set(seriesList[0].data.map((d) => d.x))];
+        const step = (palette.length - 1) / (uniqueXValues.length - 1 || 1);
+        const colorIndices = d3_1.default.range(uniqueXValues.length).map(function (i) {
+            return Math.round(step * i);
+        });
+        // @ts-expect-error ts-migrate(2339) FIXME: Property 'scale' does not exist on type 'typeof im... Remove this comment to see the full error message
+        getDefaultColor = d3_1.default.scale.ordinal()
+            .domain(uniqueXValues) // Set domain as the unique x-values
+            .range(colorIndices.map(index => palette[index]));
+    }
+    else {
+        // @ts-expect-error ts-migrate(2339) FIXME: Property 'scale' does not exist on type 'typeof im... Remove this comment to see the full error message
+        getDefaultColor = d3_1.default.scale
+            .ordinal()
+            .domain([])
+            .range(palette);
+    }
+    ;
+    (0, lodash_1.each)(options.valuesOptions, (item, key) => {
+        if ((0, lodash_1.isString)(item.color) && item.color !== "") {
+            // @ts-expect-error ts-migrate(7053) FIXME: Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
+            valuesColors[key] = item.color;
+        }
+    });
+    const additionalOptions = {
+        ...getPieDimensions(seriesList),
+        hasX: (0, lodash_1.includes)(options.columnMapping, "x"),
+        hoverInfoPattern: getPieHoverInfoPattern(options),
+        // @ts-expect-error ts-migrate(7053) FIXME: Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
+        getValueColor: (v) => valuesColors[v] || getDefaultColor(v),
+    };
+    return (0, lodash_1.map)(seriesList, (series, index) => prepareSeries(series, options, { ...additionalOptions, index }));
 }
-//# sourceMappingURL=preparePieData.js.map

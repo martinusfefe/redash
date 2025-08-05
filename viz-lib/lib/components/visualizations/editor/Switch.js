@@ -1,36 +1,61 @@
-var _excluded = ["id", "children", "disabled"];
-function _extends() { _extends = Object.assign ? Object.assign.bind() : function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
-function _objectWithoutProperties(source, excluded) { if (source == null) return {}; var target = _objectWithoutPropertiesLoose(source, excluded); var key, i; if (Object.getOwnPropertySymbols) { var sourceSymbolKeys = Object.getOwnPropertySymbols(source); for (i = 0; i < sourceSymbolKeys.length; i++) { key = sourceSymbolKeys[i]; if (excluded.indexOf(key) >= 0) continue; if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue; target[key] = source[key]; } } return target; }
-function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) return {}; var target = {}; var sourceKeys = Object.keys(source); var key, i; for (i = 0; i < sourceKeys.length; i++) { key = sourceKeys[i]; if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } return target; }
-import React, { useMemo } from "react";
-import AntSwitch from "antd/lib/switch";
-import Typography from "antd/lib/typography";
-import "./Switch.less";
+"use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = Switch;
+const react_1 = __importStar(require("react"));
+const switch_1 = __importDefault(require("antd/lib/switch"));
+const typography_1 = __importDefault(require("antd/lib/typography"));
+require("./Switch.less");
 // @ts-expect-error ts-migrate(2700) FIXME: Rest types may only be created from object types.
-export default function Switch(_ref) {
-  var id = _ref.id,
-    children = _ref.children,
-    disabled = _ref.disabled,
-    props = _objectWithoutProperties(_ref, _excluded);
-  var fallbackId = useMemo(() => "visualization-editor-control-".concat(Math.random().toString(36).substr(2, 10)), []);
-  id = id || fallbackId;
-  if (children) {
-    return /*#__PURE__*/React.createElement("label", {
-      htmlFor: id,
-      className: "switch-with-label"
-    }, /*#__PURE__*/React.createElement(AntSwitch, _extends({
-      id: id,
-      disabled: disabled
-    }, props)), /*#__PURE__*/React.createElement(Typography.Text, {
-      className: "switch-text",
-      disabled: disabled
-    }, children));
-  }
-  return /*#__PURE__*/React.createElement(AntSwitch, props);
+function Switch({ id, children, disabled, ...props }) {
+    const fallbackId = (0, react_1.useMemo)(() => `visualization-editor-control-${Math.random()
+        .toString(36)
+        .substr(2, 10)}`, []);
+    id = id || fallbackId;
+    if (children) {
+        return (react_1.default.createElement("label", { htmlFor: id, className: "switch-with-label" },
+            react_1.default.createElement(switch_1.default, { id: id, disabled: disabled, ...props }),
+            react_1.default.createElement(typography_1.default.Text, { className: "switch-text", disabled: disabled }, children)));
+    }
+    return react_1.default.createElement(switch_1.default, { ...props });
 }
 Switch.defaultProps = {
-  id: null,
-  disabled: false,
-  children: null
+    id: null,
+    disabled: false,
+    children: null,
 };
-//# sourceMappingURL=Switch.js.map
