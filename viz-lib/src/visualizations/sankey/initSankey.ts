@@ -16,7 +16,7 @@ import {
   isNumber,
   isString,
 } from "lodash";
-import d3 from "d3";
+import * as d3 from "d3";
 import d3sankey, { NodeType, LinkType, SourceTargetType, DType } from "./d3sankey";
 import { SankeyDataType } from ".";
 

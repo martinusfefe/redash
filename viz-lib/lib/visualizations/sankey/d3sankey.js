@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-import d3 from "d3";
+import * as d3 from "d3";
 function center(node) {
   return node.y + node.dy / 2;
 }

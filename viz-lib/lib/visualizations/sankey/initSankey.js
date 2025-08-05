@@ -1,5 +1,5 @@
 import { isNil, map, extend, sortBy, includes, filter, reduce, find, keys, values, identity, mapValues, every, isNaN, isNumber, isString } from "lodash";
-import d3 from "d3";
+import * as d3 from "d3";
 import d3sankey from "./d3sankey";
 function getConnectedNodes(node) {
   console.log(node);

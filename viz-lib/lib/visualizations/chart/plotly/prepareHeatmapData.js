@@ -2,7 +2,7 @@ import { map, max, uniq, sortBy, flatten, find, findIndex } from "lodash";
 import { createNumberFormatter } from "../../../lib/value-format";
 // @ts-expect-error ts-migrate(7016) FIXME: Could not find a declaration file for module 'plot... Remove this comment to see the full error message
 import Colorscale from "plotly.js/src/components/colorscale";
-import d3 from "d3";
+import * as d3 from "d3";
 import chooseTextColorForBackground from "../../../lib/chooseTextColorForBackground";
 var defaultColorScheme = [[0, "#356aff"], [0.14, "#4a7aff"], [0.28, "#5d87ff"], [0.42, "#7398ff"], [0.56, "#fb8c8c"], [0.71, "#ec6463"], [0.86, "#ec4949"], [1, "#e92827"]];
 function getColor(value, scheme) {
